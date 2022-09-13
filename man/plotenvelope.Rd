@@ -30,7 +30,7 @@ plotenvelope(
 Return a simulated envelope graphic.
 }
 \description{
-Plot a simulated envelope of beta residuals, from LSMLE and LMDPDE objects.
+Plot a simulated envelope of beta residuals from robustbetareg object.
 }
 \examples{
 fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)

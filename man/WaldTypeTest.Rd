@@ -7,14 +7,14 @@
 WaldTypeTest(object, FUN, ...)
 }
 \arguments{
-\item{object}{fitted model object of class "LSMLE" or "LMDPDE"}
+\item{object}{fitted model object of class "robustbetareg"}
 
 \item{FUN}{the function representing the null hypothesis to be tested}
 
 \item{...}{Further arguments to be passed}
 }
 \description{
-Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE.
+Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE estimators.
 }
 \examples{
 fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)

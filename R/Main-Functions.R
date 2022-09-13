@@ -217,7 +217,7 @@ regbeta=function(n,mu,phi)
 
 #' Simulated Envelope of Residuals
 #'
-#' Plot a simulated envelope of beta residuals, from LSMLE and LMDPDE objects.
+#' Plot a simulated envelope of beta residuals from robustbetareg object.
 #'
 #' @param object Fitted model object of class "LSMLE" or "LMDPDE" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param n.sim the number of simulation sample. Deafault n.sim=50.
@@ -239,9 +239,9 @@ plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted
 
 #' Robust Wald-type Tests
 #'
-#' Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE.
+#' Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE estimators.
 #'
-#' @param object fitted model object of class "LSMLE" or "LMDPDE"
+#' @param object fitted model object of class "robustbetareg"
 #' @param FUN the function representing the null hypothesis to be tested
 #' @param ... Further arguments to be passed
 #'
