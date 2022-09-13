@@ -188,3 +188,99 @@ Username for 'https://github.com': yurimaluf
 error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
 Password for 'https://yurimaluf@github.com': 
 ]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git add .
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git commit -m ""t"e"s"t"e"
+[main ef5d3f2] teste
+ 87 files changed, 138 insertions(+), 24251 deletions(-)
+ rewrite .Rproj.user/58547870/console06/INDEX001 (100%)
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/11108025-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/16B78325-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/20AF47D6-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/22DD2E9F-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/23C91DE3-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/26ADEE8D-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/281F595B-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C5FAA97
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C5FAA97-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C786901-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/30743821-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/3649EEC8-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/414B2CE9-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/437D08DC
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/437D08DC-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/5132CFF9-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/58863F81-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/596E6051-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/59AB4707
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/59AB4707-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/5CDA315E-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/5F18CE38-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/614CB444-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/6502F2C4-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/66B6E1F4-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/6AD4C063-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/6CA86857-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/6E699CB5-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/6F687691-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/72F5F780-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/737FA6CA-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/77C32ECB
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/77C32ECB-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/79139056-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/80E164CF-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/80E471D8-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/8ED85ADF
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/8ED85ADF-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/8F66BFF-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/916C7047-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/9B28C4E8-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/A3112698-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/AA324A07
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/AA324A07-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/AB5318E2-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/AC9458E2-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/B5A9DD52-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/B818B407-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/BBB49365-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/C222FB8E-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/C6F5DEC9
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/C6F5DEC9-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/C723C300-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/C7B6B437-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/CD693C0B-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/D0F3C47D
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/D0F3C47D-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/D3A8722F-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/D81545E2-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/DDA4D962-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/DDBBA3FB-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7111F9D-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/E73CB3A5-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7FDF2F0
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7FDF2F0-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/EA77FCE8
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/EA77FCE8-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/F7DC5BA3-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/F954DBDE-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/FA11400C-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/FB388B90-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/FE9F72A
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/FE9F72A-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/FED2002A-contents
+ delete mode 100644 .Rproj.user/58547870/sources/s-714445BC/lock_file
+ create mode 100644 .gitignore
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git commit -m "teste"[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K push origin main
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Username for 'https://github.com': yurimaluf
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Password for 'https://yurimaluf@github.com': 
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/yurimaluf/robustbetareg.git/'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin maincommit -m "teste"[1Ppush origin main
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Username for 'https://github.com': yurimaluf
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Password for 'https://yurimaluf@github.com': 
+remote: Invalid username or password.
+fatal: Authentication failed for 'https://github.com/yurimaluf/robustbetareg.git/'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ 
