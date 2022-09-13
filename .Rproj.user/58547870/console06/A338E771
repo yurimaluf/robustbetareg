@@ -65,3 +65,126 @@ remote: Support for password authentication was removed on August 13, 2021.
 remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
 fatal: Authentication failed for 'https://github.com/yurimaluf/robustbetareg.git/'
 ]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git add .
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ p[Kgut [K[K[Kit commut[K[Kit -m ""t"e"s"t"e"
+[main ed0267f] teste
+ 114 files changed, 24637 insertions(+)
+ create mode 100644 .Rbuildignore
+ create mode 100644 .Rproj.user/58547870/console06/A338E771
+ create mode 100644 .Rproj.user/58547870/console06/A338E771.env
+ create mode 100644 .Rproj.user/58547870/console06/INDEX001
+ create mode 100644 .Rproj.user/58547870/sources/prop/167E1DA1
+ create mode 100644 .Rproj.user/58547870/sources/prop/1686DA29
+ create mode 100644 .Rproj.user/58547870/sources/prop/38B8B95D
+ create mode 100644 .Rproj.user/58547870/sources/prop/3F1831B4
+ create mode 100644 .Rproj.user/58547870/sources/prop/4967A185
+ create mode 100644 .Rproj.user/58547870/sources/prop/49A063A8
+ create mode 100644 .Rproj.user/58547870/sources/prop/4EECD58F
+ create mode 100644 .Rproj.user/58547870/sources/prop/50A69FAD
+ create mode 100644 .Rproj.user/58547870/sources/prop/5AFAFA96
+ create mode 100644 .Rproj.user/58547870/sources/prop/685ACC52
+ create mode 100644 .Rproj.user/58547870/sources/prop/6B402663
+ create mode 100644 .Rproj.user/58547870/sources/prop/6BB42C4E
+ create mode 100644 .Rproj.user/58547870/sources/prop/6C8D35F7
+ create mode 100644 .Rproj.user/58547870/sources/prop/7473733C
+ create mode 100644 .Rproj.user/58547870/sources/prop/7B0AE8BA
+ create mode 100644 .Rproj.user/58547870/sources/prop/7C389A4A
+ create mode 100644 .Rproj.user/58547870/sources/prop/7E720DE0
+ create mode 100644 .Rproj.user/58547870/sources/prop/985B87BC
+ create mode 100644 .Rproj.user/58547870/sources/prop/9AAEF839
+ create mode 100644 .Rproj.user/58547870/sources/prop/A20EA7C8
+ create mode 100644 .Rproj.user/58547870/sources/prop/BFE95BD1
+ create mode 100644 .Rproj.user/58547870/sources/prop/C354BB50
+ create mode 100644 .Rproj.user/58547870/sources/prop/C89557BB
+ create mode 100644 .Rproj.user/58547870/sources/prop/D1CD0A22
+ create mode 100644 .Rproj.user/58547870/sources/prop/D77C85FF
+ create mode 100644 .Rproj.user/58547870/sources/prop/DB62B432
+ create mode 100644 .Rproj.user/58547870/sources/prop/DCFB52C4
+ create mode 100644 .Rproj.user/58547870/sources/prop/EC84037C
+ create mode 100644 .Rproj.user/58547870/sources/prop/F118029A
+ create mode 100644 .Rproj.user/58547870/sources/prop/F7733817
+ create mode 100644 .Rproj.user/58547870/sources/prop/INDEX
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/11108025-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/16B78325-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/20AF47D6-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/22DD2E9F-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/23C91DE3-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/26ADEE8D-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/281F595B-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C5FAA97
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C5FAA97-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/2C786901-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/30743821-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/3649EEC8-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/414B2CE9-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/437D08DC
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/437D08DC-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/5132CFF9-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/58863F81-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/596E6051-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/59AB4707
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/59AB4707-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/5CDA315E-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/5F18CE38-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/614CB444-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/6502F2C4-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/66B6E1F4-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/6AD4C063-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/6CA86857-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/6E699CB5-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/6F687691-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/72F5F780-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/737FA6CA-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/77C32ECB
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/77C32ECB-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/79139056-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/80E164CF-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/80E471D8-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/8ED85ADF
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/8ED85ADF-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/8F66BFF-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/916C7047-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/9B28C4E8-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/A3112698-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/AA324A07
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/AA324A07-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/AB5318E2-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/AC9458E2-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/B5A9DD52-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/B818B407-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/BBB49365-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/C222FB8E-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/C6F5DEC9
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/C6F5DEC9-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/C723C300-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/C7B6B437-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/CD693C0B-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/D0F3C47D
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/D0F3C47D-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/D3A8722F-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/D81545E2-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/DDA4D962-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/DDBBA3FB-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7111F9D-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/E73CB3A5-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7FDF2F0
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/E7FDF2F0-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/EA77FCE8
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/EA77FCE8-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/F7DC5BA3-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/F954DBDE-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/FA11400C-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/FB388B90-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/FE9F72A
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/FE9F72A-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/FED2002A-contents
+ create mode 100644 .Rproj.user/58547870/sources/s-714445BC/lock_file
+ create mode 100644 .Rproj.user/shared/notebooks/B5E5CB3-ReportApp/1/s/c5tnf5j50zl6q/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/B5E5CB3-ReportApp/1/s/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
+ create mode 100644 .Rproj.user/shared/notebooks/paths
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin main
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Username for 'https://github.com': yurimaluf
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Password for 'https://yurimaluf@github.com': 
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git add .
