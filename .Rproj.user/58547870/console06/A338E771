@@ -283,4 +283,17 @@ error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
 Password for 'https://yurimaluf@github.com': 
 remote: Invalid username or password.
 fatal: Authentication failed for 'https://github.com/yurimaluf/robustbetareg.git/'
-]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ 
+git add *
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git commit -m ""t"e"s"t"e"2"
+No ramo main
+Changes not staged for commit:
+	[31mmodified:   .Rproj.user/58547870/console06/A338E771[m
+	[31mmodified:   .Rproj.user/58547870/console06/INDEX001[m
+	[31mmodified:   .Rproj.user/58547870/sources/prop/7E720DE0[m
+	[31mmodified:   .Rproj.user/58547870/sources/prop/INDEX[m
+	[31mmodified:   .Rproj.user/shared/notebooks/paths[m
+
+nenhuma modificação adicionada à submissão
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git psu[K[Kush origin main
+Everything up-to-date
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin maincommit -m "teste2"add *[Kpush origin mainadd *[K[K.
