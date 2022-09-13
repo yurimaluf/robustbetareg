@@ -1,0 +1,321 @@
+---
+title: "Aplicação"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(RobustBetaReg)
+setwd("/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/R/Reports")
+source("SMLE.R", encoding = "UTF-8")
+source("MDPDE.R", encoding = "UTF-8")
+```
+
+## Modelo A
+
+No modelo A temos:
+
+$$
+\begin{split}
+  \log\left(\frac{\mu_i}{1-\mu_i}\right)&=\beta_1+\beta_2 \text{Urbanizacao}_i+\beta_3 \text{PIB_percap}_i, \\
+  &\\
+  \log(\phi_i)&=\gamma_1+\gamma_2 \text{PIB_percap}_i,
+\end{split}
+$$
+
+
+```{r include=FALSE}
+load(file="App-Modelo-A.RData")
+aux=modeloA$modelo.amostra
+modeloA$modelo.media
+modeloA$modelo.precisao
+x.t=as.matrix(cbind(rep(1,80),aux[,1:2]))
+z.t=as.matrix(cbind(rep(1,80),aux[,2]))
+y.t=aux$pop_planosaude
+SMLE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux)
+est.LMDPDE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,type="LMDPDE")
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,alpha=0)
+```
+
+
+```{r eval=T}
+load(file="App-Modelo-A.RData")
+aux=modeloA$modelo.amostra
+x.t=as.matrix(cbind(rep(1,80),aux[,1:2]))
+z.t=as.matrix(cbind(rep(1,80),aux[,2]))
+y.t=aux$pop_planosaude
+SMLE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+```
+
+Ambos os estimadores SMLE e MDPDE retornam a mensagem "Lack of stability". Os resultados para os estimadores LSMLE, LMDPDE e MLE seguem
+
+```{r}
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux)
+est.LMDPDE=suppressWarnings(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,type="LMDPDE"))
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,alpha=0)
+summary(est.LSMLE)
+summary(est.LMDPDE)
+summary(est.MLE)
+```
+
+Para MLE $\gamma_2$ não é significativo. Diante das várias tentativas de outros modelos e subamostras o valor de $R2\approx0.32$ é relativamente alto.
+
+Calculando a distância de Cook (MLE) e os pesos para LSMLE.
+
+```{r}
+par(mfrow=c(1,2))
+Cook.Dist=cooks.distance(est.MLE)
+max.ind=head(order(Cook.Dist,decreasing=T))[1:3]
+plot(Cook.Dist,type="h",xlab="Obs. number",ylab="Cook's distance",ylim=c(0,1.2),main="Cook's distance plot")
+text(max.ind,Cook.Dist[max.ind],labels = modeloA$municipio[max.ind],pos = c(3,3,3))
+plot(est.LSMLE$weights,ylab="Weights",main="Pesos - LSMLE",pch=16)
+min.weight=head(order(est.LSMLE$weights,decreasing=F))[1:3]
+points(min.weight,est.LSMLE$weights[min.weight],pch=15,col="red")
+abline(h=c(0,1))
+text(min.weight,est.LSMLE$weights[min.weight],labels=modeloA$municipio[min.weight],pos=c(3,1,1))
+```
+
+Calculando os resíduos do tipo Standardized Weighted 2
+
+```{r}
+par(mfrow=c(1,2))
+plot(est.LSMLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-3,11),main="LSMLE",pch=16)
+max.ind=head(order(abs(est.LSMLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.LSMLE$residuals[max.ind],labels=modeloA$municipio[max.ind],pos=c(4,1,1))
+points(max.ind,est.LSMLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+plot(est.MLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-3,11),main="MLE",pch=16)
+max.ind=head(order(abs(est.MLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.MLE$residuals[max.ind],labels=modeloA$municipio[max.ind],pos=c(4,1,1))
+points(max.ind,est.MLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+```
+
+Envelopes dos resíduos LSMLE (esquerda) e MLE (direita).
+
+```{r }
+par(mfrow=c(1,2))
+plotenvelope(est.LSMLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.LSMLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloA$municipio[max.ind],pos = c(2,3,4))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+plotenvelope(est.MLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.MLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloA$municipio[max.ind],pos = c(2,3,4))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+```
+
+## Modelo B
+
+Seguindo a sugestão da professora e incluindo nos submodelos as mesmas variáveis e após fazer um scan em diversas subamostras temos
+
+$$
+\begin{split}
+  \log\left(\frac{\mu_i}{1-\mu_i}\right)&=\beta_1+\beta_2 \text{Urbanizacao}_i+\beta_3 \text{PIB_percap}_i, \\
+  &\\
+  \log(\phi_i)&=\gamma_1+\gamma_2 \text{Urbanizacao}_i+\gamma_3 \text{PIB_percap}_i,
+\end{split}
+$$
+
+```{r eval=T}
+load(file="App-Modelo-B.RData")
+aux=modeloB$modelo.amostra
+x.t=as.matrix(cbind(rep(1,80),aux[,1:2]))
+z.t=as.matrix(cbind(rep(1,80),aux[,1:2]))
+y.t=aux$pop_planosaude
+SMLE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+```
+
+Ambos os estimadores SMLE e MDPDE retornam a mensagem "Lack of stability". Os resultados para os estimadores LSMLE, LMDPDE e MLE seguem
+
+```{r}
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|Urbanizacao+PIB_percap,data=aux)
+est.LMDPDE=suppressWarnings(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|Urbanizacao+PIB_percap,data=aux,type="LMDPDE"))
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|Urbanizacao+PIB_percap,data=aux,alpha=0)
+summary(est.LSMLE)
+summary(est.LMDPDE)
+summary(est.MLE)
+```
+
+Em todos os resultados dos estimadores o coeficiente $\gamma_2$ não foram significativos. Retirando a covariável $Urbanizacao$ na modelagem da dispersão e reestimando para SMLE e MDPDE temos o seguinte modelo
+
+$$
+\begin{split}
+  \log\left(\frac{\mu_i}{1-\mu_i}\right)&=\beta_1+\beta_2 \text{Urbanizacao}_i+\beta_3 \text{PIB_percap}_i, \\
+  &\\
+  \log(\phi_i)&=\gamma_1+\gamma_2 \text{PIB_percap}_i,
+\end{split}
+$$
+
+
+```{r eval=T}
+x.t=as.matrix(cbind(rep(1,80),aux[,1:2]))
+z.t=as.matrix(cbind(rep(1,80),aux[,2]))
+y.t=aux$pop_planosaude
+SMLE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+```
+
+Para LSMLE, LMDPDE e MLE
+
+```{r}
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux)
+est.LMDPDE=suppressWarnings(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,type="LMDPDE"))
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux,alpha=0)
+summary(est.LSMLE)
+summary(est.LMDPDE)
+summary(est.MLE)
+```
+
+Calculando a distância de Cook (MLE) e os pesos para LSMLE
+
+```{r}
+par(mfrow=c(1,2))
+Cook.Dist=cooks.distance(est.MLE)
+max.ind=head(order(Cook.Dist,decreasing=T))[1:3]
+plot(Cook.Dist,type="h",xlab="Obs. number",ylab="Cook's distance",ylim=c(0,1.2),main="Cook's distance plot")
+text(max.ind,Cook.Dist[max.ind],labels = modeloB$municipio[max.ind],pos = c(3,3))
+plot(est.LSMLE$weights,ylab="Weights",pch=16,main="Pesos - LSMLE")
+min.weight=head(order(est.LSMLE$weights,decreasing=F))[1:3]
+points(min.weight,est.LSMLE$weights[min.weight],pch=15,col="red")
+abline(h=c(0,1))
+text(min.weight,est.LSMLE$weights[min.weight],labels=modeloB$municipio[min.weight],pos=c(4,1,1))
+```
+
+Calculando os resíduos do tipo Standardized Weighted 2
+
+```{r}
+par(mfrow=c(1,2))
+plot(est.LSMLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-3,9),pch=16,main="LSMLE")
+max.ind=head(order(abs(est.LSMLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.LSMLE$residuals[max.ind],labels=modeloB$municipio[max.ind],pos=c(4,3,3))
+points(max.ind,est.LSMLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+plot(est.MLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-2.5,9),pch=16,main="MLE")
+max.ind=head(order(abs(est.MLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.MLE$residuals[max.ind],labels=modeloB$municipio[max.ind],pos=c(4,1,1))
+points(max.ind,est.MLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+```
+
+Envelopes dos resíduos LSMLE (esquerda) e MLE (direita).
+
+```{r }
+par(mfrow=c(1,2))
+plotenvelope(est.LSMLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.LSMLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloB$municipio[max.ind],pos = c(2,4,2))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+plotenvelope(est.MLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.MLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloB$municipio[max.ind],pos = c(2,1,4))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+```
+
+
+## Modelo C
+
+Seguindo a sugestão da professora e incluindo nos submodelos as mesmas variáveis incluindo covariáveis na área de saúde e após fazer um scan em diversas subamostras temos
+
+$$
+\begin{split}
+  \log\left(\frac{\mu_i}{1-\mu_i}\right)&=\beta_1+\beta_2 \text{Urbanizacao}_i+\beta_3 \text{PIB_percap}_i+\beta_4 \text{Despesas_percap_saude}_i, \\
+  &\\
+  \log(\phi_i)&=\gamma_1+\gamma_2 \text{Urbanizacao}_i+\gamma_3 \text{PIB_percap}_i+\gamma_4 \text{Despesas_percap_saude}_i,
+\end{split}
+$$
+
+```{r }
+load(file="App-Modelo-C.RData")
+aux=modeloC$modelo.amostra
+modeloC$modelo.media
+modeloC$modelo.precisao
+x.t=as.matrix(cbind(rep(1,80),aux[,1:3]))
+z.t=as.matrix(cbind(rep(1,80),aux[,1:3]))
+y.t=aux$pop_planosaude
+SMLE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t,qoptimal=T)$Warning
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|Urbanizacao+PIB_percap+Despesas_percap_saude,data=aux)
+est.LMDPDE=suppressWarnings(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|Urbanizacao+PIB_percap+Despesas_percap_saude,data=aux,type="LMDPDE"))
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|Urbanizacao+PIB_percap+Despesas_percap_saude,data=aux,alpha=0)
+summary(est.LSMLE)
+summary(est.LMDPDE)
+summary(est.MLE)
+```
+
+Retirando o covariável $Urbanizacao$  na modelagem da dispersão e reestimando temos
+```{r }
+SMLE_BETA(y=y.t,X=x.t,Z=z.t[,-2],qoptimal=T)$Warning
+MDPDE_BETA(y=y.t,X=x.t,Z=z.t[,-2],qoptimal=T)$Warning
+est.LSMLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|PIB_percap+Despesas_percap_saude,data=aux)
+est.LMDPDE=suppressWarnings(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|PIB_percap+Despesas_percap_saude,data=aux,type="LMDPDE"))
+est.MLE=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap+Despesas_percap_saude|PIB_percap+Despesas_percap_saude,data=aux,alpha=0)
+summary(est.LSMLE)
+summary(est.LMDPDE)
+summary(est.MLE)
+```
+
+Calculando a distância de Cook (MLE) e os pesos para LSMLE
+
+```{r}
+par(mfrow=c(1,2))
+Cook.Dist=cooks.distance(est.MLE)
+max.ind=head(order(Cook.Dist,decreasing=T))[1:3]
+plot(Cook.Dist,type="h",xlab="Obs. number",ylab="Cook's distance",ylim=c(0,1.2),main="Cook's distance plot")
+text(max.ind,Cook.Dist[max.ind],labels = modeloC$municipio[max.ind],pos = c(3,3))
+plot(est.LSMLE$weights,ylab="Weights",main="Pesos - LSMLE",pch=16)
+min.weight=head(order(est.LSMLE$weights,decreasing=F))[1:3]
+points(min.weight,est.LSMLE$weights[min.weight],pch=15,col="red")
+abline(h=c(0,1))
+text(min.weight,est.LSMLE$weights[min.weight],labels=modeloC$municipio[min.weight],pos=c(4,3,1))
+```
+
+Calculando os resíduos do tipo Standardized Weighted 2
+
+```{r}
+par(mfrow=c(1,2))
+plot(est.LSMLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-3,9),pch=16,main="LSMLE")
+max.ind=head(order(abs(est.LSMLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.LSMLE$residuals[max.ind],labels=modeloC$municipio[max.ind],pos=c(4,3,3))
+points(max.ind,est.LSMLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+plot(est.MLE$residuals,ylab="Standardized Weighted 2",xlab="index",ylim=c(-2.5,9),pch=16,main="MLE")
+max.ind=head(order(abs(est.MLE$residuals),decreasing=T))[1:3]
+text(max.ind,est.MLE$residuals[max.ind],labels=modeloC$municipio[max.ind],pos=c(4,2,1))
+points(max.ind,est.MLE$residuals[max.ind],pch=15,col="red")
+abline(h=0)
+abline(h=c(-2,2),lty=2)
+```
+
+Envelopes dos resíduos LSMLE (esquerda) e MLE (direita).
+
+```{r }
+par(mfrow=c(1,2))
+plotenvelope(est.LSMLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.LSMLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloC$municipio[max.ind],pos = c(2,2,4))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+plotenvelope(est.MLE,ylim=c(-5,9),n.sim = 100,PrgBar = F)
+q=qqnorm(residuals(est.MLE),plot.it = F)
+max.ind=head(order(abs(q$y),decreasing=T))[1:3]
+text(q$x[max.ind],q$y[max.ind],labels = modeloC$municipio[max.ind],pos = c(2,4,2))
+points(q$x[max.ind],q$y[max.ind],pch=15,col="red")
+```
+

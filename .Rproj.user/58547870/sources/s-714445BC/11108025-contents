@@ -1,0 +1,36 @@
+Package: robustbetareg
+Type: Package
+Title: Robust of Beta Regression Model
+Version: 0.1.0
+Authors@R: 
+    person(given = "Yuri",
+           family = "Maluf",
+           role = c("aut", "cre"),
+           email = "yurimaluf@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Robust beta regression for modeling beta-distributed dependent variables, e.g., rates and proportions.
+Depends: R (>= 3.0.0), betareg, nleqslv, zoo
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    Rmpfr,
+    rstudioapi,
+    crayon,
+    pracma,
+    rootSolve,
+    MASS,
+    numDeriv,
+    Formula,
+    robustbase,
+    Matrix,
+    zoo,
+    parallel
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr

@@ -1,0 +1,318 @@
+#' @rdname robustbetareg
+#' 
+#' @param x,z  numeric regressor matrix for mean and precision model respectively, defaulting to an intercept only.
+#' 
+# Robust Estimation - SMLE
+SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
+{
+  #options(warn = 2) #Convert warnings in errors
+  result=theta=list()
+  #Arguments Checking
+  alpha.optimal=control$alpha.optimal
+  start_theta=control$start
+  if(!is.null(alpha)){alpha.optimal=FALSE}
+  if(is.null(alpha) & alpha.optimal==FALSE){alpha=0}
+  linkobj=set.link2(link.mu = link,link.phi = link.phi)
+  k=ncol(x)
+  m=ncol(z)
+  if(alpha.optimal)
+  {
+    return(Opt.Tuning.SMLE(y,x,z,link,link.phi,control))
+  }
+  if(is.null(start_theta))
+  {
+    mle=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
+    start_theta=as.numeric(do.call("c",mle$coefficients))
+    theta$x=start_theta
+    theta$converged=mle$converged
+  }
+  #Point Estimation
+  q=1-alpha
+  check=TRUE
+  theta=tryCatch(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
+    theta$msg<-e$message;check<<-F;return(theta)})
+  # gc()
+  if(check){
+    if(theta$convergence==0){
+      theta$converged=T
+      theta$x=theta$par
+    }else{
+      theta$converged=F
+      theta$x=start_theta
+    }
+  }else{
+    theta$converged=F
+    theta$x=start_theta
+  }
+  #Predict values
+  beta=theta$x[1:k]
+  gamma=theta$x[seq.int(length.out = m) + k]
+  coefficients = list(mean = beta, precision = gamma)
+  eta=x%*%beta
+  mu_hat=linkobj$linkfun.mu$inv.link(eta)
+  phi_hat=linkobj$linkfun.phi$inv.link(z%*%gamma)
+  
+  #Expected Standard Error
+  M.SMLE=tryCatch(SMLE_Cov_Matrix(mu_hat,phi_hat,x,z,alpha=alpha,linkobj=linkobj),error=function(e) NULL)
+  if(is.null(M.SMLE))
+  {
+    vcov=std.error.SMLE=NaN
+  }else{
+    vcov=M.SMLE$Cov
+    std.error.SMLE=M.SMLE$Std.Error
+  }
+  
+  #Register of output values 
+  y_star=log(y)-log(1-y)
+  str1=str2=NULL
+  result$coefficients=coefficients#Coefficients Regression
+  result$vcov=vcov#Expected Covariance Matrix
+  pseudor2 = if (var(eta) * var(qlogis(y)) <= 0){NA}
+  else{cor(eta, linkobj$linkfun.mu$linkfun(y))^2}
+  if(!is.null(theta$iter)){result$iter=theta$iter}
+  result$converged=(theta$converged & all(!is.na(std.error.SMLE)))#Convergence
+  if(m==1){phi_predict=phi_hat[1]}
+  if(m!=1){phi_predict=phi_hat}
+  result$fitted.values=list(mu.predict = mu_hat, phi.predict = phi_predict)#Fitted Values
+  result$start=start_theta #Started Point 
+  result$weights=(dbeta(y,mu_hat*phi_hat,(1-mu_hat)*phi_hat))^(alpha)#Weights 
+  result$Tuning=alpha#Tuning
+  result$residuals=sweighted2_res(mu_hat,phi_hat,y=y,X=x,linkobj = linkobj)#Standard Residual Report
+  result$n=length(mu_hat)#Sample Size
+  result$link=link#Mean Link Function
+  result$link.phi=link.phi#Precision Link Function
+  result$Optimal.Tuning=alpha.optimal#Flag - Data-driven algorithm tuning selector 
+  result$pseudo.r.squared=pseudor2
+  result$control=control#Extra options package
+  result$call=match.call()
+  if(any(is.na(std.error.SMLE)))
+  {
+    str1="Standard-Error is unvailable"
+  }
+  if(!is.null(theta$msg))
+  {
+    str2=theta$msg
+  }
+  if(!is.null(str1)||!is.null(str2))
+  {
+    result$Message=c(str1,str2)
+  }
+  if(!any(is.na(std.error.SMLE)))
+  {#Standard Error
+    names(std.error.SMLE)<-c(colnames(x),colnames(z))
+    se.beta=std.error.SMLE[1:k]
+    se.gamma=std.error.SMLE[1:m+k]
+    coef.std.error = list(se.mean = se.beta, se.precision = se.gamma)
+    result$std.error=coef.std.error
+  }
+  class(result)="SMLE"
+  #gc()
+  return(result)
+}
+
+#' @export
+robustbetareg.control.SMLE=function(object)
+{
+  result=object$control
+  return(result)
+}
+
+
+#' @export
+WaldTypeTest.SMLE=function(object,FUN,...)
+{
+  general=FALSE
+  if(missing(FUN)){general=T}
+  if(!object$converged){stop(paste("There is no convergence in the model",deparse(substitute(object))))}
+  cl = match.call()
+  n=length(object$fitted.values$mu.predict)
+  V=object$vcov
+  b=object$coefficient$mean
+  g=object$coefficient$precision
+  p=c(b,g)
+  k1=length(b)
+  k2=length(g)
+  k3=length(p)
+  if(general)
+  {
+    result.beta=result.gamma=NULL
+    if(ncol(object$model$mean)>1)
+    {
+      #Beta
+      result.beta=list()
+      f.b=function(x){x[2:k1]}
+      M=numDeriv::jacobian(f.b,p,...)
+      m=f.b(p,...)
+      r=length(m)
+      if(Matrix::rankMatrix(M)[1]!=r)
+      {
+        stop("The Rank Matrix is not supported")
+      }
+      W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
+      #Beta Register
+      result.beta$W.alpha=as.numeric(W_alpha)
+      result.beta$df=r
+      result.beta$pValue=as.numeric(1-pchisq(W_alpha,df=r))
+    }
+    if(ncol(object$model$precision)>1)
+    {
+      #Gamma
+      result.gamma=list()
+      f.g=function(x){x[(k1+2):k3]}
+      M=numDeriv::jacobian(f.g,p,...)
+      m=f.g(p,...)
+      r=length(m)
+      if(Matrix::rankMatrix(M)[1]!=r){stop("The Rank Matrix is not supported")}
+      W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
+      #Gamma Register
+      result.gamma$W.alpha=as.numeric(W_alpha)
+      result.gamma$df=r
+      result.gamma$pValue=as.numeric(1-pchisq(W_alpha,df=r))
+    }
+    result=list(beta.wald=result.beta,gamma.wald=result.gamma,general=general,msg="Results based on SMLE.")
+  }else{
+    result=list()
+    #Hipothesis
+    f=FUN
+    M=numDeriv::jacobian(f,p,...)
+    m=f(p,...)
+    r=length(m)
+    n=length(object$fitted.values$mu.predict)
+    if(Matrix::rankMatrix(M)[1]!=r){stop("The Rank Matrix is not supported")}
+    W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
+    #Register
+    result$W.alpha=as.numeric(W_alpha)
+    result$df=r
+    result$pValue=as.numeric(1-pchisq(W_alpha,df=r))
+    result$general=general
+    result$msg="Results based on SMLE."
+  }
+  class(result)="WaldTest_SMLE"
+  return(result)
+}
+
+
+#' @export  
+plotenvelope.SMLE=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=50,PrgBar=T,control=robustbetareg.control(...), ...)
+{
+  if(missing(control)){control=robustbetareg.control(object)}
+  type = match.arg(type)
+  ylim.boolean=hasArg(ylim)
+  arg=list(...)
+  limit=FALSE
+  y.sim=ResEnvelop=NULL
+  link=object$link
+  link.phi=object$link.phi
+  y=object$y
+  x=as.matrix(object$model$mean)
+  z=as.matrix(object$model$precision)
+  n=length(object$fitted.values$mu.predict)
+  a=object$fitted.values$mu.predict*object$fitted.values$phi.predict
+  b=(1-object$fitted.values$mu.predict)*object$fitted.values$phi.predict
+  residual=residuals(object,type=type)
+  k=1
+  if(PrgBar){pb = txtProgressBar(min = 0, max = n.sim, style = 3)}
+  while(k<=n.sim & !limit)
+  {
+    y.sim=pmax(pmin(sapply(seq(1,n,1),function(i) rbeta(1,a[i],b[i])),1-.Machine$double.eps),.Machine$double.eps)
+    est.mle=betareg.fit(x,y,z,link=link,link.phi = link.phi)
+    start=c(est.mle$coefficients$mean,est.mle$coefficients$precision)
+    SMLE.sim=tryCatch(SMLE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){SMLE.sim$converged<-FALSE; return(SMLE.sim)})
+    if(SMLE.sim$converged)
+    {
+      if(type=="sweighted2")
+      {
+        ResEnvelop=rbind(ResEnvelop,sort(SMLE.sim$residuals,decreasing = F))  
+      }else{
+        SMLE.sim$y=y.sim
+        SMLE.sim$model$mean=object$model$mean
+        SMLE.sim$model$precision=object$model$precision
+        ResEnvelop=rbind(ResEnvelop,sort(residuals(SMLE.sim,type=type),decreasing = F))
+      }
+      k=k+1
+      # update progress bar
+      if(PrgBar){setTxtProgressBar(pb, k)}
+    }
+    if(k==(2*n.sim)){limit=T}
+  }
+  Envelope=apply(ResEnvelop,2,quantile,c((1-conf)/2,0.5,1-(1-conf)/2))
+  if(!ylim.boolean)
+  {
+    ylim <- range(Envelope[1,],Envelope[2,],Envelope[3,],residual)
+    arg$ylim=ylim
+  }
+  par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
+  #ARG=append(list(y=residual,main="Envelope Plot", xlab="Normal quantiles",ylab="Residuals"),arg)
+  ARG=append(list(y=residual,main="", xlab="Normal quantiles",ylab="Residuals"),arg)
+  do.call(qqnorm,ARG)
+  par(new=T)
+  ARG=modifyList(ARG,list(y=Envelope[1,],axes=F,main = "",xlab="",ylab="",type="l",lty=1,lwd=1.0))
+  do.call(qqnorm,ARG)
+  par(new=T)
+  ARG=modifyList(ARG,list(y=Envelope[2,],lty=2))
+  do.call(qqnorm,ARG)
+  par(new=T)
+  ARG=modifyList(ARG,list(y=Envelope[3,],lty=1))
+  do.call(qqnorm,ARG)
+}
+
+
+#' @rdname residuals.LSMLE
+#'   
+#' @export
+residuals.SMLE=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection"))
+{
+  type = match.arg(type)
+  y=object$y
+  x=object$model$mean
+  z=object$model$precision
+  linkobj=set.link2(link.mu=object$link,link.phi=object$link.phi)
+  mu.predict=object$fitted.values$mu.predict
+  phi.predict=object$fitted.values$phi.predict
+  switch(type,sweighted2={
+    res=sweighted2_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y,X=x,linkobj=linkobj)
+  },
+  sweighted={
+    res=res=sweighted_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y)
+  },
+  pearson={
+    res=pearson_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y)
+  },
+  weighted={
+    res=weighted_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y)
+  },
+  sweighted.gamma={
+    res=sweighted.gamma_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y)
+  },
+  sweighted2.gamma={
+    res=sweighted2.gamma_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y,Z=z,linkobj=linkobj)
+  },
+  combined={
+    res=combined_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y)
+  },
+  combined.projection={
+    res=combined.projection_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y,X=x,Z=z,linkobj=linkobj)
+  },
+ 
+  stop(gettextf("%s residual not recognised", sQuote(type)),domain = NA))
+  
+  return(res)
+}
+
+#' @export
+cooks.distance.SMLE=function(object,...)
+{
+  p=length(do.call("c",object$coefficients))
+  linkobj=set.link2(link.mu = object$link, link.phi = object$link.phi)
+  y_hat=linkobj$linkfun.mu$inv.link(object$model$mean%*%object$coefficients$mean)
+  MSE=as.numeric(t(object$y-y_hat)%*%(object$y-y_hat)/(object$n-p))
+  D=NULL
+  for(i in 1:object$n){
+    fit.temp=robustbetareg(object$formula,data=object$data[-i,],alpha=object$Tuning)
+    y_hat_temp=linkobj$linkfun.mu$inv.link(object$model$mean%*%fit.temp$coefficients$mean)
+    D=c(D,t(y_hat-y_hat_temp)%*%(y_hat-y_hat_temp)/(MSE*p))
+  }
+  return(D)
+}
+
+

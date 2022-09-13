@@ -1,0 +1,90 @@
+library(readr)
+library(RobustBetaReg)
+setwd("/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/R/Reports")
+source("SMLE.R", encoding = "UTF-8")
+source("MDPDE.R", encoding = "UTF-8")
+pacotewd="/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote RbstBetaReg/RobustBetaReg"
+pacotewd="/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg"
+setwd(pacotewd)
+
+#Data import
+link.yuri=url("https://raw.githubusercontent.com/yurimaluf/RobustBetaReg/main/planosaude.csv")
+aux=read_csv(link.yuri)
+
+names(aux)
+aux2=as.matrix(aux[,-c(1,2)])
+invest=invest.name=invest.beta=invest.gamma=invest.beta.name=invest.gamma.name=NULL
+set.seed(2022)
+M=2000
+k.beta=2
+k.gamma=1
+pb = txtProgressBar(min = 0, max = M, initial = 0, style = 3)
+stepi=1
+z=cbind(rep(1,150),aux$Gini)
+y=aux$pop_planosaude
+for(i in 1:M){
+  cov.index=sample(c(1,2,3:12,14:18),size = k.beta, replace = F)
+  cov.index2=sample(c(1,2,3:12,14:18),size = k.gamma, replace = F)
+  x=cbind(rep(1,150),aux2[,c(cov.index)])
+  z=cbind(rep(1,150),aux2[,c(cov.index2)])
+  result=tryCatch(MDPDE_BETA(y=y,X=x,Z=z,qoptimal = T),error=function(e) NULL)
+  if(!is.null(result$Warning)){
+    #invest=rbind(invest,c(stepi,cov.index,cov.index2))
+    invest.beta=rbind(invest.beta,c(stepi,cov.index))
+    invest.gamma=rbind(invest.gamma,c(stepi,cov.index2))
+
+    #invest.name=rbind(invest.name,c(stepi,colnames(aux2[,c(2,cov.index,cov.index2)])))
+    invest.beta.name=rbind(invest.beta.name,c(stepi,colnames(aux2[,c(cov.index)])))
+    invest.gamma.name=rbind(invest.gamma.name,c(stepi,colnames(aux2)[cov.index2]))
+    print(cov.index)
+  }
+  setTxtProgressBar(pb,stepi)
+  stepi=stepi+1
+}
+
+invest=cbind(invest.beta,invest.gamma)
+invest2=as.data.frame(invest[,-c(1,4)])
+invest2=unique(invest2)
+
+invest.name.temp=NULL
+for(i in 1:dim(invest2)[1]){
+  invest.name.temp=rbind(invest.name.temp,colnames(aux2)[as.numeric(invest2[i,])])
+}
+invest.beta.name=as.data.frame(invest.name.temp[,1:2])
+invest.gamma.name=as.data.frame(invest.name.temp[,3])
+invest2.beta=as.data.frame(invest2[,1:2])
+invest2.gamma=as.data.frame(invest2[,3])
+
+
+###GINI
+aux2=as.matrix(aux[,-c(1,2)])
+invest=invest.name=invest.beta=invest.gamma=invest.beta.name=invest.gamma.name=NULL
+set.seed(2022)
+M=2000
+k.beta=3
+k.gamma=1
+pb = txtProgressBar(min = 0, max = M, initial = 0, style = 3)
+stepi=1
+z=cbind(rep(1,150),aux$Gini)
+y=aux$pop_planosaude
+for(i in 1:M){
+  cov.index=sample(c(1,3:12,14:18),size = k.beta, replace = F)
+  cov.index2=sample(c(1,3:12,14:18),size = k.gamma, replace = F)
+  x=cbind(rep(1,150),aux2[,c(2,cov.index)])
+  z=cbind(rep(1,150),aux2[,c(2,cov.index2)])
+  result=tryCatch(MDPDE_BETA(y=y,X=x,Z=z,qoptimal = T),error=function(e) NULL)
+  if(!is.null(result$Warning)){
+    #invest=rbind(invest,c(stepi,cov.index,cov.index2))
+    invest.beta=rbind(invest.beta,c(stepi,2,cov.index))
+    invest.gamma=rbind(invest.gamma,c(stepi,2,cov.index2))
+
+    #invest.name=rbind(invest.name,c(stepi,colnames(aux2[,c(2,cov.index,cov.index2)])))
+    invest.beta.name=rbind(invest.beta.name,c(stepi,colnames(aux2[,c(2,cov.index)])))
+    invest.gamma.name=rbind(invest.gamma.name,c(stepi,colnames(aux2[,c(2,cov.index2)])))
+    print(cov.index)
+  }
+  setTxtProgressBar(pb,stepi)
+  stepi=stepi+1
+}
+
+

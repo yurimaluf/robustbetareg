@@ -1,0 +1,67 @@
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git d[KV[KRE[K[Kremote add origin https://githu b.com/yurimaluf/robustbetareg.git
+fatal: Not a git repository (or any of the parent directories): .git
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git init 
+Initialized empty Git repository in /home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg/.git/
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git mo[K[Kcommit -m ""f"i"r"s"t" "c"o"m"m"i"t" "[1P"
+No ramo master
+
+Submissão inicial.
+
+Arquivos não monitorados:
+	[31m.Rbuildignore[m
+	[31m.Rproj.user/[m
+	[31mDESCRIPTION[m
+	[31mNAMESPACE[m
+	[31mR/[m
+	[31mman/[m
+	[31mrobustbetareg.Rproj[m
+
+nada adicionado ao envio mas arquivos não registrados estão presentes
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git brach[K[Knch -m [K[Km[KM main
+error: refname refs/heads/master not found
+fatal: Branch rename failed
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin main
+error: src refspec main does not match any.
+error: failed to push some refs to 'origin'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git remote add origin https://githu b.com/uy[K[Kyui[Krimaluf/robustbetareg.git
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin main
+error: src refspec main does not match any.
+error: failed to push some refs to 'https://github.com/yurimaluf/robustbetareg.git'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push origin main[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kc[Kcommit -m ""t"e"s"t"e"[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kt add *
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git commit -m ""t"e"s"t"e"
+[master (root-commit) d5d4864] teste
+ 21 files changed, 3503 insertions(+)
+ create mode 100644 DESCRIPTION
+ create mode 100644 NAMESPACE
+ create mode 100644 R/Aux-Functions.R
+ create mode 100644 R/Functions-LMDPDE.R
+ create mode 100644 R/Functions-LSMLE.R
+ create mode 100644 R/Functions-MDPDE.R
+ create mode 100644 R/Functions-SMLE.R
+ create mode 100644 R/Main-Functions.R
+ create mode 100644 R/Show-Result.R
+ create mode 100644 R/zzz.R
+ create mode 100644 man/WaldTypeTest.Rd
+ create mode 100644 man/degbeta.Rd
+ create mode 100644 man/hello.Rd
+ create mode 100644 man/plot.robustbetareg.Rd
+ create mode 100644 man/plotenvelope.Rd
+ create mode 100644 man/predict.Rd
+ create mode 100644 man/residuals.robustbetareg.Rd
+ create mode 100644 man/robustbetareg.Rd
+ create mode 100644 man/robustbetareg.control.Rd
+ create mode 100644 man/set.link.Rd
+ create mode 100644 robustbetareg.Rproj
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git push pri[K[K[Korigin main
+error: src refspec main does not match any.
+error: failed to push some refs to 'https://github.com/yurimaluf/robustbetareg.git'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git brac[Knch -M main
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git branch -M main[2@push origin[C[C[C[C[C
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Username for 'https://github.com': ^[[A^[[A        yurimaluf
+error: cannot run rpostback-askpass: Arquivo ou diretório não encontrado
+Password for 'https://yurimaluf@github.com': 
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/yurimaluf/robustbetareg.git/'
+]0;/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg]0;yurimaluf@Yuri: ~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[01;32myurimaluf@Yuri[00m:[01;34m~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg[00m$ git add .

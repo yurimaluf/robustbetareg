@@ -1,0 +1,183 @@
+library(readr)
+library(RobustBetaReg)
+setwd("/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/R/Reports")
+source("SMLE.R", encoding = "UTF-8")
+source("MDPDE.R", encoding = "UTF-8")
+pacotewd="/home/yurimaluf/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote RbstBetaReg/RobustBetaReg"
+setwd(pacotewd)
+
+#Data import
+link.yuri=url("https://raw.githubusercontent.com/yurimaluf/RobustBetaReg/main/planosaude.csv")
+aux=read_csv(link.yuri)
+
+#REAMOSTRAGEM E SELECAO DE VARIAVEIS
+names(aux)
+aux2=as.matrix(aux[,-c(1,2)])
+colnames(aux2)
+invest.name=invest.index=invest.beta=invest.gamma=invest.beta.name=invest.gamma.name=NULL
+set.seed(2022)
+N=80
+M=5000
+k.beta=2
+k.gamma=1
+pb = txtProgressBar(min = 0, max = M, initial = 0, style = 3)
+stepi=1
+y=aux$pop_planosaude
+for(i in 1:M){
+  #cov.index=sample(c(1:12,14:18),size = k.beta, replace = F)
+  #cov.index2=sample(c(1:12,14:18),size = k.gamma, replace = F)
+  cov.index=c(8,9,11)
+  cov.index2=c(8,9,11)
+  obs.index=sample(c(1:92,94:150),size = (N-1), replace=F)
+  x=cbind(rep(1,N),aux2[c(93,obs.index),c(cov.index)])
+  z=cbind(rep(1,N),aux2[c(93,obs.index),c(cov.index2)])
+  result.MDPDE=tryCatch(MDPDE_BETA(y=y[c(93,obs.index)],X=x,Z=z,qoptimal = T),error=function(e) NULL)
+  result.SMLE=tryCatch(SMLE_BETA(y=y[c(93,obs.index)],X=x,Z=z,qoptimal = T),error=function(e) NULL)
+  if(!is.null(result.MDPDE$Warning) && !is.null(result.SMLE$Warning)){
+    invest.beta=rbind(invest.beta,c(stepi,cov.index))
+    invest.gamma=rbind(invest.gamma,c(stepi,cov.index2))
+    invest.index=rbind(invest.index,c(stepi,obs.index))
+
+    invest.beta.name=rbind(invest.beta.name,c(stepi,colnames(aux2[,c(cov.index)])))
+    invest.gamma.name=rbind(invest.gamma.name,c(stepi,colnames(aux2)[cov.index2]))
+    print(i)
+  }
+  setTxtProgressBar(pb,stepi)
+  stepi=stepi+1
+}
+
+#ANALISE DE DADOS
+colnames(aux2)
+j=7
+#j=selecao[j,1]
+x=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.beta[j,-1])])
+z=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.gamma[j,-1])])
+y.indexed=y[c(93,invest.index[j,-1])]
+###
+#(L)SMLE
+SMLE_BETA(y=y.indexed,X=x,Z=z,qoptimal = T)$Warning
+teste.LSMLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2))
+summary(teste.LSMLE)
+plot(teste.LSMLE$sqv,type="l")
+abline(h=0.02)
+###
+#(L)MDPDE
+MDPDE_BETA(y=y.indexed,X=x,Z=z,qoptimal = T)$Warning
+head(y.indexed)
+head(x)
+
+teste.LMDPDE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2),type = "LMDPDE")
+summary(teste.LMDPDE)
+plot(teste.LMDPDE$sqv,type="l")
+abline(h=0.02)
+###
+#MLE
+teste.MLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2),alpha = 0)
+#teste.MLE=betareg(pop_planosaude ~ x[,-1]|z[,-1], data = as.data.frame(aux2))
+summary(teste.MLE)
+summary(teste.LSMLE)
+summary(teste.LMDPDE)
+
+SMLE_BETA(y=y.indexed,X=x,Z=z[,-2],qoptimal = T)$Warning
+MDPDE_BETA(y=y.indexed,X=x,Z=z[,-2],qoptimal = T)$Warning
+
+summary(robustbetareg(y.indexed ~ x[,-1]|z[,-c(1,2)], data = as.data.frame(aux2)))
+summary(robustbetareg(y.indexed ~ x[,-1]|z[,-c(1,2)], data = as.data.frame(aux2),type = "LMDPDE"))
+summary(robustbetareg(y.indexed ~ x[,-1]|z[,-c(1,2)], data = as.data.frame(aux2),alpha = 0))
+
+
+
+#SELECAO - FILTRAGEM RESULTADOS
+selecao=NULL
+pb = txtProgressBar(min = 0, max = dim(invest.index)[1], initial = 0, style = 3)
+stepi=1
+for(j in 1:dim(invest.index)[1]){
+  x=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.beta[j,-1])])
+  z=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.gamma[j,-1])])
+  y.indexed=y[c(93,invest.index[j,-1])]
+
+  teste.LSMLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2))
+  p.value=1-pnorm(abs(teste.LSMLE$coefficients$mean/teste.LSMLE$std.error$se.mean))
+  R2.LSMLE=as.numeric(teste.LSMLE$pseudo.r.squared)
+  alpha.selected=teste.LSMLE$Tuning
+  if(all(p.value<0.01) && alpha.selected!=0){
+    teste.LMDPDE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2),type = "LMDPDE")
+    p.value=1-pnorm(abs(teste.LMDPDE$coefficients$mean/teste.LMDPDE$std.error$se.mean))
+    R2.LMDPDE=as.numeric(teste.LMDPDE$pseudo.r.squared)
+    alpha.selected=teste.LMDPDE$Tuning
+    if(all(p.value<0.01) && alpha.selected!=0){
+      teste.MLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2),alpha = 0)
+      p.value=1-pnorm(abs(teste.MLE$coefficients$precision[2]/teste.MLE$std.error$se.precision[2]))
+      R2.MLE=as.numeric(teste.MLE$pseudo.r.squared)
+      if(p.value>0.01)
+      selecao=rbind(selecao,c(j,R2.LSMLE,R2.LMDPDE,R2.MLE,R2.LMDPDE-R2.MLE,R2.LSMLE-R2.MLE))
+    }
+  }
+  setTxtProgressBar(pb,stepi)
+  stepi=stepi+1
+}
+selecao=as.data.frame(selecao)
+names(selecao)=c("j","R2.LSMLE","R2.LMDPDE","R2.MLE","R2.DELTA","R2.DELTA2")
+selecao=selecao[order(selecao$R2.LSMLE,decreasing = T),]
+
+
+
+
+#SALVAR OBJETO
+colnames(aux2)
+aux3=as.data.frame(aux)
+names(aux3)
+obs.indice=NULL
+for(i in 1:80){
+  obs.indice=c(obs.indice,which(aux3$pop_planosaude==y.indexed[i]))
+}
+
+modeloC=NULL
+modeloC$modelo.media=invest.beta.name[7,-1]
+modeloC$modelo.precisao=invest.gamma.name[7,-1]
+modeloC$modelo.amostra=as.data.frame(aux3[obs.indice,c(10,11,13,15)])
+modeloC$obs.indice=obs.indice
+modeloC$municipio=aux3$Nome[obs.indice]
+
+save(modeloC,file = "App-Modelo-C.RData")
+
+load(file="App-Modelo-A.RData")
+names(modeloA)
+yuri=modeloA$modelo.amostra
+names(aux)
+teste=robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=yuri)
+summary(teste)
+class(teste)
+names(teste)
+plot(teste$sqv)
+plotenvelope(teste,ylim=c(-5,9),n.sim = 10)
+cooks.distance.robustbetareg(teste)
+RobustBetaReg:::Opt.Tuning.LMDPDE.3
+plot(teste)
+
+#modelo.temp=list(modelo.beta=invest.beta.name[j,-1], modelo.gamma=invest.gamma.name[j,-1], modelo.amostra=y.indexed)
+#modelo.temp2=list(modelo.beta=invest.beta.name[j,-1], modelo.gamma=invest.gamma.name[j,-1], modelo.amostra=y.indexed)
+#modelo.temp3=list(modelo.beta=invest.beta.name[j,-1], modelo.gamma=invest.gamma.name[j,-1], modelo.amostra=y.indexed)
+
+save(modeloA=modelo.temp,modeloB=modelo.temp2,modeloC=modelo.temp3,file="App-modelo-selected.RData")
+
+
+yuri=modelo.temp$modelo.amostra
+summary(robustbetareg(pop_planosaude~Urbanizacao+PIB_percap|PIB_percap,data=aux))
+
+
+temp=function(){
+  #j<<-j+1
+  x=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.beta[j,-1])])
+  z=cbind(rep(1,N),aux2[as.numeric(c(93,invest.index[j,-1])),as.numeric(invest.gamma[j,-1])])
+  y.indexed=y[c(93,invest.index[j,-1])]
+  SMLE_BETA(y=y.indexed,X=x,Z=z,qoptimal = T)
+  teste.LSMLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2))
+  summary(teste.LSMLE)
+
+  teste.MLE=robustbetareg(y.indexed ~ x[,-1]|z[,-1], data = as.data.frame(aux2),alpha = 0)
+  summary(teste.MLE)
+  print(j)
+}
+temp()
+

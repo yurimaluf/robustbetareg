@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1663072487593.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "245575282",
+    "id" : "D0F3C47D",
+    "lastKnownWriteTime" : 1663101366,
+    "last_content_update" : 1663101366481,
+    "path" : "~/TESE/Tese - Paper/Yuri - Papers/Paper - Robust Estimation via MPD in Beta Regression/Pacote robustbetareg/robustbetareg/R/Main-Functions.R",
+    "project_path" : "R/Main-Functions.R",
+    "properties" : {
+        "cursorPosition" : "171,35",
+        "scrollLine" : "153"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
