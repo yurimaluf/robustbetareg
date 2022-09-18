@@ -1,8 +1,4 @@
-#' @rdname robustbetareg
-#'
-#' @param x,z  numeric regressor matrix for mean and precision model respectively, defaulting to an intercept only.
-#'
-# Robust Estimation - LMDPDE
+#' @export
 LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...), ...)
 {
   result=theta=list()
@@ -385,20 +381,3 @@ LMDPDE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
   return(result)
 }
 
-#Hat matrix
-hatvalues.LMDPDE=function(object)
-{
-  mu_hat=object$fitted.values$mu.predict
-  phi_hat=object$fitted.values$phi.predict
-  y=object$y
-  X=object$model$mean
-  linkobj=set.link(link.mu=object$link,link.phi=object$link.phi)
-  d.link.mu=linkobj$linkfun.mu$d.linkfun(mu_hat)
-
-  y_star=log(y)-log(1-y)
-  mu_star=digamma(mu_hat*phi_hat)-digamma((1-mu_hat)*phi_hat)
-  V_star=trigamma(mu_hat*phi_hat)+trigamma((1-mu_hat)*phi_hat)
-  W.PHI=diag(x=phi_hat*V_star*((d.link.mu)^(-2)))
-  H=sqrt(W.PHI)%*%X%*%solve(t(X)%*%W.PHI%*%X)%*%t(X)%*%sqrt(W.PHI)
-  return(diag(H))
-}

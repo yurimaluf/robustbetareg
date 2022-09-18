@@ -4,19 +4,10 @@
 \alias{robustbetareg.control}
 \title{Control Parameter for Robust Beta Regression}
 \usage{
-robustbetareg.control(
-  object,
-  start = NULL,
-  alpha.optimal = TRUE,
-  tolerance = 0.001,
-  maxit = 250,
-  L = 0.02,
-  M = 3,
-  ...
-)
+robustbetareg.control(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3)
 }
 \arguments{
-\item{object}{fitted model object of class "robustbetareg".}
+\item{object}{fitted model object of class "\code{robustbetareg}".}
 
 \item{start}{a numeric vector with an initial guess of the root of estimation equation.}
 
@@ -26,9 +17,9 @@ robustbetareg.control(
 
 \item{maxit}{integer specifying the maxit argument of iterations used by the Newton-Raphson algorithm.}
 
-\item{L}{a parameter of auto selecting algorithm of tuning parameter (default L=0.02).}
+\item{L}{a parameter of auto selecting algorithm of tuning parameter.}
 
-\item{M}{a integer parameter value of auto selecting algorithm of tuning parameter (default M=3).}
+\item{M}{a integer parameter value of auto selecting algorithm of tuning parameter.}
 
 \item{...}{currently not used.}
 }
@@ -36,8 +27,11 @@ robustbetareg.control(
 A list with the arguments specified.
 }
 \description{
-Various parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
+Several parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
 }
 \details{
-For more details see:...
+The arguments \code{L} and \code{M} set the parameters of the data-driven algorithm for selecting the \eqn{\alpha} tuning parameter of robust estimator. See Ribeiro and Ferrari (2022) for more details.
+}
+\references{
+\href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq -likelihood. Statistical Papers (2022).}
 }

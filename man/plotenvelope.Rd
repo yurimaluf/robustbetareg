@@ -4,23 +4,16 @@
 \alias{plotenvelope}
 \title{Simulated Envelope of Residuals}
 \usage{
-plotenvelope(
-  object,
-  type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
-    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
-  conf = 0.95,
-  n.sim = 50,
-  PrgBar = T,
-  control = robustbetareg.control(...),
-  ...
-)
+plotenvelope(object,type=c("sweighted2","pearson","weighted","sweighted",
+"sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),
+conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 }
 \arguments{
-\item{object}{Fitted model object of class "LSMLE" or "LMDPDE" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{Fitted model object of class "robustbetareg" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
 
 \item{conf}{the confidence level of the envelopes required. The default is to find 95 confidence envelopes.}
 
-\item{n.sim}{the number of simulation sample. Deafault n.sim=50.}
+\item{n.sim}{the number of simulation sample. Deafault n.sim=100.}
 
 \item{control}{a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.}
 
@@ -30,10 +23,11 @@ plotenvelope(
 Return a simulated envelope graphic.
 }
 \description{
-Plot a simulated envelope of beta residuals from robustbetareg object.
+Plot a simulated envelope of beta residuals from \code{robustbetareg} object class.
 }
 \examples{
-fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)
-plotenvelope(fit,n.sim=100)
+\dontrun{data("HIC", package="robustbetareg")
+fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
+plotenvelope(fit,n.sim=500)}
 
 }

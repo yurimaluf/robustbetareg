@@ -2,7 +2,7 @@
 % Please edit documentation in R/Main-Functions.R
 \name{residuals.robustbetareg}
 \alias{residuals.robustbetareg}
-\title{Residuals Method for robustbetareg object}
+\title{Residuals Method for robustbetareg Object}
 \usage{
 \method{residuals}{robustbetareg}(
   object,
@@ -11,7 +11,7 @@
 )
 }
 \arguments{
-\item{object}{fitted model object of class "robustbetareg".}
+\item{object}{fitted model object of class "\code{robustbetareg}".}
 
 \item{type}{character indicating type of residuals.}
 }
@@ -20,12 +20,15 @@ Extract various types of residuals from  robust beta regression models: Pearson 
 and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).
 }
 \details{
-The definitions of the first four residuals are provided in Espinheira et al. (2008):  Equation 2 for "\code{pearson}", Equation 6 for "\code{weighted}", Equation 7 for "\code{sweighted}", and Equation 8 for "\code{sweighted2}".
-For the last four residuals the definitions are described in Espinheira et al. (2017): Last equation of Equation 7 and Equation 10 for "\code{sweighted.gamma}" and "\code{sweighted2.gamma}" respectively, Equation 9 for "\code{combined}", and Equation 11 for "\code{combined.projection}".
+The definitions of the first four residuals are provided in Espinheira et al. (2008):  Equation (2) for "\code{pearson}", Equation (6) for "\code{weighted}", Equation (7) for "\code{sweighted}", and Equation (8) for "\code{sweighted2}".
+For the last four residuals the definitions are described in Espinheira et al. (2017): Last equation of Equation (7) and Equation (10) for "\code{sweighted.gamma}" and "\code{sweighted2.gamma}" respectively, Equation (9) for "\code{combined}", and Equation (11) for "\code{combined.projection}".
 }
 \examples{
-fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)
-residuals(fit,type="sweighted")
+\dontrun{
+data("HIC", package="robustbetareg")
+fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
+residuals(fit,type="sweighted2")
+}
 
 }
 \references{

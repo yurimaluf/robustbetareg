@@ -21,10 +21,8 @@ print.robustbetareg=function(object)
 #' @export
 print.WaldTest_robustbetareg=function(object)
 {
-  #browser()
   if(object$general)
   {
-    #browser()
     cat("-- Wald Type Test -- \n")
     if(!is.null(object$beta.wald))
     {
@@ -137,13 +135,15 @@ summary.robustbetareg=function(object)
 #'
 #' Several types of standard diagnostic plots can be produced interactively, involving various kinds of residuals, influence measures, weights etc.
 #'
-#' @param object fitted model object of class "robustbetareg".
+#' @param object fitted model object of class \code{robustbetareg}.
 #' @param ask logical. If TRUE the user is asked before each plot.
 #' @param ... other parameters to be passed through to plotting functions.
 #'
 #' @examples
-#' fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)
-#' plot(fit)
+#' \dontrun{
+#' data("HIC", package="robustbetareg")
+#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|GDP_percapita,data=HIC,alpha=0.06)
+#' plot(fit)}
 #'
 #' @export
 plot.robustbetareg=function(object,ask=TRUE,...)

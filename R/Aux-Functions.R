@@ -1,202 +1,199 @@
-#' Create a Link for beta regression model
+#' Create a Link for robust beta regression model
 #'
-#' This function provides several link functions for beta regression models
+#' This function provides several link functions for robust beta regression models
 #'
-#' For more details see:...
-#'
-#' @param link.mu character; one of "logit"(default), "probit", "cauchit", "cloglog" and loglog
+#' @param link.mu character; one of "logit"(default), "probit", "cauchit", "cloglog" and "loglog"
 #' @param link.phi character; one of "log"(default) "indentity" and "sqrt"
 #'
-#' @return A structure with link function, inverse link function, derivative deta/dmu and d2eta/dmu2, for both models: mean and precision.
+#' @return A structure with link function, inverse link function, derivative \eqn{d\eta_{\mu}/d\mu} and \eqn{d^2\eta_{\mu}/d\mu^2} (\eqn{d\eta_{\phi}/d\phi} and \eqn{d^2\eta_{\phi}/d\phi^2}), for both models: mean and precision,
+#' where \eqn{\eta_{\mu}=\textbf{X}^{\top}\beta} and \eqn{\eta_{\phi}=\textbf{Z}^{\top}\gamma}.
 #'
 #' @examples
+#' \dontrun{
 #' links=set.link(link.mu="cauchit",link.phi="sqrt")
-#' attributes(links)
+#' attributes(links)}
 #'
 set.link=function(link.mu="logit",link.phi="log")
 {
   #Mean Links
-  if(link.mu=="logit")
-  {
-    linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(log(mu)-log(1-mu))
-    }
-    d.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return((mu-mu^2)^(-1))
-    }
-    d2.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return((2*mu-1)/(mu*(1-mu))^2)
-    }
-    inv.link=function(eta)
-    {
-      return(as.numeric(pmax(pmin(exp(eta-Rmpfr::log1pexp(eta)),1-.Machine$double.eps),.Machine$double.eps)))
-    }
-  }
-  if(link.mu=="probit")
-  {
-    linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(qnorm(mu))
-    }
-    d.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return((dnorm(qnorm(mu)))^(-1))
-    }
-    d2.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(-ddnorm(qnorm(mu))/(dnorm(qnorm(mu)))^3)
-    }
-    inv.link=function(eta)
-    {
-      return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),.Machine$double.eps)))
-    }
-  }
-  if(link.mu=="cloglog")
-  {
-    linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(log(-log(1-mu)))
-    }
-    d.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return((-(1-mu)*log(1-mu))^(-1))
-    }
-    d2.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(-(log(1-mu)+1)/((1-mu)*log(1-mu))^2)
-    }
-    inv.link=function(eta)
-    {
-      return(as.numeric(pmax(pmin(1-exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
-    }
-  }
-  if(link.mu=="cauchit")
-  {
-    linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(tan(pi*(mu-0.5)))
-    }
-    d.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(pi*pracma::sec(pi*(mu-0.5))^2)
-    }
-    d2.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(2*pi*tan(pi*(mu-0.5))*pracma::sec(pi*(mu-0.5))^2)
-    }
-    inv.link=function(eta)
-    {
-      return(as.numeric(pmax(pmin(0.5+atan(eta)/pi,1-.Machine$double.eps),.Machine$double.eps)))
-    }
-  }
-  if(link.mu=="loglog")
-  {
-    linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(-log(-log(mu)))
-    }
-    d.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return(-(mu*log(mu))^(-1))
-    }
-    d2.linkfun=function(mu)
-    {
-      mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-      return((log(mu)+1)/(mu*log(mu))^2)
-    }
-    inv.link=function(eta)
-    {
-      return(as.numeric(pmax(pmin(exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
-    }
-  }
+  switch(link.mu,
+         logit={
+           linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(log(mu)-log(1-mu))
+           }
+           d.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return((mu-mu^2)^(-1))
+           }
+           d2.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return((2*mu-1)/(mu*(1-mu))^2)
+           }
+           inv.link=function(eta)
+           {
+             return(as.numeric(pmax(pmin(exp(eta-Rmpfr::log1pexp(eta)),1-.Machine$double.eps),.Machine$double.eps)))
+           }
+         },
+         probit={
+           if(link.mu=="probit")
+           {
+             linkfun=function(mu)
+             {
+               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+               return(qnorm(mu))
+             }
+             d.linkfun=function(mu)
+             {
+               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+               return((dnorm(qnorm(mu)))^(-1))
+             }
+             d2.linkfun=function(mu)
+             {
+               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+               return(-ddnorm(qnorm(mu))/(dnorm(qnorm(mu)))^3)
+             }
+             inv.link=function(eta)
+             {
+               return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),.Machine$double.eps)))
+             }
+           }
+         },
+         cloglog={
+           linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(log(-log(1-mu)))
+           }
+           d.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return((-(1-mu)*log(1-mu))^(-1))
+           }
+           d2.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(-(log(1-mu)+1)/((1-mu)*log(1-mu))^2)
+           }
+           inv.link=function(eta)
+           {
+             return(as.numeric(pmax(pmin(1-exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
+           }
+         },
+         cauchit = {
+           linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(tan(pi*(mu-0.5)))
+           }
+           d.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(pi*pracma::sec(pi*(mu-0.5))^2)
+           }
+           d2.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(2*pi*tan(pi*(mu-0.5))*pracma::sec(pi*(mu-0.5))^2)
+           }
+           inv.link=function(eta)
+           {
+             return(as.numeric(pmax(pmin(0.5+atan(eta)/pi,1-.Machine$double.eps),.Machine$double.eps)))
+           }
+         },
+         loglog = {
+           linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(-log(-log(mu)))
+           }
+           d.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(-(mu*log(mu))^(-1))
+           }
+           d2.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return((log(mu)+1)/(mu*log(mu))^2)
+           }
+           inv.link=function(eta)
+           {
+             return(as.numeric(pmax(pmin(exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
+           }
+         }, stop(gettextf("%s link.mu not recognised", sQuote(link.mu)), domain = NA))
+
   Linkfun.Mu=list(linkfun=linkfun,d.linkfun=d.linkfun,d2.linkfun=d2.linkfun,inv.link=inv.link)
   ### Precision Links
-  if(link.phi=="log")
-  {
-    linkfun.phi=function(phi)
-    {
-      phi=pmax(phi,.Machine$double.eps)
-      return(log(phi))
-    }
-    d.linkfun.phi=function(phi)
-    {
-      phi=pmax(phi,.Machine$double.eps)
-      return((phi)^(-1))
-    }
-    d2.linkfun.phi=function(phi)
-    {
-      phi=pmax(phi,.Machine$double.eps)
-      return(-(phi^(-2)))
-    }
-    inv.link.phi=function(eta)
-    {
-      return(as.numeric(exp(eta)))
-    }
-  }
-  if(link.phi=="identity")
-  {
-    linkfun.phi=function(phi)
-    {
-      phi=pmax(phi,.Machine$double.eps)
-      return(phi)
-    }
-    d.linkfun.phi=function(phi)
-    {
-      return(rep(1,length(phi)))
-    }
-    d2.linkfun.phi=function(phi)
-    {
-      return(rep(0,length(phi)))
-    }
-    inv.link.phi=function(eta)
-    {
-      return(as.numeric(eta))
-    }
-  }
-  if(link.phi=="sqrt")
-  {
-    linkfun.phi=function(phi)
-    {
-      phi=pmax(phi,.Machine$double.eps)
-      return(sqrt(phi))
-    }
-    d.linkfun.phi=function(phi)
-    {
-      return((2*sqrt(phi))^(-1))
-    }
-    d2.linkfun.phi=function(phi)
-    {
-      #return(-(0.25*phi^(-3/2)))
-      return(-0.25*(phi^(-3/2)))
-    }
-    inv.link.phi=function(eta)
-    {
-      return(as.numeric(eta^2))
-    }
-  }
+  switch(link.phi,
+         log = {
+           linkfun.phi=function(phi)
+           {
+             phi=pmax(phi,.Machine$double.eps)
+             return(log(phi))
+           }
+           d.linkfun.phi=function(phi)
+           {
+             phi=pmax(phi,.Machine$double.eps)
+             return((phi)^(-1))
+           }
+           d2.linkfun.phi=function(phi)
+           {
+             phi=pmax(phi,.Machine$double.eps)
+             return(-(phi^(-2)))
+           }
+           inv.link.phi=function(eta)
+           {
+             return(as.numeric(exp(eta)))
+           }
+         },
+         identify = {
+           linkfun.phi=function(phi)
+           {
+             phi=pmax(phi,.Machine$double.eps)
+             return(phi)
+           }
+           d.linkfun.phi=function(phi)
+           {
+             return(rep(1,length(phi)))
+           }
+           d2.linkfun.phi=function(phi)
+           {
+             return(rep(0,length(phi)))
+           }
+           inv.link.phi=function(eta)
+           {
+             return(as.numeric(eta))
+           }
+         },
+         sqrt = {
+           linkfun.phi=function(phi)
+           {
+             phi=pmax(phi,.Machine$double.eps)
+             return(sqrt(phi))
+           }
+           d.linkfun.phi=function(phi)
+           {
+             return((2*sqrt(phi))^(-1))
+           }
+           d2.linkfun.phi=function(phi)
+           {
+             return(-0.25*(phi^(-3/2)))
+           }
+           inv.link.phi=function(eta)
+           {
+             return(as.numeric(eta^2))
+           }
+         }, stop(gettextf("%s link.phi not recognised", sQuote(link.phi)), domain = NA))
+
   Linkfun.Phi=list(linkfun=linkfun.phi,d.linkfun=d.linkfun.phi,d2.linkfun=d2.linkfun.phi,inv.link=inv.link.phi)
   ###
   linkobj=structure(list(linkfun.mu=Linkfun.Mu,linkfun.phi=Linkfun.Phi),name.link.mu=link.mu,name.link.phi=link.phi,class="link-rbr")
   return(linkobj)
 }
-
 
 #################################################################################################################################
 
@@ -230,8 +227,6 @@ sweighted2_res=function(mu_hat,phi_hat,y,X,linkobj)
   mu_star=digamma(mu_hat*phi_hat)-digamma((1-mu_hat)*phi_hat)
   V_star=trigamma(mu_hat*phi_hat)+trigamma((1-mu_hat)*phi_hat)
 
-  #W=diag(x=phi_hat*V_star*(inverse(d.link.mu))^2)#Depende da funcao de ligacao. Aqui funcao ligacao logit
-  #PHI=diag(phi_hat)#
   W.PHI=diag(x=phi_hat*V_star*((d.link.mu)^(-2)))
 
   H=sqrt(W.PHI)%*%X%*%solve(t(X)%*%W.PHI%*%X)%*%t(X)%*%sqrt(W.PHI)
@@ -246,7 +241,6 @@ sweighted2_res=function(mu_hat,phi_hat,y,X,linkobj)
 #'
 sweighted3_res=function(mu_hat,phi_hat,alpha,y,X,linkobj)
 {
-  #browser()
   n=length(mu_hat)
   m=length(phi_hat)
   q=1-alpha
@@ -264,11 +258,6 @@ sweighted3_res=function(mu_hat,phi_hat,alpha,y,X,linkobj)
   w_alpha=(degbeta(y_star,mu_hat,phi_hat/q))^(alpha)
   K_alpha=diag(v_alpha*c_alpha*(phi_hat/q)/d.link.mu^2)
   H_alpha=sqrt(K_alpha)%*%X%*%solve(t(X)%*%K_alpha%*%X)%*%t(X)%*%sqrt(K_alpha)
-
-  #V_star=trigamma(a_alpha)+trigamma(b_alpha)
-  #W.PHI=diag(x=phi_hat*V_star*((d.link.mu)^(-2)))
-  #H=sqrt(W.PHI)%*%X%*%solve(t(X)%*%W.PHI%*%X)%*%t(X)%*%sqrt(W.PHI)
-  #nu=V_star*(1-diag(H))
 
   nu=c_alpha*v_alpha*(1-diag(H_alpha))/q
   ri=(y_star-mu_star)*w_alpha/sqrt(nu)#standardized weighted residuals
@@ -379,17 +368,14 @@ Initial.points=function(y,X,Z)
   lmbeta=suppressWarnings(robustbase::lmrob(ystar~x2))
   betaini=as.numeric(lmbeta$coefficients)
   muini=exp(lmbeta$fitted.values-Rmpfr::log1pexp(lmbeta$fitted.values))
-  #muini=exp(lmbeta$fitted.values)/(1+exp(lmbeta$fitted.values))
   sigma2ini=sigma(lmbeta)^2*muini^2*(1-muini)^2
   phiini=as.numeric(muini*(1-muini)/sigma2ini)
-  #phiini=inverse(sigma(lmbeta)^2*muini*(1-muini))
-  #muini<<-muini
-  #sigma2ini<<-sigma2ini
   if(dim(Z)[2]>1)
   {
     phistar=log(phiini)
     gammaini=solve(t(Z)%*%Z)%*%t(Z)%*%phistar
-  }else{gammaini=log(mean(phiini,na.rm=T))
+  }else{
+    gammaini=log(mean(phiini,na.rm=T))
   }
   gammaini=as.numeric(c(gammaini))
   Est.param.Rbst=c(betaini,gammaini)

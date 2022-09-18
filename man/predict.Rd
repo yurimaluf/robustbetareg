@@ -12,7 +12,7 @@ predict(
 )
 }
 \arguments{
-\item{object}{Fitted model object of class "LSMLE" or "LMDPDE" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{Fitted model object of class "robustbetareg" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
 
 \item{newdata}{optionally, a data frame in which to look for variables with which to predict. If omitted, the original observations are used.}
 
@@ -25,10 +25,12 @@ fitted variances of response ("variance"), or fitted quantile(s) of the response
 Return a vector of predicted values.
 }
 \description{
-Extract various types of predictions from beta regression models: either on the scale of responses in (0, 1) or the scale of the linear predictor, from LSMLE and LMDPDE objects.
+Extract various types of predictions from beta regression models: either on the scale of responses in (0, 1) or the scale of the linear predictor, from robustbetareg object class.
 }
 \examples{
-fit=robustbetareg(I(food/income)~income+persons|1,data=FoodExpenditure,alpha=0.08)
-plotenvelope(fit,n.sim=100)
+\dontrun{
+data("HIC", package="robustbetareg")
+fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
+cbind(predict(fit,type="response"),predict(fit,type="quantile",at=c(0.25,0.5,0.75)))}
 
 }

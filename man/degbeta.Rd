@@ -24,8 +24,11 @@ regbeta(n, mu, phi)
 Return the value of density function or a random sample.
 }
 \description{
-Density and random generation for the exponential generalized beta (EGB) of the second type,
+Density and random generation for the exponential generalized beta (EGB) of the second type.
 }
 \details{
-For more details see
+See Kerman and McDonald (2015) for more details.
+}
+\references{
+\href{https://doi.org/10.1080/03610926.2013.844255}{Kerman, S. McDonald, J. B. Skewness-kurtosis bounds for EGB1, EGB2, and special cases. Communications in Statistics - Theory and Methods, 44:3857-3864 (2015).}
 }

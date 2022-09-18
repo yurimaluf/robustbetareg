@@ -1,8 +1,4 @@
-#' @rdname robustbetareg
-#'
-#' @param x,z  numeric regressor matrix for mean and precision model respectively, defaulting to an intercept only.
-#'
-# Robust Estimation - SMLE
+#' @export
 SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors

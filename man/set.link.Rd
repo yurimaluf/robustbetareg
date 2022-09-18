@@ -2,26 +2,25 @@
 % Please edit documentation in R/Aux-Functions.R
 \name{set.link}
 \alias{set.link}
-\title{Create a Link for beta regression model}
+\title{Create a Link for robust beta regression model}
 \usage{
 set.link(link.mu = "logit", link.phi = "log")
 }
 \arguments{
-\item{link.mu}{character; one of "logit"(default), "probit", "cauchit", "cloglog" and loglog}
+\item{link.mu}{character; one of "logit"(default), "probit", "cauchit", "cloglog" and "loglog"}
 
 \item{link.phi}{character; one of "log"(default) "indentity" and "sqrt"}
 }
 \value{
-A structure with link function, inverse link function, derivative deta/dmu and d2eta/dmu2, for both models: mean and precision.
+A structure with link function, inverse link function, derivative \eqn{d\eta_{\mu}/d\mu} and \eqn{d^2\eta_{\mu}/d\mu^2} (\eqn{d\eta_{\phi}/d\phi} and \eqn{d^2\eta_{\phi}/d\phi^2}), for both models: mean and precision,
+where \eqn{\eta_{\mu}=\textbf{X}^{\top}\beta} and \eqn{\eta_{\phi}=\textbf{Z}^{\top}\gamma}.
 }
 \description{
-This function provides several link functions for beta regression models
-}
-\details{
-For more details see:...
+This function provides several link functions for robust beta regression models
 }
 \examples{
+\dontrun{
 links=set.link(link.mu="cauchit",link.phi="sqrt")
-attributes(links)
+attributes(links)}
 
 }
