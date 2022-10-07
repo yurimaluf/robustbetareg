@@ -2,21 +2,21 @@
 #'
 #' Fit robust beta regression models for rates and proportions via LSMLE, LMDPDE, SMLE and MDPDE using a parametrization with mean (depending through a link function on the covariates) and precision parameter (called phi).
 #'
-#' @usage robustbetareg(formula, data, alpha, type=c("LSMLE", "LMDPDE", "SMLE", "MDPDE"),
-#' link=c("logit", "probit", "cloglog", "cauchit", "log", "loglog"),
-#' link.phi=NULL, control=robustbetareg.control(...),model = TRUE,y = TRUE)
+#' @usage robustbetareg(formula, data, alpha, type = c("LSMLE", "LMDPDE", "SMLE", "MDPDE"),
+#' link=c("logit", "probit", "cloglog", "cauchit", "loglog"),
+#' link.phi=NULL, control=robustbetareg.control(...), model = TRUE, ...)
 #'
 #' @param formula symbolic description of the model (of type y ~ x or y ~ x | z).
 #' @param data arguments controlling formula.
-#' @param alpha the tuning value within (0,1), for robust estimation. When alpha is equal to zero (\eqn{\alpha}=0) is equivalent of MLE. If this argument is supressed, the tuning parameter should be selected automaticaly through the data-driven algorithm proposed by Ribeiro and Ferrari (2022).
+#' @param alpha the tuning value within [0,1), for robust estimation. When alpha is equal to zero (\eqn{\alpha}=0) is equivalent to MLE. If this argument is supressed, the tuning parameter should be selected automaticaly through the data-driven algorithm proposed by Ribeiro and Ferrari (2022).
 #' @param type character specification of the type of estimator. Currently, LSMLE (default), LMDPDE, SMLE and MDPDE.
-#' @param link character specification of the link function in the mean model (mu). Currently, "logit", "probit", "cloglog", "cauchit", "log", "loglog" are supported
+#' @param link character specification of the link function in the mean model (mu). Currently, "logit", "probit", "cloglog", "cauchit", "loglog" are supported
 #' @param link.phi character specification of the link function in the precision model (phi). Currently, "identity", "log", "sqrt" are supported. The default is "log" unless formula is of type y ~ x where the default is "identity"
 #' @param control a list of control arguments specified via \code{\link[=robustbetareg.control]{robustbetareg.control}}.
-#' @param model,y  logicals for \code{robustbetareg}. If TRUE the corresponding components of the fit (model frame, response, model matrix) are returned. For LSMLE.fit, LMDPDE.fit, SMLE.fit and MDPDE.fit \code{y} must be a numeric response vector within (0,1).
+#' @param model  logicals for \code{robustbetareg}. If TRUE the corresponding components of the fit (model frame, response, model matrix) are returned. For LSMLE.fit, LMDPDE.fit, SMLE.fit and MDPDE.fit \code{y} must be a numeric response vector within (0,1).
+#' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}.
 #'
 #' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
-#'
 #' \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
 #'
 #' @return robustbetareg returns an object of class "\code{robustbetareg}" with a list of the following components:\tabular{ll}{
@@ -34,7 +34,7 @@
 #'    \tab \cr
 #'    \code{Tuning} \tab the selected tuning parameter, \cr
 #'    \tab \cr
-#'    \code{residuals} \tab a vector of standardized weighted residual 2, \cr
+#'    \code{residuals} \tab a vector of standardized weighted residual 2 (see Espinheira et al (2008)), \cr
 #'    \tab \cr
 #'    \code{n} \tab number of observations, \cr
 #'    \tab \cr
@@ -50,21 +50,33 @@
 #'    \tab \cr
 #'    \code{std.error} \tab the standard error of all parameters, \cr
 #'    \tab \cr
+#'    \code{method} \tab estimator type, \cr
+#'    \tab \cr
 #'    \code{call} \tab the original function call, \cr
 #'    \tab \cr
 #'    \code{formula} \tab the original formula, \cr
 #'    \tab \cr
 #'    \code{model} \tab the full model frame, \cr
 #'    \tab \cr
+#'    \code{terms} \tab a list with elemetns "\code{mean}", "\code{precision}" and "\code{full}" including the terms  \cr
+#'    \tab objects for the respective models,  \cr
+#'    \tab \cr
 #'    \code{y} \tab the response proportion vector, \cr
 #'    \tab \cr
-#'    \code{data} \tab the dataset used, \cr
-#'    \tab \cr
-#'    \code{method} \tab estimator type. \cr
+#'    \code{data} \tab the dataset used. \cr
 #' }
+#'
+#' @import betareg
+#' @importFrom stats as.formula
+#' @importFrom stats model.frame
+#' @importFrom stats model.response
+#' @importFrom stats model.matrix
+#' @importFrom stats terms
+#' @importFrom stats delete.response
+#'
 #' @export
 robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPDE"),link = c("logit", "probit", "cloglog", "cauchit", "loglog"),
-                         link.phi = NULL,control=robustbetareg.control(...), model = TRUE, y=TRUE,...)
+                         link.phi = NULL,control=robustbetareg.control(...), model = TRUE,...)
 {
   cl = match.call()
   type = match.arg(type)
@@ -72,7 +84,6 @@ robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPD
   if(missing(data)){data=environment(formula)}
   if(!missing(alpha)){control$alpha.optimal=FALSE}
   if(missing(alpha)){alpha=NULL}
-  yy=y
   mf = match.call(expand.dots = FALSE)
   m = match(c("formula", "data"), names(mf), 0L)
   mf = mf[c(1L, m)]
@@ -134,7 +145,7 @@ robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPD
     result=MDPDE.fit(y,x,z,alpha=alpha,link=link,link.phi=link.phi,control=control)
   }
 
-  if(yy){result$y=y}
+  result$y=y
   if(model){result$model=list(mean = x, precision = z)}
   result$terms=list(mean = mtX, precision = mtZ, full = mt)
   result$call = cl
@@ -149,10 +160,10 @@ robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPD
 #'
 #' Several parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
 #'
-#' @usage robustbetareg.control(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3)
+#' @usage robustbetareg.control(start = NULL, alpha.optimal=TRUE,
+#' tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
 #'
-#' @param object fitted model object of class "\code{robustbetareg}".
-#' @param start a numeric vector with an initial guess of the root of estimation equation.
+#' @param start a numeric vector as an initial guess of parameter estimation.
 #' @param alpha.optimal a logical value. If TRUE the tuning parameter should be selected automatic.
 #' @param tolerance numeric tolerance for convergence.
 #' @param maxit integer specifying the maxit argument of iterations used by the Newton-Raphson algorithm.
@@ -167,7 +178,7 @@ robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPD
 #' @return A list with the arguments specified.
 #'
 #' @export
-robustbetareg.control=function(object,start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3,...)
+robustbetareg.control=function(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3,...)
 {
   UseMethod("robustbetareg.control")
 }
@@ -180,33 +191,35 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,tolerance=1
   return(result)
 }
 
-#' @export
-robustbetareg.control.robustbetareg=function(object)
-{
-  result=object$control
-  return(result)
-}
-
 
 #' The EGB of the second type
 #'
 #' Density and random generation for the exponential generalized beta (EGB) of the second type.
 #'
-#' @param y_star logit transformation of original data (\eqn{y\in(0,1)} and \eqn{y^{*}\in (-\infty,\infty)}).
-#' @param mu mu parameter.
-#' @param phi phi parameter.
+#' @param y_star,q vector of quantiles.
+#' @param p vector of probabilities.
+#' @param n number of observations.
+#' @param mu mu parameter (\eqn{\mu\in(0,1)}).
+#' @param phi phi parameter (\eqn{\phi>0}).
 #' @param log a logical value. If TRUE return the log of density function.
 #'
-#' @details See Kerman and McDonald (2015) for more details.
+#' @details The EGB density function is \eqn{f_{\theta}(y^{\star};\mu,\phi)=B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^{\star}(1-\mu)\phi\}/ (1+\exp\{-y^{\star}\})^{\phi}}, with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^{\star}\in R} where \eqn{E(y^{\star})=\psi(\mu\phi)-\psi((1-\mu)\phi)}, \eqn{Var(y^{\star})=\psi'(\mu\phi)+\psi'((1-\mu)\phi)} where \eqn{\psi} is the digamma function. See Kerman and McDonald (2015) for more details.
 #'
 #' @references \href{https://doi.org/10.1080/03610926.2013.844255}{Kerman, S. McDonald, J. B. Skewness-kurtosis bounds for EGB1, EGB2, and special cases. Communications in Statistics - Theory and Methods, 44:3857-3864 (2015).}
 #'
-#' @return Return the value of density function or a random sample.
+#' @return \code{degb} gives the density, \code{pegb} gives the distribution function, \code{qegb} gives the quantile function, and \code{regb} generates random sample of EGB variables.
 #'
 #'@export
-degbeta=function(y_star,mu,phi,log=FALSE)
+degb=function(y_star,mu,phi,log=FALSE)
 {
-  #options(warn = 2) #Converte warnings em erros
+  #options(warn = 2) #Convert warnings into errors
+  if (any((-abs(2*mu-1)+1)<=0)){
+    return(warning("'mu' parameter must be within unit interval"))
+  }
+  if (any(phi<=0)){
+    return(warning("'phi' parameter must be a positive value"))
+  }
+
   a0=mu*phi
   b0=(1-mu)*phi
   if(log==F){
@@ -218,28 +231,72 @@ degbeta=function(y_star,mu,phi,log=FALSE)
   return(k)
 }
 
-#' @rdname degbeta
+#' @rdname degb
 #'
 #' @param n number of observations.
 #'
+#' @importFrom stats rbeta
+#'
 #'@export
-regbeta=function(n,mu,phi)
+regb=function(n,mu,phi)
 {
+  if (any((-abs(2*mu-1)+1)<=0)){
+    return(warning("'mu' parameter must be within unit interval"))
+  }
+  if (any(phi<=0)){
+    return(warning("'phi' parameter must be a positive value"))
+  }
   h=rbeta(n,mu*phi,(1-mu)*phi)
   return(log(h)-log(1-h))
 }
 
+#' @rdname degb
+#'
+#' @importFrom stats pbeta
+#'
+#' @export
+pegb=function(q,mu,phi)
+{
+  if (any((-abs(2*mu-1)+1)<=0)){
+    return(warning("'mu' parameter must be within unit interval"))
+  }
+  if (any(phi<=0)){
+    return(warning("'phi' parameter must be a positive value"))
+  }
+  return(pbeta((1+exp(-q))^(-1),mu*phi,(1-mu)*phi))
+}
+
+
+#' @rdname degb
+#'
+#' @importFrom stats qbeta
+#'
+#' @export
+qegb=function(p,mu,phi)
+{
+  if (any((-abs(2*mu-1)+1)<=0)){
+    return(warning("'mu' parameter must be within unit interval"))
+  }
+  if (any(phi<=0)){
+    return(warning("'phi' parameter must be a positive value"))
+  }
+  q=qbeta(p,mu*phi,(1-mu)*phi)
+  return(-log((1/q)-1))
+}
+
 #' Simulated Envelope of Residuals
 #'
-#' Plot a simulated envelope of beta residuals from \code{robustbetareg} object class.
+#' Plot a simulated envelope of robust beta residuals from \code{robustbetareg} object class.
 #'
 #' @usage plotenvelope(object,type=c("sweighted2","pearson","weighted","sweighted",
 #' "sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),
 #' conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 #'
-#' @param object Fitted model object of class "robustbetareg" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
+#' @param object Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
+#' @param type character indicating type of residuals.
+#' @param conf the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.
 #' @param n.sim the number of simulation sample. Deafault n.sim=100.
-#' @param conf the confidence level of the envelopes required. The default is to find 95 confidence envelopes.
+#' @param PrgBar a logical value. If TRUE the progress bar will be shown in the console.
 #' @param control a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.
 #' @param ... other parameters to be passed through to plotting functions.
 #'
@@ -261,7 +318,7 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 {
   if(missing(control)){control=robustbetareg.control(object)}
   type = match.arg(type)
-  ylim.boolean=hasArg(ylim)
+  ylim.boolean=methods::hasArg(ylim)
   arg=list(...)
   limit=FALSE
   y.sim=ResEnvelop=NULL
@@ -275,7 +332,7 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
   b=(1-object$fitted.values$mu.predict)*object$fitted.values$phi.predict
   residual=residuals(object,type=type)
   k=1
-  if(PrgBar){pb = txtProgressBar(min = 0, max = n.sim, style = 3)}
+  if(PrgBar){pb = utils::txtProgressBar(min = 0, max = n.sim, style = 3)}
   while(k<=n.sim & !limit)
   {
     y.sim=pmax(pmin(sapply(seq(1,n,1),function(i) rbeta(1,a[i],b[i])),1-.Machine$double.eps),.Machine$double.eps)
@@ -290,7 +347,6 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
     }else{
       robustbetareg.sim=tryCatch(MDPDE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
     }
-
     if(robustbetareg.sim$converged)
     {
       if(type=="sweighted2")
@@ -305,29 +361,29 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
       }
       k=k+1
       # update progress bar
-      if(PrgBar){setTxtProgressBar(pb, k)}
+      if(PrgBar){utils::setTxtProgressBar(pb, k)}
     }
     if(k==(2*n.sim)){limit=T}
   }
-  Envelope=apply(ResEnvelop,2,quantile,c((1-conf)/2,0.5,1-(1-conf)/2))
+  Envelope=apply(ResEnvelop,2,stats::quantile,c((1-conf)/2,0.5,1-(1-conf)/2))
   if(!ylim.boolean)
   {
     ylim <- range(Envelope[1,],Envelope[2,],Envelope[3,],residual)
     arg$ylim=ylim
   }
-  par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
+  graphics::par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
   #ARG=append(list(y=residual,main="Envelope Plot", xlab="Normal quantiles",ylab="Residuals"),arg)
   ARG=append(list(y=residual,main="", xlab="Normal quantiles",ylab="Residuals"),arg)
-  do.call(qqnorm,ARG)
-  par(new=T)
-  ARG=modifyList(ARG,list(y=Envelope[1,],axes=F,main = "",xlab="",ylab="",type="l",lty=1,lwd=1.0))
-  do.call(qqnorm,ARG)
-  par(new=T)
-  ARG=modifyList(ARG,list(y=Envelope[2,],lty=2))
-  do.call(qqnorm,ARG)
-  par(new=T)
-  ARG=modifyList(ARG,list(y=Envelope[3,],lty=1))
-  do.call(qqnorm,ARG)
+  do.call(stats::qqnorm,ARG)
+  graphics::par(new=T)
+  ARG=utils::modifyList(ARG,list(y=Envelope[1,],axes=F,main = "",xlab="",ylab="",type="l",lty=1,lwd=1.0))
+  do.call(stats::qqnorm,ARG)
+  graphics::par(new=T)
+  ARG=utils::modifyList(ARG,list(y=Envelope[2,],lty=2))
+  do.call(stats::qqnorm,ARG)
+  graphics::par(new=T)
+  ARG=utils::modifyList(ARG,list(y=Envelope[3,],lty=1))
+  do.call(stats::qqnorm,ARG)
 }
 
 
@@ -335,9 +391,9 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 #'
 #' Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE estimators.
 #'
-#' @param object fitted model object of class "\code{robustbetareg}"
-#' @param FUN the function representing the null hypothesis to be tested
-#' @param ... Further arguments to be passed
+#' @param object fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
+#' @param FUN the function representing the null hypothesis to be tested.
+#' @param ... Further arguments to be passed.
 #'
 #' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Basu, A., Ghosh, A., Martin, N. et al. Robust Wald-type tests for non-homogeneous observations based on the minimum density power divergence estimator. Metrika 81, 493–522 (2018)}
 #'
@@ -350,14 +406,16 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 #' h0=function(theta,B){theta[2:3]-B}#Hiphothesis to be tested
 #' WaldTypeTest(fit,h0,B=c(0,0))#Testing Urbanization=GDP_percapita=0}
 #'
+#' @importFrom stats pchisq
+#'
 #' @export
-WaldTypeTest=function(object,FUN,...)
+waldtypetest=function(object,FUN,...)
 {
-  UseMethod("WaldTypeTest")
+  UseMethod("waldtypetest")
 }
 
 #' @export
-WaldTypeTest.robustbetareg=function(object,FUN,...)
+waldtypetest.robustbetareg=function(object,FUN,...)
 {
   general=FALSE
   if(missing(FUN)){general=T}
@@ -431,13 +489,14 @@ WaldTypeTest.robustbetareg=function(object,FUN,...)
   return(result)
 }
 
-#' Residuals Method for robustbetareg Object
+#' Residuals Method for robustbetareg Object Class
 #'
 #' Extract various types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
 #' and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).
 #'
-#' @param object fitted model object of class "\code{robustbetareg}".
+#' @param object fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param type character indicating type of residuals.
+#' @param ... currently not used.
 #'
 #' @details The definitions of the first four residuals are provided in Espinheira et al. (2008):  Equation (2) for "\code{pearson}", Equation (6) for "\code{weighted}", Equation (7) for "\code{sweighted}", and Equation (8) for "\code{sweighted2}".
 #' For the last four residuals the definitions are described in Espinheira et al. (2017): Last equation of Equation (7) and Equation (10) for "\code{sweighted.gamma}" and "\code{sweighted2.gamma}" respectively, Equation (9) for "\code{combined}", and Equation (11) for "\code{combined.projection}".
@@ -453,7 +512,7 @@ WaldTypeTest.robustbetareg=function(object,FUN,...)
 #' }
 #'
 #' @export
-residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"))
+residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),...)
 {
   type = match.arg(type)
   y=object$y
@@ -496,15 +555,19 @@ residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted"
 }
 
 
-#' Predict
+#' Prediction Methods for robustbetareg Objects Class
 #'
 #' Extract various types of predictions from beta regression models: either on the scale of responses in (0, 1) or the scale of the linear predictor, from robustbetareg object class.
 #'
-#' @param object Fitted model object of class "robustbetareg" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
+#'@usage predict(object, newdata = NULL,
+#' type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)
+#'
+#' @param object Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param newdata optionally, a data frame in which to look for variables with which to predict. If omitted, the original observations are used.
 #' @param type character indicating type of predictions: fitted means of response ("response"), corresponding linear predictor ("link"), fitted precision parameter phi ("precision"),
 #'fitted variances of response ("variance"), or fitted quantile(s) of the response distribution ("quantile").
 #' @param at numeric vector indicating the level(s) at which quantiles should be predicted (only if type = "quantile"), defaulting to the median at = 0.5.
+#' @param ... currently not used.
 #'
 #' @return Return a vector of predicted values.
 #'
@@ -515,19 +578,18 @@ residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted"
 #' cbind(predict(fit,type="response"),predict(fit,type="quantile",at=c(0.25,0.5,0.75)))}
 #'
 #' @export
-predict=function(object, newdata=NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5)
+predict = function(object, newdata = NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)
 {
   UseMethod("predict")
 }
 
 #' @export
-predict.robustbetareg = function(object, newdata = NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5)
+predict.robustbetareg = function(object, newdata = NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)
 {
-  #browser()
   type <- match.arg(type)
   if (type == "quantile") {
     qfun <- function(at, mu, phi) {
-      rval <- sapply(at, function(p) qbeta(p, mu * phi, (1 - mu) * phi))
+      rval <- sapply(at, function(p) stats::qbeta(p, mu * phi, (1 - mu) * phi))
       if (length(at) > 1L) {
         if (NCOL(rval) == 1L)
           rval <- matrix(rval, ncol = length(at), dimnames = list(unique(names(rval)),NULL))
@@ -553,7 +615,6 @@ predict.robustbetareg = function(object, newdata = NULL, type = c("response", "l
     })
     return(rval)
   }else{
-    #browser()
     newdata=tryCatch(as.data.frame(newdata),error=function(e){newdata})
     x=model.matrix(object$formula,data=newdata,rhs = 1L)
     z=model.matrix(object$formula,data=newdata,rhs = 2L)
@@ -579,7 +640,8 @@ predict.robustbetareg = function(object, newdata = NULL, type = c("response", "l
 }
 
 
-#' @export
+
+# Cooks Distance
 cooks.distance.robustbetareg=function(object,...)
 {
   p=length(do.call("c",object$coefficients))
@@ -595,34 +657,14 @@ cooks.distance.robustbetareg=function(object,...)
   return(D)
 }
 
-#' @export
-coef.robustbetareg=function(object,model=c("full","mean","precision"))
-{
-  cf <- object$coefficients
-  model=match.arg(model)
-  switch(model, mean = {
-    cf$mean
-  }, precision = {
-    cf$precision
-  }, full = {
-    nam1 <- names(cf$mean)
-    nam2 <- names(cf$precision)
-    cf <- c(cf$mean, cf$precision)
-    names(cf) <- c(nam1, if (identical(nam2, "(Phi)")) "(phi)" else paste("(phi)",nam2, sep = "_"))
-    cf
-  })
-}
-
-
-
-#Hat matrix
+# Hat matrix
 hatvalues.robustbetareg=function(object)
 {
   mu_hat=object$fitted.values$mu.predict
   phi_hat=object$fitted.values$phi.predict
   y=object$y
   X=object$model$mean
-  linkobj=set.link2(link.mu=object$link,link.phi=object$link.phi)
+  linkobj=set.link(link.mu=object$link,link.phi=object$link.phi)
   d.link.mu=linkobj$linkfun.mu$d.linkfun(mu_hat)
 
   mu_star=digamma(mu_hat*phi_hat)-digamma((1-mu_hat)*phi_hat)

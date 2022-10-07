@@ -2,18 +2,21 @@
 % Please edit documentation in R/Main-Functions.R
 \name{residuals.robustbetareg}
 \alias{residuals.robustbetareg}
-\title{Residuals Method for robustbetareg Object}
+\title{Residuals Method for robustbetareg Object Class}
 \usage{
 \method{residuals}{robustbetareg}(
   object,
   type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
-    "sweighted2.gamma", "combined", "combined.projection", "sweighted3")
+    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+  ...
 )
 }
 \arguments{
-\item{object}{fitted model object of class "\code{robustbetareg}".}
+\item{object}{fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
 
 \item{type}{character indicating type of residuals.}
+
+\item{...}{currently not used.}
 }
 \description{
 Extract various types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)

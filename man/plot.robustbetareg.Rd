@@ -4,10 +4,10 @@
 \alias{plot.robustbetareg}
 \title{Interactive plots for diagnostic of robust betareg models}
 \usage{
-\method{plot}{robustbetareg}(object, ask = TRUE, ...)
+\method{plot}{robustbetareg}(x, ask = TRUE, ...)
 }
 \arguments{
-\item{object}{fitted model object of class \code{robustbetareg}.}
+\item{x}{fitted model object of class \code{robustbetareg}.}
 
 \item{ask}{logical. If TRUE the user is asked before each plot.}
 

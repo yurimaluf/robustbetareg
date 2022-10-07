@@ -5,8 +5,9 @@
 \alias{HIC}
 \title{Health Insurance Coverage (HIC)}
 \format{
-A data frame with 80 rows and 3 variables:
+A data frame with 80 rows and 4 variables:
 \describe{
+  \item{County}{the corresponding county of the state of São Paulo, Brazil}
   \item{Urbanization}{percentage of the total population who lives in the city’s urban zone}
   \item{GDP_percapita}{per capita gross domestic product}
   \item{Percent_HIC}{the health insurance coverage index}
@@ -14,7 +15,7 @@ A data frame with 80 rows and 3 variables:
 }
 }
 \usage{
-data("HIC",package = "robustbetareg")
+data("HIC", package = "robustbetareg")
 }
 \description{
 A dataset containing the proportion of the population from several counties of the state of São Paulo in Brazil who have health insurance.

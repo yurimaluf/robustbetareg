@@ -1,4 +1,18 @@
-#' @export
+#' @rdname robustbetareg
+#'
+#' @usage LMDPDE.fit(y,x,z, alpha=NULL,link="logit",
+#' link.phi="log",control=robustbetareg.control(...),...)
+#'
+#' @param y,x,z \code{y} should be a numeric response vector (\eqn{y\in(0,1)}), \code{x} should be a numeric regresor matrix and \code{z} should be
+#' a regressor matrix for the precision model, where there is the intercept only.
+#' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}
+#'
+#' @importFrom stats optim
+#' @importFrom stats qlogis
+#' @importFrom stats cor
+#' @importFrom stats var
+#'
+#'@export
 LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...), ...)
 {
   result=theta=list()
@@ -66,7 +80,7 @@ LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustb
   if(m!=1){phi_predict=phi_hat}
   result$fitted.values=list(mu.predict = mu_hat, phi.predict = phi_predict)#Fitted Values
   result$start=start_theta#Started Point
-  result$weights=degbeta(y_star,mu_hat,phi_hat)^(alpha)#Weights
+  result$weights=degb(y_star,mu_hat,phi_hat)^(alpha)#Weights
   result$Tuning=alpha#Tuning
   result$residuals=sweighted2_res(mu_hat,phi_hat,y=y,X=x,linkobj = linkobj)#Standard Residual Report
   result$n=length(mu_hat)#Sample Size
@@ -209,7 +223,7 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   }
   if(reached)
   {
-    k=suppressWarnings(max(1,min(which(rollapply(sqv<L,M,sum)==M)))+M+1)
+    k=suppressWarnings(max(1,min(which(zoo::rollapply(sqv<L,M,sum)==M)))+M+1)
   }
   if(k>=K || unstable)
   {
@@ -239,14 +253,14 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
 
   if(alpha==0){
-    D_q = sum(log(degbeta(y_star,mu_hat,phi_hat)))
+    D_q = sum(log(degb(y_star,mu_hat,phi_hat)))
   }else{
     a0 = mu_hat*phi_hat
     b0 = (1-mu_hat)*phi_hat
     a_alpha = a0*(1+alpha)
     b_alpha = b0*(1+alpha)
     E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
-    D_q = sum((1+alpha)/(alpha)*degbeta(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
+    D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
 }
@@ -267,7 +281,7 @@ Psi_Beta_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   Ubeta = y_star-mu_star
   E_Ubeta = mu_star_alpha-mu_star
 
-  Walpha = diag(Phi_Tb*degbeta(y_star,mu_hat,phi_hat)^(alpha))
+  Walpha = diag(Phi_Tb*degb(y_star,mu_hat,phi_hat)^(alpha))
   Calpha = diag(Phi_Tb*exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0)))
 
   result = (1+alpha)*t(X)%*%Phi_Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
@@ -293,8 +307,8 @@ Psi_Gamma_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   Ugamma = mu_hat*(y_star-mu_star)+(y_dagger-mu_dagger)
   E_Ugamma = mu_hat*(mu_star_alpha-mu_star)+(mu_dagger_alpha-mu_dagger)
 
-  Walpha = degbeta(y_star,mu_hat,phi_hat)^(alpha)
-  Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lebeta(a0,b0))
+  Walpha = degb(y_star,mu_hat,phi_hat)^(alpha)
+  Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
 
   result = (1+alpha)*t(Z)%*%Tg%*%(Walpha%*%Ugamma-Calpha%*%E_Ugamma)
   return(result)
@@ -368,8 +382,13 @@ LMDPDE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
 
   Sigma=rbind(cbind(Sigma_beta_beta,Sigma_beta_gamma),cbind(t(Sigma_beta_gamma),Sigma_gamma_gamma))
 
-  V=n*solve(Lambda)%*%Sigma%*%t(solve(Lambda))
-  #V=n*MASS::ginv(Lambda)%*%Sigma%*%t(MASS::ginv(Lambda))
+  inv.Lambda=tryCatch(solve(Lambda),error=function(e) {e})
+  if(!BBmisc::is.error(inv.Lambda)){
+    V=n*inv.Lambda%*%Sigma%*%t(inv.Lambda)
+  }else{
+    inv.Lambda=MASS::ginv(Lambda)
+    V=n*inv.Lambda%*%Sigma%*%t(inv.Lambda)
+  }
 
   result=list()
   result$Lambda=Lambda

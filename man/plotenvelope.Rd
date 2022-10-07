@@ -9,11 +9,15 @@ plotenvelope(object,type=c("sweighted2","pearson","weighted","sweighted",
 conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 }
 \arguments{
-\item{object}{Fitted model object of class "robustbetareg" (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
 
-\item{conf}{the confidence level of the envelopes required. The default is to find 95 confidence envelopes.}
+\item{type}{character indicating type of residuals.}
+
+\item{conf}{the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.}
 
 \item{n.sim}{the number of simulation sample. Deafault n.sim=100.}
+
+\item{PrgBar}{a logical value. If TRUE the progress bar will be shown in the console.}
 
 \item{control}{a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.}
 
@@ -23,7 +27,7 @@ conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 Return a simulated envelope graphic.
 }
 \description{
-Plot a simulated envelope of beta residuals from \code{robustbetareg} object class.
+Plot a simulated envelope of robust beta residuals from \code{robustbetareg} object class.
 }
 \examples{
 \dontrun{data("HIC", package="robustbetareg")

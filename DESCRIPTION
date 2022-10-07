@@ -1,13 +1,11 @@
 Version: 0.1.0
 Package: robustbetareg
 Title:  Robust of Beta Regression Model
-Authors@R: c(person(given = "Yuri", family = "Maluf", role = c("aut", "cre"),
-           email = "yurimaluf@gmail.com"),person("Silvia","Ferrari",role=c("ths")),person("Francisco","Queiroz",role=c("cre")),person("Terezinha","Ribeiro", role=c("aut","cre")))
 Author: Yuri Maluf [aut,cre], Silvia Ferrari [ths], Francisco Queiroz [cre], Terezinha Ribeiro [aut,cre]  
 Maintainer: Yuri Maluf <yurimaluf@gmail.com>, Francisco Queiroz <ffelipeq@outlook.com> and Terezinha Ribeiro <terezinha.ribeiro@unb.br>
 Description: Robust estimators for beta regression model, including robust test and graphical diagnostic tools.
-Depends: R (>= 3.0.0), betareg, nleqslv
-Imports: Rmpfr, rstudioapi, crayon, pracma, numDeriv, Formula, robustbase, Matrix, parallel
+Depends: R (>= 3.0.0), betareg
+Imports: Rmpfr, rstudioapi, crayon, pracma, numDeriv, Formula, robustbase, zoo, methods, graphics, BBmisc, MASS, miscTools, Matrix, parallel
 License: GPL-3
 NeedsCompilation: no
 Encoding: UTF-8

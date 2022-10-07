@@ -1,6 +1,7 @@
 #' @export
-print.robustbetareg=function(object)
+print.robustbetareg=function(x,...)
 {
+  object=x
   cat("Call: \n")
   print(object$call)
   cat("\n")
@@ -18,9 +19,11 @@ print.robustbetareg=function(object)
   cat(paste0("Tuning value: alpha=",object$Tuning))
 }
 
+
 #' @export
-print.WaldTest_robustbetareg=function(object)
+print.WaldTest_robustbetareg=function(x,...)
 {
+  object=x
   if(object$general)
   {
     cat("-- Wald Type Test -- \n")
@@ -60,82 +63,124 @@ print.WaldTest_robustbetareg=function(object)
 }
 
 
-#' @export
-summary.robustbetareg=function(object)
+#' Methods for robustbetareg Objects
+#'
+#' Methods for extracting information from fitted robust beta regression model objects of class "\code{robustbetareg}"
+#'
+#' @param object fitted model of class \code{robustbetareg}.
+#' @param type character specifying type of residuals to be included in the summary output, see \code{\link[robustbetareg:residuals.robustbetareg]{robustbetareg.residuals}}.
+#' @param ... currently not used.
+#'
+#' @details A set of standard extractor functions for fitted model objects is available for objects of class "\code{robustbetareg}",
+#' including methods to the generic functions print and summary which print the estimated coefficients along with some further information.
+#'
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
+#' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
+#' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+#'
+#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
+#'
+#' @examples
+#' \dontrun{data("HIC", package="robustbetareg")
+#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
+#' summary(fit)
+#' coef(fit)
+#' }
+#'
+#'@export
+summary.robustbetareg=function(object, type = "sweighted2", ...)
 {
-  b=g=obs.b=obs.g=NULL
-  beta=object$coefficients$mean
-  gamma=object$coefficients$precision
-  variable=names(object$coefficients$mean)
-  variable2=names(object$coefficients$precision)
-  std.error.beta=object$std.error$se.mean
-  std.error.gamma=object$std.error$se.precision
-  if(is.null(variable)){variable=names(std.error.beta)}
-  if(is.null(variable2)){variable2=names(std.error.gamma)}
-  k=length(beta)
-  m=length(gamma)
-  for(i in 1:k)
-  {
-    p.valor=2-2*pnorm(abs(beta[i]/std.error.beta[i]))
-    obs=star.obs(p.valor)
-    if(p.valor<2e-16){p.valor="<2e-16"}
-    obs.b=c(obs.b,obs)
-    b_=formatC(c(formatC(beta[i]),formatC(std.error.beta[i]),formatC(beta[i]/std.error.beta[i]),formatC(p.valor)))
-    b=rbind(b,c(variable[i],b_))
-  }
-  b.df=as.data.frame(b)
-  b.df=cbind(b.df,obs.b)
-  b.df=format.data.frame(b.df,trim=T,width=0.1)
-  colnames(b.df)=c("","Estimate","Std. Error", "z value", "Pr(>|z|)","")
-  for(i in 1:m)
-  {
-    p.valor=2-2*pnorm(abs(gamma[i]/std.error.gamma[i]))
-    obs=star.obs(p.valor)
-    if(p.valor<2e-16){p.valor="<2e-16"}
-    obs.g=c(obs.g,obs)
-    g_=formatC(c(formatC(gamma[i]),formatC(std.error.gamma[i]),formatC(gamma[i]/std.error.gamma[i]),formatC(p.valor)))
-    g=rbind(g,c(variable2[i],g_))
-  }
-  g.df=as.data.frame(g)
-  g.df=cbind(g.df,obs.g)
-  g.df=format.data.frame(g.df,trim=T,width=0.1)
-  colnames(g.df)=c("","Estimate","Std. Error", "z value", "Pr(>|z|)","")
-
-  cat("Call: \n")
-  print(object$call)
-  cat("\n")
-  cat("Coefficients (mean model with",object$link,"link):\n")
-  print(b.df,row.names=FALSE)
-  cat("\n")
-  cat("Phi coefficients (precision model with",object$link.phi,"link):\n")
-  print(g.df,row.names=FALSE)
-  cat("---\n")
-  cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 \n")
-  cat("\n")
-  if(object$Tuning==0){cat("Type of estimator: MLE \n")}
-  else{cat(paste("Type of estimator:", object$method, "\n"))}
-  cat(paste0("Pseudo R-squared: ",round(object$pseudo.r.squared,4)),"\n")
-  cat(paste0("Tuning value: alpha=",object$Tuning),"\n")
-  if(object$Optimal.Tuning)
-  {
-    cat("Tuning of LSMLE generated by the data-driven algorithm.")
-    if(!is.null(object$message))
-    {
-      if(object$message=="Lack of stability"){cat("\nLack of stability.")}
-    }
-  }
-  if(!object$Optimal.Tuning)
-  {
-    cat(paste("Tuning of", object$method, "selected by the user."))
-  }
+  type <- match.arg(type, c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"))
+  object$residuals = residuals(object,type=type)
+  object$residuals.type <- type
+  k <- length(object$coefficients$mean)
+  m <- length(object$coefficients$precision)
+  cf <- as.vector(do.call("c", object$coefficients))
+  se <- sqrt(diag(object$vcov))
+  cf <- cbind(cf, se, cf/se, 2 * pnorm(-abs(cf/se)))
+  colnames(cf) <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
+  cf <- list(mean = cf[seq.int(length.out = k), , drop = FALSE], precision = cf[seq.int(length.out = m) + k, , drop = FALSE])
+  rownames(cf$mean) <- names(object$coefficients$mean)
+  rownames(cf$precision) <- names(object$coefficients$precision)
+  object$coefficients <- cf
+  class(object) <- "summary.robustbetareg"
+  object
 }
+
+#' @rdname summary.robustbetareg
+#'
+#' @param model character specifying for which component of the model coefficients/covariance should be extracted.
+#'
+#' @export
+coef.robustbetareg=function(object,model=c("full","mean","precision"),...)
+{
+  cf <- object$coefficients
+  model=match.arg(model)
+  switch(model, mean = {
+    cf$mean
+  }, precision = {
+    cf$precision
+  }, full = {
+    nam1 <- names(cf$mean)
+    nam2 <- names(cf$precision)
+    cf <- c(cf$mean, cf$precision)
+    names(cf) <- c(nam1, if (identical(nam2, "(Phi)")) "(phi)" else paste("(phi)",nam2, sep = "_"))
+    cf
+  })
+}
+
+#' @export
+#' @importFrom stats printCoefmat quantile
+print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3), ...){
+  #browser()
+  cat("Call:", deparse(x$call, width.cutoff = floor(getOption("width") * 0.85)), "", sep = "\n")
+  if (!x$converged) {
+    cat("model did not converge\n")
+  }else {
+    types <- c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3")
+    Types <- c("Standard Weighted 2","Pearson","Weighted","Sweighted","Sweighted Gamma","Sweighted2 Gamma","Combined","Combined Projection","Standard Weighted 3")
+    cat(sprintf("%s:\n", Types[types == match.arg(x$residuals.type, types)]))
+    print(structure(round(as.vector(stats::quantile(x$residuals)), digits = digits), .Names = c("Min", "1Q", "Median","3Q", "Max")))
+    if (NROW(x$coefficients$mean)) {
+      cat(paste("\nCoefficients (mean model with ", x$link, " link):\n", sep = ""))
+      stats::printCoefmat(x$coefficients$mean, digits = digits, signif.legend = FALSE)
+    }
+    else cat("\nNo coefficients (in mean model)\n")
+    if (NROW(x$coefficients$precision)) {
+        cat(paste("\nPhi coefficients (precision model with ", x$link.phi, " link):\n", sep = ""))
+        printCoefmat(x$coefficients$precision, digits = digits, signif.legend = FALSE)
+    }else cat("\nNo coefficients (in precision model)\n")
+    if (getOption("show.signif.stars") & any(do.call("rbind", x$coefficients)[, 4L] < 0.1))
+      cat("---\nSignif. codes: ", "0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", "\n")
+    if(x$Tuning==0){
+      cat("\nType of estimator:", "MLE")
+    }else{
+      cat("\nType of estimator:", switch(x$method, LSMLE = "LSMLE",  LMDPDE = "LMDPDE", SMLE = "SMLE",  MDPDE = "MDPDE"))
+    }
+    cat(paste0("\nTuning value: alpha=", x$Tuning))
+    if(x$Optimal.Tuning){
+      cat("\nTuning of LSMLE generated by the data-driven algorithm.")
+      if(!is.null(x$message))
+      {
+        if(x$message=="Lack of stability"){cat("\nLack of stability.")}
+      }
+    }
+    if (!is.na(x$pseudo.r.squared))
+      cat("\nPseudo R-squared:", formatC(x$pseudo.r.squared, digits = digits))
+  }
+  invisible(x)
+}
+
 
 
 #' Interactive plots for diagnostic of robust betareg models
 #'
 #' Several types of standard diagnostic plots can be produced interactively, involving various kinds of residuals, influence measures, weights etc.
 #'
-#' @param object fitted model object of class \code{robustbetareg}.
+#' @param x fitted model object of class \code{robustbetareg}.
 #' @param ask logical. If TRUE the user is asked before each plot.
 #' @param ... other parameters to be passed through to plotting functions.
 #'
@@ -145,9 +190,15 @@ summary.robustbetareg=function(object)
 #' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|GDP_percapita,data=HIC,alpha=0.06)
 #' plot(fit)}
 #'
+#' @importFrom stats residuals
+#' @importFrom graphics plot
+#' @importFrom graphics abline
+#' @importFrom graphics identify
+#'
 #' @export
-plot.robustbetareg=function(object,ask=TRUE,...)
+plot.robustbetareg=function(x,ask=TRUE,...)
 {
+  object=x
   getinfo=Sys.info()
   user=getinfo[which(names(getinfo)=="user")]
   text.main2="the graph number >\n [1] Residuals \n [2] Residuals x Linear predictor \n [3] Cook's Distance \n [4] Weights \n [5] Weigths x Residuals \n [0] Exit \n"
@@ -313,7 +364,7 @@ plot.robustbetareg=function(object,ask=TRUE,...)
     }
     if(n==3)
     {
-      plot(cooks.distance(object),type="h",xlab="Obs. number",ylab="Cook's distance",main="Cook's distance plot",...)
+      plot(stats::cooks.distance(object),type="h",xlab="Obs. number",ylab="Cook's distance",main="Cook's distance plot",...)
     }
     if(n==4)
     {

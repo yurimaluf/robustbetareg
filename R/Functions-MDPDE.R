@@ -1,4 +1,17 @@
-#' @export
+#' @rdname robustbetareg
+#'
+#' @usage MDPDE.fit(y,x,z, alpha=NULL,link="logit",
+#' link.phi="log",control=robustbetareg.control(...),...)
+#'
+#' @param y,x,z \code{y} should be a numeric response vector (\eqn{y\in(0,1)}), \code{x} should be a numeric regresor matrix and \code{z} should be
+#' a regressor matrix for the precision model, where there is the intercept only.
+#' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}
+#'
+#' @importFrom stats dbeta
+#' @importFrom stats cor
+#' @importFrom stats var
+#'
+#'@export
 MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
@@ -23,7 +36,6 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
     theta$converged=mle$converged
   }
   #Point Estimation
-  #browser()
   q=1-alpha
   check=TRUE
   theta=tryCatch(optim(par=start_theta,fn=D_q,gr=Psi_MDPDE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
@@ -128,7 +140,7 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
   est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
   if(is.null(est.log.lik))
   {
-    # est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi), control=betareg.control(start=Initial.points(y,x,z))),error=function(e) NULL)
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
   }
   if(!is.null(est.log.lik)){
     Est.param=do.call("c",est.log.lik$coefficients)
@@ -204,7 +216,7 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
   }
   if(reached)
   {
-    k=suppressWarnings(max(1,min(which(rollapply(sqv<L,M,sum)==M)))+M+1)
+    k=suppressWarnings(max(1,min(which(zoo::rollapply(sqv<L,M,sum)==M)))+M+1)
   }
   if(k>=K || unstable)
   {
@@ -265,7 +277,7 @@ Psi_Beta_MDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   Walpha = diag(dbeta(y,mu_hat*phi_hat,(1-mu_hat)*phi_hat)^(alpha))
   Calpha =  exp(lgamma(a_alpha) + lgamma(b_alpha) - lgamma(a_alpha + b_alpha) -  (1 + alpha)* (lgamma(a0) + lgamma(b0) - lgamma(a0+b0)))
 
-  result = (1+alpha)*t(X)%*%Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
+  result = (1+alpha)*t(X)%*%Phi_Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
   return(result)
 }
 
@@ -366,9 +378,12 @@ MDPDE_Cov_Matrix = function(mu,phi,X,Z,alpha,linkobj){
   Omegan_gammagamma <- ((2.0 - q_const)^2.0)*as.matrix(t(Z)%*%(gama22_2q - E2q^2.0)%*%Z)
   Omegan=rbind(cbind(Omegan_betabeta,Omegan_betagamma),cbind(t(Omegan_betagamma),Omegan_gammagamma))
 
-  Vq <- tryCatch(solve(Psin)%*%(Omegan)%*%t(solve(Psin)), error=function(e) {e})  #asymptotic covariance matrix
-  if(is.error(Vq)){
-    Vq <- Ginv(Psin)%*%(Omegan)%*%t(Ginv(Psin))
+  inv.Psin=tryCatch(solve(Psin), error=function(e) {e})
+  if(!BBmisc::is.error(inv.Psin)){
+    Vq <- inv.Psin%*%(Omegan)%*%t(inv.Psin)
+  }else{
+    inv.Psin=MASS::ginv(Psin)
+    Vq <- inv.Psin%*%(Omegan)%*%t(inv.Psin)
   }
 
   result=list()

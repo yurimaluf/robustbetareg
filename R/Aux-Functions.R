@@ -13,6 +13,11 @@
 #' links=set.link(link.mu="cauchit",link.phi="sqrt")
 #' attributes(links)}
 #'
+#' @importFrom stats dnorm
+#' @importFrom stats qnorm
+#' @importFrom stats pnorm
+#' @importFrom miscTools ddnorm
+#'
 set.link=function(link.mu="logit",link.phi="log")
 {
   #Mean Links
@@ -39,27 +44,24 @@ set.link=function(link.mu="logit",link.phi="log")
            }
          },
          probit={
-           if(link.mu=="probit")
+           linkfun=function(mu)
            {
-             linkfun=function(mu)
-             {
-               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-               return(qnorm(mu))
-             }
-             d.linkfun=function(mu)
-             {
-               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-               return((dnorm(qnorm(mu)))^(-1))
-             }
-             d2.linkfun=function(mu)
-             {
-               mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
-               return(-ddnorm(qnorm(mu))/(dnorm(qnorm(mu)))^3)
-             }
-             inv.link=function(eta)
-             {
-               return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),.Machine$double.eps)))
-             }
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(qnorm(mu))
+           }
+           d.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return((dnorm(qnorm(mu)))^(-1))
+           }
+           d2.linkfun=function(mu)
+           {
+             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             return(-ddnorm(qnorm(mu))/(dnorm(qnorm(mu)))^3)
+           }
+           inv.link=function(eta)
+           {
+             return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),.Machine$double.eps)))
            }
          },
          cloglog={
@@ -255,7 +257,7 @@ sweighted3_res=function(mu_hat,phi_hat,alpha,y,X,linkobj)
   mu_star=digamma(a_alpha)-digamma(b_alpha)
   v_alpha=trigamma(a_alpha)+trigamma(b_alpha)
   c_alpha=(beta(a_alpha,b_alpha)^q)/beta(a_0,b_0)
-  w_alpha=(degbeta(y_star,mu_hat,phi_hat/q))^(alpha)
+  w_alpha=(degb(y_star,mu_hat,phi_hat/q))^(alpha)
   K_alpha=diag(v_alpha*c_alpha*(phi_hat/q)/d.link.mu^2)
   H_alpha=sqrt(K_alpha)%*%X%*%solve(t(X)%*%K_alpha%*%X)%*%t(X)%*%sqrt(K_alpha)
 
@@ -368,7 +370,7 @@ Initial.points=function(y,X,Z)
   lmbeta=suppressWarnings(robustbase::lmrob(ystar~x2))
   betaini=as.numeric(lmbeta$coefficients)
   muini=exp(lmbeta$fitted.values-Rmpfr::log1pexp(lmbeta$fitted.values))
-  sigma2ini=sigma(lmbeta)^2*muini^2*(1-muini)^2
+  sigma2ini=stats::sigma(lmbeta)^2*muini^2*(1-muini)^2
   phiini=as.numeric(muini*(1-muini)/sigma2ini)
   if(dim(Z)[2]>1)
   {

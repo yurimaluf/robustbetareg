@@ -4,12 +4,11 @@
 \alias{robustbetareg.control}
 \title{Control Parameter for Robust Beta Regression}
 \usage{
-robustbetareg.control(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3)
+robustbetareg.control(start = NULL, alpha.optimal=TRUE,
+tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
 }
 \arguments{
-\item{object}{fitted model object of class "\code{robustbetareg}".}
-
-\item{start}{a numeric vector with an initial guess of the root of estimation equation.}
+\item{start}{a numeric vector as an initial guess of parameter estimation.}
 
 \item{alpha.optimal}{a logical value. If TRUE the tuning parameter should be selected automatic.}
 

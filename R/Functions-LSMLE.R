@@ -1,4 +1,17 @@
-#' @export
+#' @rdname robustbetareg
+#'
+#' @usage LSMLE.fit(y,x,z, alpha=NULL,link="logit",
+#' link.phi="log",control=robustbetareg.control(...),...)
+#'
+#' @param y,x,z \code{y} should be a numeric response vector (\eqn{y\in(0,1)}), \code{x} should be a numeric regresor matrix and \code{z} should be
+#' a regressor matrix for the precision model, where there is the intercept only.
+#' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}
+#'
+#' @importFrom stats dbeta
+#' @importFrom stats cor
+#' @importFrom stats var
+#'
+#'@export
 LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
@@ -72,7 +85,7 @@ LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   if(m!=1){phi_predict=phi_hat}
   result$fitted.values=list(mu.predict = mu_hat, phi.predict = phi_predict)#Fitted Values
   result$start=start_theta #Started Point
-  result$weights=(degbeta(y_star,mu_hat,phi_hat/q))^(alpha)#Weights
+  result$weights=(degb(y_star,mu_hat,phi_hat/q))^(alpha)#Weights
   result$Tuning=alpha#Tuning
   result$residuals=sweighted2_res(mu_hat,phi_hat,y=y,X=x,linkobj = linkobj)#Standard Residual Report
   result$n=length(mu_hat)#Sample Size
@@ -225,7 +238,7 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
   }
   if(reached)
   {
-    k=suppressWarnings(max(1,min(which(rollapply(sqv<L,M,sum)==M)))+M+1)
+    k=suppressWarnings(max(1,min(which(zoo::rollapply(sqv<L,M,sum)==M)))+M+1)
   }
   if(k>=K || unstable)
   {
@@ -254,7 +267,7 @@ L_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
   phi_q = phi_hat/q
   y_star=log(y)-log(1-y)
-  f_q_star = degbeta(y_star,mu_hat,phi_q)
+  f_q_star = degb(y_star,mu_hat,phi_q)
   if(alpha==0){
     L_q=sum(log(f_q_star))
   }else{
@@ -275,7 +288,7 @@ Psi_Beta_LSMLE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   y_star=log(y)-log(1-y)
   mu_star=digamma(aq)-digamma(bq)
   Tb = (link.model$link.mu$d.linkfun(mu_hat))^(-1)
-  f_q_star = (degbeta(y_star,mu_hat,phi_q))^(alpha)
+  f_q_star = (degb(y_star,mu_hat,phi_q))^(alpha)
 
   result=t(X)%*%diag(phi_q*Tb*f_q_star)%*%(y_star-mu_star)
   return(result)
@@ -294,7 +307,7 @@ Psi_Gamma_LSMLE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   mu_dagger = digamma(bq)-digamma(phi_q)
   Tg = (link.model$linkfun.phi$d.linkfun(phi_hat))^1
 
-  f_q_star = (degbeta(y_star,mu_hat,phi_q))^(alpha)
+  f_q_star = (degb(y_star,mu_hat,phi_q))^(alpha)
   eta = mu_hat*(y_star-mu_star)+(y_dagger-mu_dagger)
   result=t(Z)%*%diag(Tg%*%f_q_star/q)%*%eta
   return(result)
@@ -369,8 +382,15 @@ LSMLE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
 
   Sigma=rbind(cbind(Sigma_beta_beta,Sigma_beta_gamma),cbind(t(Sigma_beta_gamma),Sigma_gamma_gamma))
 
-  V=n*solve(Lambda)%*%Sigma%*%t(solve(Lambda))
+  #V=n*inv.Lambda%*%Sigma%*%t(inv.Lambda)
   #V=n*MASS::ginv(Lambda)%*%Sigma%*%t(MASS::ginv(Lambda))
+  inv.Lambda=tryCatch(solve(Lambda),error=function(e) {e})
+  if(!BBmisc::is.error(inv.Lambda)){
+    V=n*inv.Lambda%*%Sigma%*%t(inv.Lambda)
+  }else{
+    inv.Lambda=MASS::ginv(Lambda)
+    V=n*inv.Lambda%*%Sigma%*%t(inv.Lambda)
+  }
 
   result=list()
   result$Lambda=Lambda

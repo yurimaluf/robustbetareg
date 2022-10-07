@@ -1,4 +1,13 @@
-#' @export
+#' @rdname robustbetareg
+#'
+#' @usage SMLE.fit(y,x,z, alpha=NULL,link="logit",
+#' link.phi="log",control=robustbetareg.control(...),...)
+#'
+#' @param y,x,z \code{y} should be a numeric response vector (\eqn{y\in(0,1)}), \code{x} should be a numeric regresor matrix and \code{z} should be
+#' a regressor matrix for the precision model, where there is the intercept only.
+#' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}
+#'
+#'@export
 SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
@@ -129,7 +138,7 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
   est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
   if(is.null(est.log.lik))
   {
-    # est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi), control=betareg.control(start=Initial.points(y,x,z))),error=function(e) NULL)
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
   }
   if(!is.null(est.log.lik)){
     Est.param=do.call("c",est.log.lik$coefficients)
@@ -210,7 +219,7 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
   }
   if(reached)
   {
-    k=suppressWarnings(max(1,min(which(rollapply(sqv<L,M,sum)==M)))+M+1)
+    k=suppressWarnings(max(1,min(which(zoo::rollapply(sqv<L,M,sum)==M)))+M+1)
   }
   if(k>=K || unstable)
   {
@@ -273,7 +282,7 @@ Psi_Gamma_SMLE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   y_star=log(y)-y_dagger
 
   mu_star=digamma(mu_hat*phi_hat)-digamma((1-mu_hat)*phi_hat)
-  mu_dagger=digamma((1-mu_hat)*phi_hat)-digmma(phi_hat)
+  mu_dagger=digamma((1-mu_hat)*phi_hat)-digamma(phi_hat)
 
   Tg = (link.model$linkfun.phi$d.linkfun(phi_q))^1
 
@@ -360,9 +369,12 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
   Kq=(q^(-2.0))*rbind(cbind(Kq_betabeta,Kq_betagamma),cbind(t(Kq_betagamma),Kq_gammagamma))
 
   #Covariance Matrix
-  Vq <- tryCatch( solve(Jq)%*%Kq%*%t(solve(Jq)), error=function(e) {e})  #asymptotic covariance matrix
-  if(is.error(Vq)){
-    Vq <- Ginv(Jq)%*%Kq%*%t(Ginv(Jq))
+  inv.Jq=tryCatch(solve(Jq), error=function(e) {e})
+  if(!BBmisc::is.error(inv.Jq)){
+    Vq <- inv.Jq%*%Kq%*%t(inv.Jq)
+  }else{
+    inv.Jq = MASS::ginv(Jq)
+    Vq <- inv.Jq%*%Kq%*%t(inv.Jq)
   }
 
   result=list()
