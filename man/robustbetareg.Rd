@@ -98,7 +98,29 @@ robustbetareg returns an object of class "\code{robustbetareg}" with a list of t
 \description{
 Fit robust beta regression models for rates and proportions via LSMLE, LMDPDE, SMLE and MDPDE using a parametrization with mean (depending through a link function on the covariates) and precision parameter (called phi).
 }
+\examples{
+\dontrun{
+#Table 1
+data("HIC", package = "robustbetareg")
+hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, type = "LMDPDE")
+summary(hic)
+
+#Table 2
+data("RiskManagerCost", package = "robustbetareg")
+rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost,
+alpha = 0.04)
+summary(rmc)}
+
+}
 \references{
-\href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+\href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+
 \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
+
+\href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
+
+\href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+}
+\seealso{
+\code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}
 }

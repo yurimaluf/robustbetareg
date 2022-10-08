@@ -21,7 +21,7 @@ print.robustbetareg=function(x,...)
 
 
 #' @export
-print.WaldTest_robustbetareg=function(x,...)
+print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3),...)
 {
   object=x
   if(object$general)
@@ -29,33 +29,33 @@ print.WaldTest_robustbetareg=function(x,...)
     cat("-- Wald Type Test -- \n")
     if(!is.null(object$beta.wald))
     {
-      p.valor=object$beta.wald$pValue
+      p.valor=round(object$beta.wald$pValue, digits = digits)
       obs=star.obs(p.valor)
       if(p.valor<=2e-16){p.valor="<2e-16"}
-      if(p.valor>2e-16){p.valor=paste0("=",object$beta.wald$pValue)}
+      if(p.valor>2e-16){p.valor=paste0("=",p.valor)}
 
       cat("Null Hypothesis: all mean coefficients equal to zero \n")
-      cat(paste0("Value=",formatC(object$beta.wald$W.alpha),", df=",object$beta.wald$df,", p-Value",p.valor,obs,"\n"))
+      cat(paste0("Value=",formatC(object$beta.wald$W.alpha, digits = digits),", df=",object$beta.wald$df,", p-Value",p.valor,obs,"\n"))
     }
     if(!is.null(object$gamma.wald))
     {
-      p.valor=object$gamma.wald$pValue
+      p.valor=round(object$gamma.wald$pValue, digits = digits)
       obs=star.obs(p.valor)
       if(p.valor<=2e-16){p.valor="<2e-16"}
       if(p.valor>2e-16){p.valor=paste0("=",object$gamma.wald$pValue)}
 
       cat("Null Hypothesis: all precision coefficients equal to zero \n")
-      cat(paste0("Wald test=",formatC(object$gamma.wald$W.alpha),", df=",object$gamma.wald$df,", p-Value",p.valor,obs,"\n"))
+      cat(paste0("Wald test=",formatC(object$gamma.wald$W.alpha, digits = digits),", df=",object$gamma.wald$df,", p-Value",p.valor,obs,"\n"))
     }
   }else{
     cat("-- Wald Type Test -- \n")
-    p.valor=object$pValue
+    p.valor=round(object$pValue, digits = digits)
     obs=star.obs(p.valor)
-    if(p.valor>0.0001){p.valor=paste0("=",round(object$pValue,4))}
+    if(p.valor>0.0001){p.valor=paste0("=",p.valor)}
     else if(p.valor<=2e-16){p.valor="<2e-16"}
 
     cat("Null Hypothesis: set by the user \n")
-    cat(paste0("Wald test=",formatC(object$W.alpha),", df=",object$df,", p-Value",p.valor,obs,"\n"))
+    cat(paste0("Wald test=",formatC(object$W.alpha, digits = digits),", df=",object$df,", p-Value",p.valor,obs,"\n"))
   }
   cat("---\n")
   cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 \n")
@@ -68,18 +68,18 @@ print.WaldTest_robustbetareg=function(x,...)
 #' Methods for extracting information from fitted robust beta regression model objects of class "\code{robustbetareg}"
 #'
 #' @param object fitted model of class \code{robustbetareg}.
-#' @param type character specifying type of residuals to be included in the summary output, see \code{\link[robustbetareg:residuals.robustbetareg]{robustbetareg.residuals}}.
+#' @param type character specifying type of residuals to be included in the summary output, see \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}.
 #' @param ... currently not used.
 #'
 #' @details A set of standard extractor functions for fitted model objects is available for objects of class "\code{robustbetareg}",
 #' including methods to the generic functions print and summary which print the estimated coefficients along with some further information.
 #'
 #' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
 #' @references \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
 #' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
 #' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
-#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
 #'
 #' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
@@ -174,8 +174,6 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
   invisible(x)
 }
 
-
-
 #' Interactive plots for diagnostic of robust betareg models
 #'
 #' Several types of standard diagnostic plots can be produced interactively, involving various kinds of residuals, influence measures, weights etc.
@@ -186,9 +184,10 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
 #'
 #' @examples
 #' \dontrun{
-#' data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|GDP_percapita,data=HIC,alpha=0.06)
-#' plot(fit)}
+#' get(data("HIC", package = "robustbetareg"))
+#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+#' data = HIC, alpha = 0.06)
+#' plot(hic)}
 #'
 #' @importFrom stats residuals
 #' @importFrom graphics plot

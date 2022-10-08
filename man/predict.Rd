@@ -27,8 +27,8 @@ Extract various types of predictions from beta regression models: either on the 
 }
 \examples{
 \dontrun{
-data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
-cbind(predict(fit,type="response"),predict(fit,type="quantile",at=c(0.25,0.5,0.75)))}
+get(data("HIC", package = "robustbetareg"))
+hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))}
 
 }

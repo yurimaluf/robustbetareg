@@ -4,9 +4,9 @@
 \alias{plotenvelope}
 \title{Simulated Envelope of Residuals}
 \usage{
-plotenvelope(object,type=c("sweighted2","pearson","weighted","sweighted",
-"sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),
-conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
+plotenvelope(object, type = c("sweighted2", "pearson", "weighted", "sweighted",
+"sweighted.gamma", "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+conf = 0.95, n.sim = 100, PrgBar = T, control = robustbetareg.control(...), ...)
 }
 \arguments{
 \item{object}{Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
@@ -15,7 +15,7 @@ conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 
 \item{conf}{the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.}
 
-\item{n.sim}{the number of simulation sample. Deafault n.sim=100.}
+\item{n.sim}{the number of simulation sample. Deafault \code{n.sim=100}.}
 
 \item{PrgBar}{a logical value. If TRUE the progress bar will be shown in the console.}
 
@@ -27,11 +27,25 @@ conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 Return a simulated envelope graphic.
 }
 \description{
-Plot a simulated envelope of robust beta residuals from \code{robustbetareg} object class.
+Plot a Simulated Envelope of Robust Beta Residuals from robustbetareg Object Class.
 }
 \examples{
-\dontrun{data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
-plotenvelope(fit,n.sim=500)}
+\dontrun{
+get(data("HIC", package = "robustbetareg"))
+hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+data = HIC, alpha = 0.06)
+plotenvelope(hic, n.sim = 500)
 
+get(data("RiskManagerCost", package = "robustbetareg"))
+rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
+plotenvelope(rmc, conf = 0.90)}
+
+}
+\references{
+\href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+
+\href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+}
+\seealso{
+\code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
 }

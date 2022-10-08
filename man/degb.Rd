@@ -2,18 +2,18 @@
 % Please edit documentation in R/Main-Functions.R
 \name{degb}
 \alias{degb}
-\alias{regb}
 \alias{pegb}
 \alias{qegb}
+\alias{regb}
 \title{The EGB of the second type}
 \usage{
 degb(y_star, mu, phi, log = FALSE)
 
-regb(n, mu, phi)
-
 pegb(q, mu, phi)
 
 qegb(p, mu, phi)
+
+regb(n, mu, phi)
 }
 \arguments{
 \item{y_star, q}{vector of quantiles.}
@@ -24,9 +24,9 @@ qegb(p, mu, phi)
 
 \item{log}{a logical value. If TRUE return the log of density function.}
 
-\item{n}{number of observations.}
-
 \item{p}{vector of probabilities.}
+
+\item{n}{number of observations.}
 }
 \value{
 \code{degb} gives the density, \code{pegb} gives the distribution function, \code{qegb} gives the quantile function, and \code{regb} generates random sample of EGB variables.

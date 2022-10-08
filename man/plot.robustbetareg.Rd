@@ -18,8 +18,9 @@ Several types of standard diagnostic plots can be produced interactively, involv
 }
 \examples{
 \dontrun{
-data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|GDP_percapita,data=HIC,alpha=0.06)
-plot(fit)}
+get(data("HIC", package = "robustbetareg"))
+hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+data = HIC, alpha = 0.06)
+plot(hic)}
 
 }

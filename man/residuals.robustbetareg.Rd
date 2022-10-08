@@ -2,14 +2,13 @@
 % Please edit documentation in R/Main-Functions.R
 \name{residuals.robustbetareg}
 \alias{residuals.robustbetareg}
-\title{Residuals Method for robustbetareg Object Class}
+\alias{residuals}
+\alias{.robustbetareg}
+\title{Residuals Method for robustbetareg Object}
 \usage{
-\method{residuals}{robustbetareg}(
-  object,
-  type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
-    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
-  ...
-)
+residuals(object,
+type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
+ "sweighted2.gamma", "combined", "combined.projection", "sweighted3"), ...)
 }
 \arguments{
 \item{object}{fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
@@ -18,8 +17,11 @@
 
 \item{...}{currently not used.}
 }
+\value{
+\code{residuals} returns a vector of selected residuals type.
+}
 \description{
-Extract various types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
+Extract several types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
 and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).
 }
 \details{
@@ -28,14 +30,18 @@ For the last four residuals the definitions are described in Espinheira et al. (
 }
 \examples{
 \dontrun{
-data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
-residuals(fit,type="sweighted2")
-}
+get(data("HIC", package = "robustbetareg"))
+fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+res <- residuals(fit.hic, type = "sweighted2")
+plot(res)
+abline(h = 0)}
 
 }
 \references{
 \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
 
 \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+}
+\seealso{
+\code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 }

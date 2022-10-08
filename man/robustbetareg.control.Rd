@@ -4,7 +4,7 @@
 \alias{robustbetareg.control}
 \title{Control Parameter for Robust Beta Regression}
 \usage{
-robustbetareg.control(start = NULL, alpha.optimal=TRUE,
+robustbetareg.control(start = NULL, alpha.optimal = TRUE,
 tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
 }
 \arguments{

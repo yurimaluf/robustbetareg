@@ -16,8 +16,25 @@
 #' @param model  logicals for \code{robustbetareg}. If TRUE the corresponding components of the fit (model frame, response, model matrix) are returned. For LSMLE.fit, LMDPDE.fit, SMLE.fit and MDPDE.fit \code{y} must be a numeric response vector within (0,1).
 #' @param ... argument to be passed to \code{\link[=robustbetareg.control]{robustbetareg.control}}.
 #'
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
+#' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
 #' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
-#' \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
+#'
+#' @seealso \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}
+#'
+#' @examples
+#' \dontrun{
+#' #Table 1
+#' data("HIC", package = "robustbetareg")
+#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, type = "LMDPDE")
+#' summary(hic)
+#'
+#' #Table 2
+#' data("RiskManagerCost", package = "robustbetareg")
+#' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost,
+#' alpha = 0.04)
+#' summary(rmc)}
 #'
 #' @return robustbetareg returns an object of class "\code{robustbetareg}" with a list of the following components:\tabular{ll}{
 #'    \code{coefficients} \tab A numeric vector of parameter estimates, \cr
@@ -160,7 +177,7 @@ robustbetareg = function(formula,data,alpha,type=c("LSMLE","LMDPDE","SMLE","MDPD
 #'
 #' Several parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
 #'
-#' @usage robustbetareg.control(start = NULL, alpha.optimal=TRUE,
+#' @usage robustbetareg.control(start = NULL, alpha.optimal = TRUE,
 #' tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
 #'
 #' @param start a numeric vector as an initial guess of parameter estimation.
@@ -233,25 +250,6 @@ degb=function(y_star,mu,phi,log=FALSE)
 
 #' @rdname degb
 #'
-#' @param n number of observations.
-#'
-#' @importFrom stats rbeta
-#'
-#'@export
-regb=function(n,mu,phi)
-{
-  if (any((-abs(2*mu-1)+1)<=0)){
-    return(warning("'mu' parameter must be within unit interval"))
-  }
-  if (any(phi<=0)){
-    return(warning("'phi' parameter must be a positive value"))
-  }
-  h=rbeta(n,mu*phi,(1-mu)*phi)
-  return(log(h)-log(1-h))
-}
-
-#' @rdname degb
-#'
 #' @importFrom stats pbeta
 #'
 #' @export
@@ -284,28 +282,58 @@ qegb=function(p,mu,phi)
   return(-log((1/q)-1))
 }
 
+#' @rdname degb
+#'
+#' @param n number of observations.
+#'
+#' @importFrom stats rbeta
+#'
+#'@export
+regb=function(n,mu,phi)
+{
+  if (any((-abs(2*mu-1)+1)<=0)){
+    return(warning("'mu' parameter must be within unit interval"))
+  }
+  if (any(phi<=0)){
+    return(warning("'phi' parameter must be a positive value"))
+  }
+  h=rbeta(n,mu*phi,(1-mu)*phi)
+  return(log(h)-log(1-h))
+}
+
 #' Simulated Envelope of Residuals
 #'
-#' Plot a simulated envelope of robust beta residuals from \code{robustbetareg} object class.
+#' Plot a Simulated Envelope of Robust Beta Residuals from robustbetareg Object Class.
 #'
-#' @usage plotenvelope(object,type=c("sweighted2","pearson","weighted","sweighted",
-#' "sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),
-#' conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
+#' @usage plotenvelope(object, type = c("sweighted2", "pearson", "weighted", "sweighted",
+#' "sweighted.gamma", "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+#' conf = 0.95, n.sim = 100, PrgBar = T, control = robustbetareg.control(...), ...)
 #'
 #' @param object Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param type character indicating type of residuals.
 #' @param conf the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.
-#' @param n.sim the number of simulation sample. Deafault n.sim=100.
+#' @param n.sim the number of simulation sample. Deafault \code{n.sim=100}.
 #' @param PrgBar a logical value. If TRUE the progress bar will be shown in the console.
 #' @param control a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.
 #' @param ... other parameters to be passed through to plotting functions.
 #'
 #' @return Return a simulated envelope graphic.
 #'
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+#
+#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
+#'
 #' @examples
-#' \dontrun{data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
-#' plotenvelope(fit,n.sim=500)}
+#' \dontrun{
+#' get(data("HIC", package = "robustbetareg"))
+#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+#' data = HIC, alpha = 0.06)
+#' plotenvelope(hic, n.sim = 500)
+#'
+#' get(data("RiskManagerCost", package = "robustbetareg"))
+#' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
+#' plotenvelope(rmc, conf = 0.90)}
 #'
 #' @export
 plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
@@ -314,7 +342,7 @@ plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted
 }
 
 #' @export
-plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=50,PrgBar=T,control=robustbetareg.control(...), ...)
+plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
 {
   if(missing(control)){control=robustbetareg.control(object)}
   type = match.arg(type)
@@ -396,15 +424,29 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 #' @param ... Further arguments to be passed.
 #'
 #' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Basu, A., Ghosh, A., Martin, N. et al. Robust Wald-type tests for non-homogeneous observations based on the minimum density power divergence estimator. Metrika 81, 493–522 (2018)}
+#' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
+#' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
 #'
-#' \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
 #' @examples
 #' \dontrun{
-#' data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,type="LMDPDE",alpha=0.06)
-#' h0=function(theta,B){theta[2:3]-B}#Hiphothesis to be tested
-#' WaldTypeTest(fit,h0,B=c(0,0))#Testing Urbanization=GDP_percapita=0}
+#' set.seed(2022)
+#' N <- 40 #Sample Size
+#' beta.coef <- c(-1,-2) #Arbitrary Beta Coefficients
+#' gamma.coef <- c(5) #Arbitrary Gamma Coefficient
+#' X <- cbind(rep(1,N), x <- runif(N))
+#' mu <- exp(X%*%beta.coef)/(1+exp(X%*%beta.coef)) #Inverse Logit Link Function
+#' phi <- exp(gamma.coef) #Inverse Log Link Function
+#' y <- rbeta(N, mu*phi, (1-mu)*phi)
+#' y[26] <- rbeta(1,((1 + mu[26])/2)*phi,(1-((1 + mu[26])/2))*phi) #Contaminated data point
+#' SimData <- as.data.frame(cbind(y,x))
+#' colnames(SimData) <- c("y","x")
+#' fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0) #Non-Robust Estimator
+#' fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData) #Robust Estimator
+#' h0 <- function(theta,B){theta[1:2] - B} #Hiphothesis to be tested
+#' waldtypetest(fit.mle, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2
+#' waldtypetest(fit.simdata, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2}
 #'
 #' @importFrom stats pchisq
 #'
@@ -489,27 +531,47 @@ waldtypetest.robustbetareg=function(object,FUN,...)
   return(result)
 }
 
-#' Residuals Method for robustbetareg Object Class
+
+#' @export
+residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),...)
+{
+  UseMethod("residuals")
+}
+
+#' Residuals Method for robustbetareg Object
 #'
-#' Extract various types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
+#' Extract several types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
 #' and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).
+#'
+#' @usage residuals(object,
+#' type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
+#'  "sweighted2.gamma", "combined", "combined.projection", "sweighted3"), ...)
 #'
 #' @param object fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param type character indicating type of residuals.
 #' @param ... currently not used.
 #'
+#' @return \code{residuals} returns a vector of selected residuals type.
+#'
 #' @details The definitions of the first four residuals are provided in Espinheira et al. (2008):  Equation (2) for "\code{pearson}", Equation (6) for "\code{weighted}", Equation (7) for "\code{sweighted}", and Equation (8) for "\code{sweighted2}".
 #' For the last four residuals the definitions are described in Espinheira et al. (2017): Last equation of Equation (7) and Equation (10) for "\code{sweighted.gamma}" and "\code{sweighted2.gamma}" respectively, Equation (9) for "\code{combined}", and Equation (11) for "\code{combined.projection}".
 #'
-#' @references  \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-#' @references  \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
+#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+#'
+#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
 #' @examples
 #' \dontrun{
-#' data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
-#' residuals(fit,type="sweighted2")
-#' }
+#' get(data("HIC", package = "robustbetareg"))
+#' fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+#' res <- residuals(fit.hic, type = "sweighted2")
+#' plot(res)
+#' abline(h = 0)}
+#'
+#' @aliases residuals residuals .robustbetareg
+#'
+#' @method residuals robustbetareg
 #'
 #' @export
 residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),...)
@@ -565,7 +627,7 @@ residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted"
 #' @param object Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param newdata optionally, a data frame in which to look for variables with which to predict. If omitted, the original observations are used.
 #' @param type character indicating type of predictions: fitted means of response ("response"), corresponding linear predictor ("link"), fitted precision parameter phi ("precision"),
-#'fitted variances of response ("variance"), or fitted quantile(s) of the response distribution ("quantile").
+#' fitted variances of response ("variance"), or fitted quantile(s) of the response distribution ("quantile").
 #' @param at numeric vector indicating the level(s) at which quantiles should be predicted (only if type = "quantile"), defaulting to the median at = 0.5.
 #' @param ... currently not used.
 #'
@@ -573,9 +635,9 @@ residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted"
 #'
 #' @examples
 #' \dontrun{
-#' data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.04)
-#' cbind(predict(fit,type="response"),predict(fit,type="quantile",at=c(0.25,0.5,0.75)))}
+#' get(data("HIC", package = "robustbetareg"))
+#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+#' cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))}
 #'
 #' @export
 predict = function(object, newdata = NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)

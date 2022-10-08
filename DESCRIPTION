@@ -1,7 +1,7 @@
 Version: 0.1.0
 Package: robustbetareg
 Title:  Robust of Beta Regression Model
-Author: Yuri Maluf [aut,cre], Silvia Ferrari [ths], Francisco Queiroz [cre], Terezinha Ribeiro [aut,cre]  
+Author: Yuri Maluf [aut,cre], Silvia Ferrari [ths], Francisco Queiroz [cre], Terezinha Ribeiro [cre]  
 Maintainer: Yuri Maluf <yurimaluf@gmail.com>, Francisco Queiroz <ffelipeq@outlook.com> and Terezinha Ribeiro <terezinha.ribeiro@unb.br>
 Description: Robust estimators for beta regression model, including robust test and graphical diagnostic tools.
 Depends: R (>= 3.0.0), betareg

@@ -18,14 +18,31 @@ Wald-type tests for both simple and composite hypothesis for independent but non
 }
 \examples{
 \dontrun{
-data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,type="LMDPDE",alpha=0.06)
-h0=function(theta,B){theta[2:3]-B}#Hiphothesis to be tested
-WaldTypeTest(fit,h0,B=c(0,0))#Testing Urbanization=GDP_percapita=0}
+set.seed(2022)
+N <- 40 #Sample Size
+beta.coef <- c(-1,-2) #Arbitrary Beta Coefficients
+gamma.coef <- c(5) #Arbitrary Gamma Coefficient
+X <- cbind(rep(1,N), x <- runif(N))
+mu <- exp(X\%*\%beta.coef)/(1+exp(X\%*\%beta.coef)) #Inverse Logit Link Function
+phi <- exp(gamma.coef) #Inverse Log Link Function
+y <- rbeta(N, mu*phi, (1-mu)*phi)
+y[26] <- rbeta(1,((1 + mu[26])/2)*phi,(1-((1 + mu[26])/2))*phi) #Contaminated data point
+SimData <- as.data.frame(cbind(y,x))
+colnames(SimData) <- c("y","x")
+fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0) #Non-Robust Estimator
+fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData) #Robust Estimator
+h0 <- function(theta,B){theta[1:2] - B} #Hiphothesis to be tested
+waldtypetest(fit.mle, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2
+waldtypetest(fit.simdata, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2}
 
 }
 \references{
 \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Basu, A., Ghosh, A., Martin, N. et al. Robust Wald-type tests for non-homogeneous observations based on the minimum density power divergence estimator. Metrika 81, 493–522 (2018)}
 
+\href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
+
 \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+}
+\seealso{
+\code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 }
