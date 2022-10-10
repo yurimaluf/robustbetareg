@@ -1,6 +1,6 @@
 #' Robust Beta Regression
 #'
-#' Fit robust beta regression models for rates and proportions via LSMLE, LMDPDE, SMLE and MDPDE using a parametrization with mean (depending through a link function on the covariates) and precision parameter (called phi).
+#' Fitting robust beta regression models for rates and proportions via LSMLE, LMDPDE, SMLE and MDPDE using a parametrization with mean (depending through a link function on the covariates) and precision parameter (called phi).
 #'
 #' @usage robustbetareg(formula, data, alpha, type = c("LSMLE", "LMDPDE", "SMLE", "MDPDE"),
 #' link=c("logit", "probit", "cloglog", "cauchit", "loglog"),
