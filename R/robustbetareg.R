@@ -484,7 +484,8 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
     b0 = (1-mu_hat)*phi_hat
     a_alpha = a0*(1+alpha)
     b_alpha = b0*(1+alpha)
-    E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
+    E_alpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
+    #E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
     D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
@@ -507,7 +508,8 @@ Psi_Beta_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   E_Ubeta = mu_star_alpha-mu_star
 
   Walpha = diag(Phi_Tb*degb(y_star,mu_hat,phi_hat)^(alpha))
-  Calpha = diag(Phi_Tb*exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0)))
+  Calpha = diag(Phi_Tb*exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0))))
+  #Calpha = diag(Phi_Tb*exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0)))
 
   result = (1+alpha)*t(X)%*%Phi_Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
   return(result)
@@ -533,7 +535,8 @@ Psi_Gamma_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   E_Ugamma = mu_hat*(mu_star_alpha-mu_star)+(mu_dagger_alpha-mu_dagger)
 
   Walpha = degb(y_star,mu_hat,phi_hat)^(alpha)
-  Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
+  Calpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
+  #Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
 
   result = (1+alpha)*t(Z)%*%Tg%*%(Walpha%*%Ugamma-Calpha%*%E_Ugamma)
   return(result)

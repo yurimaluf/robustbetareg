@@ -149,7 +149,7 @@ set.link=function(link.mu="logit",link.phi="log")
            }
            inv.link.phi=function(eta)
            {
-             return(as.numeric(exp(eta)))
+             return(pmax(as.numeric(exp(eta)),.Machine$double.eps))
            }
          },
          identify = {
@@ -187,7 +187,7 @@ set.link=function(link.mu="logit",link.phi="log")
            }
            inv.link.phi=function(eta)
            {
-             return(as.numeric(eta^2))
+             return(pmax(as.numeric(eta^2),.Machine$double.eps))
            }
          }, stop(gettextf("%s link.phi not recognised", sQuote(link.phi)), domain = NA))
 
