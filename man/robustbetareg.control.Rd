@@ -45,7 +45,8 @@ The \code{robustbetareg.control} controls the fitting process of
     SMLE. The arguments \code{L} and \code{M} are passed to the data-driven
     algorithm for selecting the optimum alpha value; details can be found in
     Ribeiro and Ferrari (2022). Starting values for the parameters associated
-    to the mean and precision submodels may be supplied via \code{start}.
+    to the mean and precision submodels may be supplied via \code{start}. \cr
+    We do not recommend changing the arguments passed to the data-drive algorithm.
 }
 \references{
 Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
@@ -55,4 +56,8 @@ Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
 }
 \seealso{
 \code{\link{robustbetareg}}
+}
+\author{
+Yuri S. Maluf (\email{yurimaluf@gmail.com}),
+Francisco F. Queiroz (\email{ffelipeq@outlook.com}) and Silvia L. P. Ferrari.
 }

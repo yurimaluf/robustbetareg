@@ -4,7 +4,7 @@
 \alias{residuals.robustbetareg}
 \alias{residuals}
 \alias{.robustbetareg}
-\title{Residuals Method for robustbetareg Object}
+\title{Residuals Method for robustbetareg Objects}
 \usage{
 residuals(object,
 type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",

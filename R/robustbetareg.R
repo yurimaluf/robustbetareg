@@ -364,7 +364,7 @@ LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustb
   if(m!=1){phi_predict=phi_hat}
   result$fitted.values=list(mu.predict = mu_hat, phi.predict = phi_predict)#Fitted Values
   result$start=start_theta#Started Point
-  result$weights=degb(y_star,mu_hat,phi_hat)^(alpha)#Weights
+  result$weights=dEGB(y_star,mu_hat,phi_hat)^(alpha)#Weights
   result$Tuning=alpha#Tuning
   result$residuals=sweighted2_res(mu_hat,phi_hat,y=y,X=x,linkobj = linkobj)#Standard Residual Report
   result$n=length(mu_hat)#Sample Size
@@ -535,18 +535,15 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
 
   if(alpha==0){
-    D_q = sum(log(degb(y_star,mu_hat,phi_hat)))
+    D_q = sum(log(dEGB(y_star,mu_hat,phi_hat)))
   }else{
     a0 = mu_hat*phi_hat
     b0 = (1-mu_hat)*phi_hat
     a_alpha = a0*(1+alpha)
     b_alpha = b0*(1+alpha)
     E_alpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
-<<<<<<< HEAD
-=======
     #E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
->>>>>>> 8c0c57609060dfe17c7485a8eb9f8aa4f4c85ee3
-    D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
+    D_q = sum((1+alpha)/(alpha)*dEGB(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
 }
@@ -567,12 +564,9 @@ Psi_Beta_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   Ubeta = y_star-mu_star
   E_Ubeta = mu_star_alpha-mu_star
 
-  Walpha = diag(Phi_Tb*degb(y_star,mu_hat,phi_hat)^(alpha))
+  Walpha = diag(Phi_Tb*dEGB(y_star,mu_hat,phi_hat)^(alpha))
   Calpha = diag(Phi_Tb*exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0))))
-<<<<<<< HEAD
-=======
   #Calpha = diag(Phi_Tb*exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0)))
->>>>>>> 8c0c57609060dfe17c7485a8eb9f8aa4f4c85ee3
 
   result = (1+alpha)*t(X)%*%Phi_Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
   return(result)
@@ -597,12 +591,9 @@ Psi_Gamma_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   Ugamma = mu_hat*(y_star-mu_star)+(y_dagger-mu_dagger)
   E_Ugamma = mu_hat*(mu_star_alpha-mu_star)+(mu_dagger_alpha-mu_dagger)
 
-  Walpha = degb(y_star,mu_hat,phi_hat)^(alpha)
+  Walpha = dEGB(y_star,mu_hat,phi_hat)^(alpha)
   Calpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
-<<<<<<< HEAD
-=======
   #Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
->>>>>>> 8c0c57609060dfe17c7485a8eb9f8aa4f4c85ee3
 
   result = (1+alpha)*t(Z)%*%Tg%*%(Walpha%*%Ugamma-Calpha%*%E_Ugamma)
   return(result)
@@ -768,7 +759,7 @@ LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   if(m!=1){phi_predict=phi_hat}
   result$fitted.values=list(mu.predict = mu_hat, phi.predict = phi_predict)#Fitted Values
   result$start=start_theta #Started Point
-  result$weights=(degb(y_star,mu_hat,phi_hat/q))^(alpha)#Weights
+  result$weights=(dEGB(y_star,mu_hat,phi_hat/q))^(alpha)#Weights
   result$Tuning=alpha#Tuning
   result$residuals=sweighted2_res(mu_hat,phi_hat,y=y,X=x,linkobj = linkobj)#Standard Residual Report
   result$n=length(mu_hat)#Sample Size
@@ -947,7 +938,7 @@ L_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
   phi_q = phi_hat/q
   y_star=log(y)-log(1-y)
-  f_q_star = degb(y_star,mu_hat,phi_q)
+  f_q_star = dEGB(y_star,mu_hat,phi_q)
   if(alpha==0){
     L_q=sum(log(f_q_star))
   }else{
@@ -968,7 +959,7 @@ Psi_Beta_LSMLE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   y_star=log(y)-log(1-y)
   mu_star=digamma(aq)-digamma(bq)
   Tb = (link.model$link.mu$d.linkfun(mu_hat))^(-1)
-  f_q_star = (degb(y_star,mu_hat,phi_q))^(alpha)
+  f_q_star = (dEGB(y_star,mu_hat,phi_q))^(alpha)
 
   result=t(X)%*%diag(phi_q*Tb*f_q_star)%*%(y_star-mu_star)
   return(result)
@@ -987,7 +978,7 @@ Psi_Gamma_LSMLE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   mu_dagger = digamma(bq)-digamma(phi_q)
   Tg = (link.model$linkfun.phi$d.linkfun(phi_hat))^1
 
-  f_q_star = (degb(y_star,mu_hat,phi_q))^(alpha)
+  f_q_star = (dEGB(y_star,mu_hat,phi_q))^(alpha)
   eta = mu_hat*(y_star-mu_star)+(y_dagger-mu_dagger)
   result=t(Z)%*%diag(Tg%*%f_q_star/q)%*%eta
   return(result)
@@ -1859,7 +1850,10 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #'     SMLE. The arguments \code{L} and \code{M} are passed to the data-driven
 #'     algorithm for selecting the optimum alpha value; details can be found in
 #'     Ribeiro and Ferrari (2022). Starting values for the parameters associated
-#'     to the mean and precision submodels may be supplied via \code{start}.
+#'     to the mean and precision submodels may be supplied via \code{start}. \cr
+#'     We do not recommend changing the arguments passed to the data-drive algorithm.
+#' @author Yuri S. Maluf (\email{yurimaluf@@gmail.com}),
+#' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
 #' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
 #'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
@@ -1868,6 +1862,7 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #'
 #' @return A list with components named as the arguments.
 #' @seealso \code{\link{robustbetareg}}
+#'
 #' @export
 robustbetareg.control=function(start = NULL, alpha.optimal = TRUE, tolerance = 1e-3,
                                maxit = 5000, L = 0.02, M = 3, ...)
@@ -1898,14 +1893,59 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,tolerance=1
 #' @param phi vector with the values of the phi parameter.
 #' @param log logical; if TRUE, probabilities p are given as log(p). Default is FALSE.
 #'
-#' @details The EGB density function is \eqn{f_{\theta}(y^{\star};\mu,\phi)=B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^{\star}(1-\mu)\phi\}/ (1+\exp\{-y^{\star}\})^{\phi}}, with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^{\star}\in R} where \eqn{E(y^{\star})=\psi(\mu\phi)-\psi((1-\mu)\phi)}, \eqn{Var(y^{\star})=\psi'(\mu\phi)+\psi'((1-\mu)\phi)} where \eqn{\psi} is the digamma function. See Kerman and McDonald (2015) for more details.
+#' @details The EGB distribution has density  \deqn{f_{\theta}(y^\star;\mu,\phi)=
+#'     B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^\star(1-\mu)\phi\}/ (1+\exp\{-y^\star\})^{\phi},}
+#'     with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in \mathbb{R}}. For this
+#'     distribution, \eqn{\mathbb{E}(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
+#'     \eqn{\text{Var}(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
+#'     is the digamma function. See Kerman and McDonald (2015) for additional
+#'     details. If \eqn{y \sim \text{beta}(\mu, \phi)}, with \eqn{\mu} and
+#'     \eqn{\phi} representing the mean and precision of \eqn{y}, then
+#'     \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with density
+#'     given above.
+#' @author Yuri S. Maluf (\email{yurimaluf@@gmail.com}),
+#' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
-#' @references \href{https://doi.org/10.1080/03610926.2013.844255}{Kerman, S. McDonald, J. B. Skewness-kurtosis bounds for EGB1, EGB2, and special cases. Communications in Statistics - Theory and Methods, 44:3857-3864 (2015).}
+#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'     Kerman, S and McDonald, J. B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
+#'     and special cases. \emph{Communications in Statistics - Theory and Methods},
+#'     44:3857-3864.
 #'
-#' @return \code{degb} gives the density, \code{pegb} gives the distribution function, \code{qegb} gives the quantile function, and \code{regb} generates random sample of EGB variables.
+#' @examples
+#' dEGB(0.2, mu = 0.3, phi = 1, )
+#' mu = 0.2; phi = 2;
+#' set.seed(1)
+#' EGBsample = rEGB(1000, mu, phi)
+#' hist(EGBsample, prob = TRUE, breaks = 15, main = "", las = 1, ylim = c(0, 0.2),
+#'      xlim = c(-20, 10))
+#' curve(dEGB(x, mu, phi), from = -20, to = 8, add = TRUE, col = "red")
+#' rug(EGBsample)
+#'
+#'
+#' # Showing the P(Y* < -5) = 0.17, where Y* ~ EGB(0.2, 2).
+#' x = seq(-20, 10,0.01)
+#' y = dEGB(x, mu, phi)
+#' plot(x, y, type = "l", lwd = 2, las = 1)
+#' x1 = seq(-20, -5, 0.01)
+#' y1 = dEGB(x1, mu, phi)
+#' polygon(c(x1, -5, -5), c(y1, 0, 0), col = "lightblue")
+#'
+#'
+#' plot(x, pEGB(x, mu, phi), type = "l", las = 1, lwd = 2,
+#'      ylab = expression(P("Y*"<y)), xlab = "y")
+#' p = pEGB(0, mu, phi)
+#' q = qEGB(p, mu, phi)
+#' points(q, p, pch = 16, col = 2, cex = 1.5)
+#' text(2, 0.83, paste("(", 0, ",", round(p, 2), ")"), font = 2,
+#'      cex = 0.8, col = "red")
+#'
+#' @return \code{dEGB} gives the density, \code{pEGB} gives the distribution function,
+#'     \code{qEGB} gives the quantile function, and \code{rEGB} generates random
+#'      variables.
 #' @importFrom stats pbeta qbeta rbeta
 #'@export
-degb=function(y_star, mu, phi, log = FALSE)
+dEGB=function(y_star, mu, phi, log = FALSE)
 {
   #options(warn = 2) #Convert warnings into errors
   if (any((-abs(2*mu-1)+1)<=0)){
@@ -1928,7 +1968,7 @@ degb=function(y_star, mu, phi, log = FALSE)
 
 #' @rdname EGB
 #' @export
-pegb=function(q, mu, phi)
+pEGB=function(q, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
@@ -1942,7 +1982,7 @@ pegb=function(q, mu, phi)
 
 #' @rdname EGB
 #' @export
-qegb=function(p, mu, phi)
+qEGB=function(p, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
@@ -1956,7 +1996,7 @@ qegb=function(p, mu, phi)
 
 #' @rdname EGB
 #' @export
-regb=function(n, mu, phi)
+rEGB=function(n, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
@@ -1968,27 +2008,42 @@ regb=function(n, mu, phi)
   return(log(h)-log(1-h))
 }
 
-#' Simulated Envelope of Residuals
+#' Normal Probability Plots with Simulated Envelope of Residuals for robustbetareg Objects
 #'
-#' Plot a Simulated Envelope of Robust Beta Residuals from robustbetareg Object Class.
+#' \code{plotenvelope} is used to display normal probability plots with simulated
+#' envelope of residuals for the power logit models. Currently, nine types of
+#' residuals are supported: sweighted2, pearson, weighted, sweighted,
+#' sweighted.gamma, sweighted2.gamma, combined, combined.projection, and
+#' sweighted3 residuals.
 #'
-#' @usage plotenvelope(object, type = c("sweighted2", "pearson", "weighted", "sweighted",
-#' "sweighted.gamma", "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
-#' conf = 0.95, n.sim = 100, PrgBar = T, control = robustbetareg.control(...), ...)
+#' @name plotenvelope
 #'
-#' @param object Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
-#' @param type character indicating type of residuals.
-#' @param conf the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.
-#' @param n.sim the number of simulation sample. Deafault \code{n.sim=100}.
-#' @param PrgBar a logical value. If TRUE the progress bar will be shown in the console.
-#' @param control a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.
-#' @param ... other parameters to be passed through to plotting functions.
+#' @param object Fitted model object of class \code{robustbetareg}.
+#' @param type character indicating the type of residuals to be used, see
+#'      \code{\link{residuals.robustbetareg}}. Default is \code{type = "sweighted2"}.
+#' @param conf numeric specifying the confidence level of the simulated
+#'      envelopes. Default is \code{conf = 0.95}.
+#' @param n.sim a positive integer representing the number of iterations
+#'      to calculate the simulated envelopes. Default is \code{n.sim=100}.
+#' @param PrgBar logical. If \code{PrgBar = TRUE} the progress bar will be shown
+#'      in the console.
+#' @param control a list of control arguments specified via
+#'      \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.
+#' @param ... arguments passed to \code{\link{plot}}.
 #'
-#' @return Return a simulated envelope graphic.
+#' @details The \code{plotenvelope} creates normal probability plots with simulated
+#'      envelope (see Atkinson (1985) for details). Under the correct model,
+#'      approximately 100*conf of the residuals are expected to be inside the
+#'      envelope.
+#' @return \code{plotenvelope} returns normal probability plot with simulated
+#'      envelopes for the residuals.
 #'
-#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
-#
+#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'     Atkinson, A. C. (1985) Plots, transformations and regression: an
+#'     introduction to graphical methods of diagnostic regression analysis.
+#'     \emph{Oxford Science Publications}, Oxford.
+#'
 #' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
 #'
 #' @examples
@@ -2084,15 +2139,28 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 
 #' Robust Wald-type Tests
 #'
-#' Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE estimators.
+#' \code{waldtypetest} provides Wald-type tests for both simple and composite
+#' hypothesis for independent but non-homogeneous observations,
+#' based on the robust estimators (LSMLE, LMDPDE, SMLE, and MDPDE).
 #'
+#' @name waldtypetest
 #' @param object fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param FUN the function representing the null hypothesis to be tested.
 #' @param ... Further arguments to be passed.
 #'
-#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Basu, A., Ghosh, A., Martin, N. et al. Robust Wald-type tests for non-homogeneous observations based on the minimum density power divergence estimator. Metrika 81, 493–522 (2018)}
-#' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
-#' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+#' @details DETAILS HERE
+#'
+#' @return \code{waldtypetest} returns an output for the Wald-type test containing
+#' the value for the test statistics, degrees-of-freedom and p-value.
+#'
+#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'     Basu, A., Ghosh, A., Martin, N., and Pardo, L. (2018). Robust Wald-type
+#'     tests for  non-homogeneous observations based on the minimum density
+#'     power divergence estimator. \emph{Metrika}. 81:493–522. \cr \cr
+#'     Ribeiro, K. A. T. and Ferrari, S. L. P. (2022). Robust estimation in beta
+#'     regression via maximum Lq-likelihood. \emph{Statistical Papers}.
+#'
 #'
 #' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
@@ -2205,7 +2273,7 @@ residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted","
   UseMethod("residuals")
 }
 
-#' Residuals Method for robustbetareg Object
+#' Residuals Method for robustbetareg Objects
 #'
 #' Extract several types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
 #' and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).

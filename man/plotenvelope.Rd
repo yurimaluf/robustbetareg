@@ -2,32 +2,55 @@
 % Please edit documentation in R/robustbetareg.R
 \name{plotenvelope}
 \alias{plotenvelope}
-\title{Simulated Envelope of Residuals}
+\title{Normal Probability Plots with Simulated Envelope of Residuals for robustbetareg Objects}
 \usage{
-plotenvelope(object, type = c("sweighted2", "pearson", "weighted", "sweighted",
-"sweighted.gamma", "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
-conf = 0.95, n.sim = 100, PrgBar = T, control = robustbetareg.control(...), ...)
+plotenvelope(
+  object,
+  type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
+    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+  conf = 0.95,
+  n.sim = 100,
+  PrgBar = T,
+  control = robustbetareg.control(...),
+  ...
+)
 }
 \arguments{
-\item{object}{Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{Fitted model object of class \code{robustbetareg}.}
 
-\item{type}{character indicating type of residuals.}
+\item{type}{character indicating the type of residuals to be used, see
+\code{\link{residuals.robustbetareg}}. Default is \code{type = "sweighted2"}.}
 
-\item{conf}{the confidence level of the envelopes required. The default is to find 95\% confidence envelopes.}
+\item{conf}{numeric specifying the confidence level of the simulated
+envelopes. Default is \code{conf = 0.95}.}
 
-\item{n.sim}{the number of simulation sample. Deafault \code{n.sim=100}.}
+\item{n.sim}{a positive integer representing the number of iterations
+to calculate the simulated envelopes. Default is \code{n.sim=100}.}
 
-\item{PrgBar}{a logical value. If TRUE the progress bar will be shown in the console.}
+\item{PrgBar}{logical. If \code{PrgBar = TRUE} the progress bar will be shown
+in the console.}
 
-\item{control}{a list of control arguments specified via \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.}
+\item{control}{a list of control arguments specified via
+\code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.}
 
-\item{...}{other parameters to be passed through to plotting functions.}
+\item{...}{arguments passed to \code{\link{plot}}.}
 }
 \value{
-Return a simulated envelope graphic.
+\code{plotenvelope} returns normal probability plot with simulated
+     envelopes for the residuals.
 }
 \description{
-Plot a Simulated Envelope of Robust Beta Residuals from robustbetareg Object Class.
+\code{plotenvelope} is used to display normal probability plots with simulated
+envelope of residuals for the power logit models. Currently, nine types of
+residuals are supported: sweighted2, pearson, weighted, sweighted,
+sweighted.gamma, sweighted2.gamma, combined, combined.projection, and
+sweighted3 residuals.
+}
+\details{
+The \code{plotenvelope} creates normal probability plots with simulated
+     envelope (see Atkinson (1985) for details). Under the correct model,
+     approximately 100*conf of the residuals are expected to be inside the
+     envelope.
 }
 \examples{
 \dontrun{
@@ -42,9 +65,11 @@ plotenvelope(rmc, conf = 0.90)}
 
 }
 \references{
-\href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-
-\href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+    Atkinson, A. C. (1985) Plots, transformations and regression: an
+    introduction to graphical methods of diagnostic regression analysis.
+    \emph{Oxford Science Publications}, Oxford.
 }
 \seealso{
 \code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}

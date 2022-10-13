@@ -257,7 +257,7 @@ sweighted3_res=function(mu_hat,phi_hat,alpha,y,X,linkobj)
   mu_star=digamma(a_alpha)-digamma(b_alpha)
   v_alpha=trigamma(a_alpha)+trigamma(b_alpha)
   c_alpha=(beta(a_alpha,b_alpha)^q)/beta(a_0,b_0)
-  w_alpha=(degb(y_star,mu_hat,phi_hat/q))^(alpha)
+  w_alpha=(dEGB(y_star,mu_hat,phi_hat/q))^(alpha)
   K_alpha=diag(v_alpha*c_alpha*(phi_hat/q)/d.link.mu^2)
   H_alpha=sqrt(K_alpha)%*%X%*%solve(t(X)%*%K_alpha%*%X)%*%t(X)%*%sqrt(K_alpha)
 

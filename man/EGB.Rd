@@ -2,19 +2,19 @@
 % Please edit documentation in R/robustbetareg.R
 \name{EGB}
 \alias{EGB}
-\alias{degb}
-\alias{pegb}
-\alias{qegb}
-\alias{regb}
+\alias{dEGB}
+\alias{pEGB}
+\alias{qEGB}
+\alias{rEGB}
 \title{The Exponential Generalized Beta of the Second Type Distribution}
 \usage{
-degb(y_star, mu, phi, log = FALSE)
+dEGB(y_star, mu, phi, log = FALSE)
 
-pegb(q, mu, phi)
+pEGB(q, mu, phi)
 
-qegb(p, mu, phi)
+qEGB(p, mu, phi)
 
-regb(n, mu, phi)
+rEGB(n, mu, phi)
 }
 \arguments{
 \item{y_star, q}{vector of quantiles.}
@@ -31,15 +31,63 @@ regb(n, mu, phi)
 to be the number required.}
 }
 \value{
-\code{degb} gives the density, \code{pegb} gives the distribution function, \code{qegb} gives the quantile function, and \code{regb} generates random sample of EGB variables.
+\code{dEGB} gives the density, \code{pEGB} gives the distribution function,
+    \code{qEGB} gives the quantile function, and \code{rEGB} generates random
+     variables.
 }
 \description{
 Density, distribution function, quantile function and random generation
 for exponential generalized beta of the second type distribution.
 }
 \details{
-The EGB density function is \eqn{f_{\theta}(y^{\star};\mu,\phi)=B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^{\star}(1-\mu)\phi\}/ (1+\exp\{-y^{\star}\})^{\phi}}, with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^{\star}\in R} where \eqn{E(y^{\star})=\psi(\mu\phi)-\psi((1-\mu)\phi)}, \eqn{Var(y^{\star})=\psi'(\mu\phi)+\psi'((1-\mu)\phi)} where \eqn{\psi} is the digamma function. See Kerman and McDonald (2015) for more details.
+The EGB distribution has density  \deqn{f_{\theta}(y^\star;\mu,\phi)=
+    B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^\star(1-\mu)\phi\}/ (1+\exp\{-y^\star\})^{\phi},}
+    with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in \mathbb{R}}. For this
+    distribution, \eqn{\mathbb{E}(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
+    \eqn{\text{Var}(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
+    is the digamma function. See Kerman and McDonald (2015) for additional
+    details. If \eqn{y \sim \text{beta}(\mu, \phi)}, with \eqn{\mu} and
+    \eqn{\phi} representing the mean and precision of \eqn{y}, then
+    \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with density
+    given above.
+}
+\examples{
+dEGB(0.2, mu = 0.3, phi = 1, )
+mu = 0.2; phi = 2;
+set.seed(1)
+EGBsample = rEGB(1000, mu, phi)
+hist(EGBsample, prob = TRUE, breaks = 15, main = "", las = 1, ylim = c(0, 0.2),
+     xlim = c(-20, 10))
+curve(dEGB(x, mu, phi), from = -20, to = 8, add = TRUE, col = "red")
+rug(EGBsample)
+
+
+# Showing the P(Y* < -5) = 0.17, where Y* ~ EGB(0.2, 2).
+x = seq(-20, 10,0.01)
+y = dEGB(x, mu, phi)
+plot(x, y, type = "l", lwd = 2, las = 1)
+x1 = seq(-20, -5, 0.01)
+y1 = dEGB(x1, mu, phi)
+polygon(c(x1, -5, -5), c(y1, 0, 0), col = "lightblue")
+
+
+plot(x, pEGB(x, mu, phi), type = "l", las = 1, lwd = 2,
+     ylab = expression(P("Y*"<y)), xlab = "y")
+p = pEGB(0, mu, phi)
+q = qEGB(p, mu, phi)
+points(q, p, pch = 16, col = 2, cex = 1.5)
+text(2, 0.83, paste("(", 0, ",", round(p, 2), ")"), font = 2,
+     cex = 0.8, col = "red")
+
 }
 \references{
-\href{https://doi.org/10.1080/03610926.2013.844255}{Kerman, S. McDonald, J. B. Skewness-kurtosis bounds for EGB1, EGB2, and special cases. Communications in Statistics - Theory and Methods, 44:3857-3864 (2015).}
+Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+    Kerman, S and McDonald, J. B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
+    and special cases. \emph{Communications in Statistics - Theory and Methods},
+    44:3857-3864.
+}
+\author{
+Yuri S. Maluf (\email{yurimaluf@gmail.com}),
+Francisco F. Queiroz (\email{ffelipeq@outlook.com}) and Silvia L. P. Ferrari.
 }
