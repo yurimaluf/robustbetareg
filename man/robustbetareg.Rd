@@ -203,17 +203,74 @@ Beta regression models are employed to model continuous response
      for details and other methods.
 }
 \examples{
-\dontrun{
-#Table 1
-data("HIC", package = "robustbetareg")
-hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, type = "LMDPDE")
-summary(hic)
+#### Risk Manager Cost data
+data("RiskManagerCost")
 
-#Table 2
-data("RiskManagerCost", package = "robustbetareg")
-rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost,
-alpha = 0.04)
-summary(rmc)}
+# MLE fit (fixed alpha equal to zero)
+fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+                         data = RiskManagerCost, type = "LMDPDE", alpha = 0,
+                         link.phi = "log")
+summary(fit_MLE)
+
+# MDPDE with alpha = 0.04
+fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+                           data = RiskManagerCost, type = "MDPDE",
+                           alpha = 0.04, link.phi = "log")
+summary(fit_MDPDE)
+
+# Choosing alpha via data-driven algorithm
+fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+                            data = RiskManagerCost, type = "MDPDE",
+                            link.phi = "log")
+summary(fit_MDPDE2)
+
+# Similar result for the LMDPDE fit:
+fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+                             data = RiskManagerCost, type = "LMDPDE",
+                             link.phi = "log")
+summary(fit_LMDPDE2)
+
+\dontrun{
+# Diagnostic plots
+plot(fit_LMDPDE2)
+
+#### HIC data
+data("HIC")
+
+# MLE fit (fixed alpha equal to zero)
+fit_MLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                         GDP_percapita, data = HIC, type = "LMDPDE",
+                         alpha = 0)
+summary(fit_MLE)
+
+# SMLE and MDPDE fit with alpha chosen via data-driven algorithm
+fit_SMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                          GDP_percapita, data = HIC, type = "SMLE")
+fit_MDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                           GDP_percapita, data = HIC, type = "MDPDE")
+# Returns MLE because of the lack of stability
+
+# LSMLE and LMDPDE fit with alpha chosen via data-driven algorithm
+fit_LSMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                           GDP_percapita, data = HIC, type = "LSMLE")
+fit_LMDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                            GDP_percapita, data = HIC, type = "LMDPDE")
+# Returns robust estimates with alpha = 0.06
+
+
+# Considering the LSMLE fit. Plotting the weights against the residuals
+plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+     ylab = "Weights")
+#identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
+
+# Excluding oulier observation
+fit_LSMLEwo1 <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+                              GDP_percapita, data = HIC[-1,], type = "LSMLE")
+summary(fit_LSMLEwo1)
+# Do not change the fit substantially.
+
+# Envelope plot
+plotenvelope(fit_LSMLE)}
 }
 \references{
 Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust

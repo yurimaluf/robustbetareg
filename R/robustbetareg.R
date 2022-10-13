@@ -140,17 +140,74 @@
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' #Table 1
-#' data("HIC", package = "robustbetareg")
-#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, type = "LMDPDE")
-#' summary(hic)
+#' #### Risk Manager Cost data
+#' data("RiskManagerCost")
 #'
-#' #Table 2
-#' data("RiskManagerCost", package = "robustbetareg")
-#' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost,
-#' alpha = 0.04)
-#' summary(rmc)}
+#' # MLE fit (fixed alpha equal to zero)
+#' fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                          data = RiskManagerCost, type = "LMDPDE", alpha = 0,
+#'                          link.phi = "log")
+#' summary(fit_MLE)
+#'
+#' # MDPDE with alpha = 0.04
+#' fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                            data = RiskManagerCost, type = "MDPDE",
+#'                            alpha = 0.04, link.phi = "log")
+#' summary(fit_MDPDE)
+#'
+#' # Choosing alpha via data-driven algorithm
+#' fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                             data = RiskManagerCost, type = "MDPDE",
+#'                             link.phi = "log")
+#' summary(fit_MDPDE2)
+#'
+#' # Similar result for the LMDPDE fit:
+#' fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                              data = RiskManagerCost, type = "LMDPDE",
+#'                              link.phi = "log")
+#' summary(fit_LMDPDE2)
+#'
+#' \dontrun{
+#' # Diagnostic plots
+#' plot(fit_LMDPDE2)
+#'
+#' #### HIC data
+#' data("HIC")
+#'
+#' # MLE fit (fixed alpha equal to zero)
+#' fit_MLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                          GDP_percapita, data = HIC, type = "LMDPDE",
+#'                          alpha = 0)
+#' summary(fit_MLE)
+#'
+#' # SMLE and MDPDE fit with alpha chosen via data-driven algorithm
+#' fit_SMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                           GDP_percapita, data = HIC, type = "SMLE")
+#' fit_MDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                            GDP_percapita, data = HIC, type = "MDPDE")
+#' # Returns MLE because of the lack of stability
+#'
+#' # LSMLE and LMDPDE fit with alpha chosen via data-driven algorithm
+#' fit_LSMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                            GDP_percapita, data = HIC, type = "LSMLE")
+#' fit_LMDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                             GDP_percapita, data = HIC, type = "LMDPDE")
+#' # Returns robust estimates with alpha = 0.06
+#'
+#'
+#' # Considering the LSMLE fit. Plotting the weights against the residuals
+#' plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+#'      ylab = "Weights")
+#' #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
+#'
+#' # Excluding oulier observation
+#' fit_LSMLEwo1 <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
+#'                               GDP_percapita, data = HIC[-1,], type = "LSMLE")
+#' summary(fit_LSMLEwo1)
+#' # Do not change the fit substantially.
+#'
+#' # Envelope plot
+#' plotenvelope(fit_LSMLE)}
 #' @import betareg
 #' @importFrom stats as.formula model.frame model.response model.matrix terms
 #'        delete.response optim qlogis cor var dbeta
@@ -484,7 +541,7 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
     b0 = (1-mu_hat)*phi_hat
     a_alpha = a0*(1+alpha)
     b_alpha = b0*(1+alpha)
-    E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
+    E_alpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
     D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
@@ -507,7 +564,7 @@ Psi_Beta_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   E_Ubeta = mu_star_alpha-mu_star
 
   Walpha = diag(Phi_Tb*degb(y_star,mu_hat,phi_hat)^(alpha))
-  Calpha = diag(Phi_Tb*exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0)))
+  Calpha = diag(Phi_Tb*exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0))))
 
   result = (1+alpha)*t(X)%*%Phi_Tb%*%(Walpha%*%Ubeta-Calpha%*%E_Ubeta)
   return(result)
@@ -533,7 +590,7 @@ Psi_Gamma_LMDPDE=function(mu_hat,phi_hat,y,X,Z,alpha,link_mu,link_phi){
   E_Ugamma = mu_hat*(mu_star_alpha-mu_star)+(mu_dagger_alpha-mu_dagger)
 
   Walpha = degb(y_star,mu_hat,phi_hat)^(alpha)
-  Calpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
+  Calpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
 
   result = (1+alpha)*t(Z)%*%Tg%*%(Walpha%*%Ugamma-Calpha%*%E_Ugamma)
   return(result)
@@ -1389,7 +1446,7 @@ MDPDE_Cov_Matrix = function(mu,phi,X,Z,alpha,linkobj){
   result$Std.Error=suppressWarnings(t(sqrt(diag(Vq))))
 
   return(result)
-}#ends Covariance matrix function
+}
 
 #' @rdname robustbetareg
 SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
@@ -1767,29 +1824,41 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 
 
 
-#' Control Parameter for Robust Beta Regression
+#' Auxiliary for Controlling robustbetareg Fitting
 #'
-#' Several parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
+#' Several parameters that control fitting of robust beta regression models using
+#'  \code{\link[=robustbetareg]{robustbetareg.}}
 #'
-#' @usage robustbetareg.control(start = NULL, alpha.optimal = TRUE,
-#' tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
+#' @name robustbetareg.control
 #'
-#' @param start a numeric vector as an initial guess of parameter estimation.
-#' @param alpha.optimal a logical value. If TRUE the tuning parameter should be selected automatic.
+#' @param start an optional vector with starting values for the parameter estimates.
+#' @param alpha.optimal a logical value. If \code{TRUE} the tuning parameter will
+#'      be select via the data-driven algorithm.
 #' @param tolerance numeric tolerance for convergence.
-#' @param maxit integer specifying the maxit argument of iterations used by the Newton-Raphson algorithm.
-#' @param L a parameter of auto selecting algorithm of tuning parameter.
-#' @param M a integer parameter value of auto selecting algorithm of tuning parameter.
+#' @param maxit argument passed to \code{\link{optim}}.
+#' @param L numeric specifying the threshold for the data-driven algorithm.
+#'      Default is \code{L = 0.02}.
+#' @param M integer specifying the number of grid spacing for the data-driven
+#'      algorithm. Default is \code{M = 3}.
 #' @param ... currently not used.
 #'
-#' @details The arguments \code{L} and \code{M} set the parameters of the data-driven algorithm for selecting the \eqn{\alpha} tuning parameter of robust estimator. See Ribeiro and Ferrari (2022) for more details.
+#' @details The \code{robustbetareg.control} controls the fitting process of
+#'     the robust estimation in beta regression via the LMDPDE, LSMLE, MDPDE, and
+#'     SMLE. The arguments \code{L} and \code{M} are passed to the data-driven
+#'     algorithm for selecting the optimum alpha value; details can be found in
+#'     Ribeiro and Ferrari (2022). Starting values for the parameters associated
+#'     to the mean and precision submodels may be supplied via \code{start}.
 #'
-#' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq -likelihood. Statistical Papers (2022).}
+#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+#'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    Ribeiro, K. A. T. and Ferrari, S. L. P.  (2022). Robust estimation in beta regression
+#'    via maximum Lq-likelihood. \emph{Statistical Papers}. \cr \cr
 #'
-#' @return A list with the arguments specified.
-#'
+#' @return A list with components named as the arguments.
+#' @seealso \code{\link{robustbetareg}}
 #' @export
-robustbetareg.control=function(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3,...)
+robustbetareg.control=function(start = NULL, alpha.optimal = TRUE, tolerance = 1e-3,
+                               maxit = 5000, L = 0.02, M = 3, ...)
 {
   UseMethod("robustbetareg.control")
 }
@@ -1803,25 +1872,28 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,tolerance=1
 }
 
 
-#' The EGB of the second type
+#' The Exponential Generalized Beta of the Second Type Distribution
 #'
-#' Density and random generation for the exponential generalized beta (EGB) of the second type.
+#' Density, distribution function, quantile function and random generation
+#' for exponential generalized beta of the second type distribution.
 #'
+#' @name EGB
 #' @param y_star,q vector of quantiles.
 #' @param p vector of probabilities.
-#' @param n number of observations.
-#' @param mu mu parameter (\eqn{\mu\in(0,1)}).
-#' @param phi phi parameter (\eqn{\phi>0}).
-#' @param log a logical value. If TRUE return the log of density function.
+#' @param n number of observations. If \code{length(n) > 1}, the length is taken
+#' to be the number required.
+#' @param mu vector with the values of the mu parameter.
+#' @param phi vector with the values of the phi parameter.
+#' @param log logical; if TRUE, probabilities p are given as log(p). Default is FALSE.
 #'
 #' @details The EGB density function is \eqn{f_{\theta}(y^{\star};\mu,\phi)=B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^{\star}(1-\mu)\phi\}/ (1+\exp\{-y^{\star}\})^{\phi}}, with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^{\star}\in R} where \eqn{E(y^{\star})=\psi(\mu\phi)-\psi((1-\mu)\phi)}, \eqn{Var(y^{\star})=\psi'(\mu\phi)+\psi'((1-\mu)\phi)} where \eqn{\psi} is the digamma function. See Kerman and McDonald (2015) for more details.
 #'
 #' @references \href{https://doi.org/10.1080/03610926.2013.844255}{Kerman, S. McDonald, J. B. Skewness-kurtosis bounds for EGB1, EGB2, and special cases. Communications in Statistics - Theory and Methods, 44:3857-3864 (2015).}
 #'
 #' @return \code{degb} gives the density, \code{pegb} gives the distribution function, \code{qegb} gives the quantile function, and \code{regb} generates random sample of EGB variables.
-#'
+#' @importFrom stats pbeta qbeta rbeta
 #'@export
-degb=function(y_star,mu,phi,log=FALSE)
+degb=function(y_star, mu, phi, log = FALSE)
 {
   #options(warn = 2) #Convert warnings into errors
   if (any((-abs(2*mu-1)+1)<=0)){
@@ -1842,12 +1914,9 @@ degb=function(y_star,mu,phi,log=FALSE)
   return(k)
 }
 
-#' @rdname degb
-#'
-#' @importFrom stats pbeta
-#'
+#' @rdname EGB
 #' @export
-pegb=function(q,mu,phi)
+pegb=function(q, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
@@ -1859,12 +1928,9 @@ pegb=function(q,mu,phi)
 }
 
 
-#' @rdname degb
-#'
-#' @importFrom stats qbeta
-#'
+#' @rdname EGB
 #' @export
-qegb=function(p,mu,phi)
+qegb=function(p, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
@@ -1876,14 +1942,9 @@ qegb=function(p,mu,phi)
   return(-log((1/q)-1))
 }
 
-#' @rdname degb
-#'
-#' @param n number of observations.
-#'
-#' @importFrom stats rbeta
-#'
-#'@export
-regb=function(n,mu,phi)
+#' @rdname EGB
+#' @export
+regb=function(n, mu, phi)
 {
   if (any((-abs(2*mu-1)+1)<=0)){
     return(warning("'mu' parameter must be within unit interval"))
