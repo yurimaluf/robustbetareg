@@ -2,35 +2,57 @@
 % Please edit documentation in R/robustbetareg.R
 \name{robustbetareg.control}
 \alias{robustbetareg.control}
-\title{Control Parameter for Robust Beta Regression}
+\title{Auxiliary for Controlling robustbetareg Fitting}
 \usage{
-robustbetareg.control(start = NULL, alpha.optimal = TRUE,
-tolerance = 1e-3, maxit = 5000, L = 0.02, M = 3, ...)
+robustbetareg.control(
+  start = NULL,
+  alpha.optimal = TRUE,
+  tolerance = 0.001,
+  maxit = 5000,
+  L = 0.02,
+  M = 3,
+  ...
+)
 }
 \arguments{
-\item{start}{a numeric vector as an initial guess of parameter estimation.}
+\item{start}{an optional vector with starting values for the parameter estimates.}
 
-\item{alpha.optimal}{a logical value. If TRUE the tuning parameter should be selected automatic.}
+\item{alpha.optimal}{a logical value. If \code{TRUE} the tuning parameter will
+be select via the data-driven algorithm.}
 
 \item{tolerance}{numeric tolerance for convergence.}
 
-\item{maxit}{integer specifying the maxit argument of iterations used by the Newton-Raphson algorithm.}
+\item{maxit}{argument passed to \code{\link{optim}}.}
 
-\item{L}{a parameter of auto selecting algorithm of tuning parameter.}
+\item{L}{numeric specifying the threshold for the data-driven algorithm.
+Default is \code{L = 0.02}.}
 
-\item{M}{a integer parameter value of auto selecting algorithm of tuning parameter.}
+\item{M}{integer specifying the number of grid spacing for the data-driven
+algorithm. Default is \code{M = 3}.}
 
 \item{...}{currently not used.}
 }
 \value{
-A list with the arguments specified.
+A list with components named as the arguments.
 }
 \description{
-Several parameters that control fitting of robust beta regression models using \code{\link[=robustbetareg]{robustbetareg.}}
+Several parameters that control fitting of robust beta regression models using
+ \code{\link[=robustbetareg]{robustbetareg.}}
 }
 \details{
-The arguments \code{L} and \code{M} set the parameters of the data-driven algorithm for selecting the \eqn{\alpha} tuning parameter of robust estimator. See Ribeiro and Ferrari (2022) for more details.
+The \code{robustbetareg.control} controls the fitting process of
+    the robust estimation in beta regression via the LMDPDE, LSMLE, MDPDE, and
+    SMLE. The arguments \code{L} and \code{M} are passed to the data-driven
+    algorithm for selecting the optimum alpha value; details can be found in
+    Ribeiro and Ferrari (2022). Starting values for the parameters associated
+    to the mean and precision submodels may be supplied via \code{start}.
 }
 \references{
-\href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq -likelihood. Statistical Papers (2022).}
+Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+   beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+   Ribeiro, K. A. T. and Ferrari, S. L. P.  (2022). Robust estimation in beta regression
+   via maximum Lq-likelihood. \emph{Statistical Papers}. \cr \cr
+}
+\seealso{
+\code{\link{robustbetareg}}
 }
