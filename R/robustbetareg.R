@@ -284,7 +284,6 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
   {
     result=MDPDE.fit(y,x,z,alpha=alpha,link=link,link.phi=link.phi,control=control)
   }
-
   result$y=y
   if(model){result$model=list(mean = x, precision = z)}
   result$terms=list(mean = mtX, precision = mtZ, full = mt)
@@ -544,6 +543,7 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
     E_alpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
     #E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
     D_q = sum((1+alpha)/(alpha)*dEGB(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
+    #D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
 }
