@@ -152,7 +152,7 @@ set.link=function(link.mu="logit",link.phi="log")
              return(pmax(as.numeric(exp(eta)),.Machine$double.eps))
            }
          },
-         identify = {
+         identity = {
            linkfun.phi=function(phi)
            {
              phi=pmax(phi,.Machine$double.eps)

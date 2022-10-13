@@ -227,7 +227,6 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
   {
     result=MDPDE.fit(y,x,z,alpha=alpha,link=link,link.phi=link.phi,control=control)
   }
-
   result$y=y
   if(model){result$model=list(mean = x, precision = z)}
   result$terms=list(mean = mtX, precision = mtZ, full = mt)
