@@ -13,7 +13,7 @@ print.robustbetareg=function(x,...)
   if(!object$converged)
   {
     cat("\n")
-    cat("The algorithm did not reach the convergence.\n")
+    cat(paste0("The algorithm did not reach the convergence.\n",object$message))
   }
   cat("\n")
   cat(paste0("Tuning constant: alpha = ",object$Tuning))
@@ -171,6 +171,7 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
       if(!is.null(x$message))
       {
         if(x$message=="Lack of stability"){cat("\nLack of stability.")}
+
       }
     }
     if (!is.na(x$pseudo.r.squared))

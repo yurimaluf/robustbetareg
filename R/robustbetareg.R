@@ -228,6 +228,8 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
   mf$drop.unused.levels = TRUE
   formula = Formula::as.Formula(formula)
   oformula = as.formula(formula)
+
+
   if(length(formula)[2L] < 2L) {
     formula = Formula::as.Formula(formula(formula), ~1)
     simple_formula = TRUE
@@ -255,7 +257,9 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
   if(!is.null(alpha)){if(alpha < 0 || alpha > 1){stop("invalid tuning constant, the value must be in [0, 1)")}}
   if(!is.null(link.phi)){if(link.phi=="identity" & !simple_formula){link.phi="log";warning("Non suitable precision link function, log link used instead")}}
 
+
   link = match.arg(link)
+  linkobj = set.link(link.mu = link, link.phi = link.phi)
   if(is.null(link.phi))
   {
     link.phi = if(simple_formula){"identity"}
@@ -266,6 +270,7 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
     est.mle=suppressWarnings(betareg(oformula,data,link=link,link.phi = link.phi))
     control$start=c(est.mle$coefficients$mean,est.mle$coefficients$precision)
   }
+
   if(type=="LMDPDE")
   {
     result=LMDPDE.fit(y,x,z,alpha=alpha,link=link,link.phi=link.phi,control=control)
@@ -283,6 +288,11 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
     result=MDPDE.fit(y,x,z,alpha=alpha,link=link,link.phi=link.phi,control=control)
   }
   result$y=y
+  if(simple_formula){
+    precision.name=names(result$coefficients$precision)
+    result$coefficients$precision=linkobj$linkfun.phi$inv.link(z%*%result$coefficients$precision)[1]
+    names(result$coefficients$precision)=precision.name
+  }
   if(model){result$model=list(mean = x, precision = z)}
   result$terms=list(mean = mtX, precision = mtZ, full = mt)
   result$call = cl
@@ -382,7 +392,7 @@ LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustb
   }
   if(!is.null(str1)||!is.null(str2))
   {
-    result$Message=c(str1,str2)
+    result$message=c(str1,str2)
   }
   if(!any(is.na(std.error.LMDPDE)))
   {#Standard Error
@@ -413,22 +423,24 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   unstable=F
   sqv.unstable=T
 
-  est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
-  if(is.null(est.log.lik))
-  {
-    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi), control=betareg.control(start=Initial.points(y,x,z))),error=function(e) NULL)
-  }
-  if(!is.null(est.log.lik)){
-    Est.param=do.call("c",est.log.lik$coefficients)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }else{
-    Est.param=Initial.points(y,x,z)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }
-
-  #Check control version of starting points
+  #Check robustbetareg.control starting points
   if(is.null(control$start)){
-    control$start=Est.param
+    #mle starting point attempt
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
+    if(is.null(est.log.lik))
+    {
+      est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
+    }
+    #checking mle starting point
+    if(!is.null(est.log.lik)){
+      Est.param=do.call("c",est.log.lik$coefficients)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }else{
+      Est.param=Initial.points(y,x,z)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }
+  }else{
+    names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
 
@@ -452,7 +464,7 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   alpha.ind=max(0,which(sqv>L))
   if(alpha.ind==0)#Step-2: All M1 sqv beneath L
   {
-    LMDPDE.par.star<-LMDPDE.list[[1]]
+    LMDPDE.par.star<-tryCatch(LMDPDE.list[[1]],error=function(e){LMDPDE.par.star<-LMDPDE.par;LMDPDE.par.star$message<-"The function cannot be evaluated on initial parameters";return(LMDPDE.par.star)})
     LMDPDE.par.star$sqv=sqv
     LMDPDE.par.star$Optimal.Tuning=TRUE
     rm(LMDPDE.list)
@@ -460,7 +472,7 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   }
   if(unstable)#Lack of stability
   {
-    LMDPDE.par.star=LMDPDE.list[[1]]
+    LMDPDE.par.star<-tryCatch(LMDPDE.list[[1]],error=function(e){LMDPDE.par.star<-LMDPDE.par;return(LMDPDE.par.star)})
     LMDPDE.par.star$sqv=sqv
     LMDPDE.par.star$Optimal.Tuning=TRUE
     LMDPDE.par.star$message="Lack of stability"
@@ -777,7 +789,7 @@ LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   }
   if(!is.null(str1)||!is.null(str2))
   {
-    result$Message=c(str1,str2)
+    result$message=c(str1,str2)
   }
   if(!any(is.na(std.error.LSMLE)))
   {#Standard Error
@@ -808,22 +820,24 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
   unstable=F
   sqv.unstable=T
 
-  est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
-  if(is.null(est.log.lik))
-  {
-    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
-  }
-  if(!is.null(est.log.lik)){
-    Est.param=do.call("c",est.log.lik$coefficients)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }else{
-    Est.param=Initial.points(y,x,z)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }
-
-  #Check control version of starting points
+  #Check robustbetareg.control starting points
   if(is.null(control$start)){
-    control$start=Est.param
+    #mle starting point attempt
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
+    if(is.null(est.log.lik))
+    {
+      est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
+    }
+    #checking mle starting point
+    if(!is.null(est.log.lik)){
+      Est.param=do.call("c",est.log.lik$coefficients)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }else{
+      Est.param=Initial.points(y,x,z)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }
+  }else{
+    names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
 
@@ -847,7 +861,7 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
   alpha.ind=max(0,which(sqv>L))
   if(alpha.ind==0)#Step-2: All M1 sqv beneath L
   {
-    LSMLE.par.star<-LSMLE.list[[1]]
+    LSMLE.par.star<-tryCatch(LSMLE.list[[1]],error=function(e){LSMLE.par.star<-LSMLE.par;LSMLE.par.star$message<-"The function cannot be evaluated on initial parameters";return(LSMLE.par.star)})
     LSMLE.par.star$sqv=sqv
     LSMLE.par.star$Optimal.Tuning=TRUE
     rm(LSMLE.list)
@@ -855,7 +869,7 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
   }
   if(unstable)#Lack of stability
   {
-    LSMLE.par.star=LSMLE.list[[1]]
+    LSMLE.par.star<-tryCatch(LSMLE.list[[1]],error=function(e){LSMLE.par.star<-LSMLE.par;return(LSMLE.par.star)})
     LSMLE.par.star$sqv=sqv
     LSMLE.par.star$Optimal.Tuning=TRUE
     LSMLE.par.star$message="Lack of stability"
@@ -1158,7 +1172,7 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   }
   if(!is.null(str1)||!is.null(str2))
   {
-    result$Message=c(str1,str2)
+    result$message=c(str1,str2)
   }
   if(!any(is.na(std.error.MDPDE)))
   {#Standard Error
@@ -1224,29 +1238,26 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
   }
 
   sqv=as.numeric(SQV(zq.t,n,p))
-  if(unstable || sqv==0)#Lack of stability
+  alpha.ind=max(0,which(sqv>L))
+  if(alpha.ind==0)#Step-2: All M1 sqv beneath L
   {
-    MDPDE.par.star=MDPDE.list[[1]]
+    MDPDE.par.star<-tryCatch(MDPDE.list[[1]],error=function(e){MDPDE.par.star<-MDPDE.par;MDPDE.par.star$message<-"The function cannot be evaluated on initial parameters";return(MDPDE.par.star)})
+    MDPDE.par.star$sqv=sqv
+    MDPDE.par.star$Optimal.Tuning=TRUE
+    return(MDPDE.par.star)
+  }
+  if(unstable)#Lack of stability
+  {
+    MDPDE.par.star<-MDPDE.list[[1]]
     MDPDE.par.star$sqv=sqv
     MDPDE.par.star$Optimal.Tuning=TRUE
     MDPDE.par.star$message="Lack of stability"
     return(MDPDE.par.star)
   }
-  alpha.ind=max(0,which(sqv>L))
-  if(alpha.ind==0)#Step-2: All M1 sqv beneath L
-  {
-    MDPDE.par.star<-MDPDE.list[[1]]
-    MDPDE.par.star$sqv=sqv
-    MDPDE.par.star$Optimal.Tuning=TRUE
-    rm(MDPDE.list)
-    return(MDPDE.par.star)
-  }
-
   if(alpha.ind<8){#Which Tuning satisfy the condition os stability
     MDPDE.par.star<-MDPDE.list[[alpha.ind+1]]
     MDPDE.par.star$sqv=sqv
     MDPDE.par.star$Optimal.Tuning=TRUE
-    rm(MDPDE.list)
     return(MDPDE.par.star)
   }
 
@@ -1544,7 +1555,7 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbet
   }
   if(!is.null(str1)||!is.null(str2))
   {
-    result$Message=c(str1,str2)
+    result$message=c(str1,str2)
   }
   if(!any(is.na(std.error.SMLE)))
   {#Standard Error
@@ -1574,22 +1585,24 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
   unstable=F
   sqv.unstable=T
 
-  est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
-  if(is.null(est.log.lik))
-  {
-    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
-  }
-  if(!is.null(est.log.lik)){
-    Est.param=do.call("c",est.log.lik$coefficients)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }else{
-    Est.param=Initial.points(y,x,z)
-    names(Est.param)=c(colnames(x),colnames(z))
-  }
-
-  #Check control version of starting points
+  #Check robustbetareg.control starting points
   if(is.null(control$start)){
-    control$start=Est.param
+    #mle starting point attempt
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
+    if(is.null(est.log.lik))
+    {
+      est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi, control=betareg.control(start=Initial.points(y,x,z)))),error=function(e) NULL)
+    }
+    #checking mle starting point
+    if(!is.null(est.log.lik)){
+      Est.param=do.call("c",est.log.lik$coefficients)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }else{
+      Est.param=Initial.points(y,x,z)
+      names(Est.param)=c(colnames(x),colnames(z))
+    }
+  }else{
+    names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
 
@@ -1607,24 +1620,25 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
     SMLE.list[[k]]<-SMLE.par
     zq.t=unname(rbind(zq.t,do.call("c",SMLE.par$coefficients)/do.call("c",SMLE.par$std.error)))
   }
+
   sqv=as.numeric(SQV(zq.t,n,p))
-  if(unstable || sqv==0)#Lack of stability
+  alpha.ind=max(0,which(sqv>L))
+  if(alpha.ind==0)#Step-2: All M1 sqv beneath L
   {
-    SMLE.par.star=SMLE.list[[1]]
+    SMLE.par.star<-tryCatch(SMLE.list[[1]],error=function(e){SMLE.par.star<-SMLE.par;SMLE.par.star$message<-"The function cannot be evaluated on initial parameters";return(SMLE.par.star)})
+    SMLE.par.star$sqv=sqv
+    SMLE.par.star$Optimal.Tuning=TRUE
+    return(SMLE.par.star)
+  }
+  if(unstable)#Lack of stability
+  {
+    SMLE.par.star<-tryCatch(SMLE.list[[1]],error=function(e){SMLE.par.star<-SMLE.par;return(SMLE.par.star)})
     SMLE.par.star$sqv=sqv
     SMLE.par.star$Optimal.Tuning=TRUE
     SMLE.par.star$message="Lack of stability"
     return(SMLE.par.star)
   }
-  alpha.ind=max(0,which(sqv>L))
-  if(alpha.ind==0)#Step-2: All M1 sqv beneath L
-  {
-    SMLE.par.star<-SMLE.list[[1]]
-    SMLE.par.star$sqv=sqv
-    SMLE.par.star$Optimal.Tuning=TRUE
-    rm(SMLE.list)
-    return(SMLE.par.star)
-  }
+
   if(alpha.ind<8){#Which Tuning satisfy the condition os stability
     SMLE.par.star<-SMLE.list[[alpha.ind+1]]
     SMLE.par.star$sqv=sqv
