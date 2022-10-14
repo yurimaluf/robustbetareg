@@ -414,24 +414,28 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   n=length(y)
   unstable=F
   sqv.unstable=T
+
   est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi)),error=function(e) NULL)
   if(is.null(est.log.lik))
   {
-    # est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi), control=betareg.control(start=Initial.points(y,x,z))),error=function(e) NULL)
+    est.log.lik=tryCatch(suppressWarnings(betareg.fit(x,y,z,link=link,link.phi = link.phi), control=betareg.control(start=Initial.points(y,x,z))),error=function(e) NULL)
   }
   if(!is.null(est.log.lik)){
     Est.param=do.call("c",est.log.lik$coefficients)
     names(Est.param)=c(colnames(x),colnames(z))
   }else{
     Est.param=Initial.points(y,x,z)
+    names(Est.param)=c(colnames(x),colnames(z))
   }
-  ponto.inicial.robst=Initial.points(y,x,z)
-  ponto.inicial.temp=Est.param
-  names(ponto.inicial.robst)=names(ponto.inicial.temp)=c(colnames(x),colnames(z))
-  p=length(Est.param)
+
+  #Check control version of starting points
+  if(is.null(control$start)){
+    control$start=Est.param
+  }
+  p=length(control$start)
+
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
-    control$start=ponto.inicial.temp
     LMDPDE.par=tryCatch(LMDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {LMDPDE.par$converged<-FALSE; return(LMDPDE.par)})
     if(LMDPDE.par$converged)
     {
@@ -446,7 +450,6 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
     LMDPDE.list[[k]]<-LMDPDE.par
     zq.t=unname(rbind(zq.t,do.call("c",LMDPDE.par$coefficients)/do.call("c",LMDPDE.par$std.error)))
   }
-  #sqv=as.numeric(SQV_Cpp(zq.t,n,p))
   sqv=as.numeric(SQV(zq.t,n,p))
   alpha.ind=max(0,which(sqv>L))
   if(alpha.ind==0)#Step-2: All M1 sqv beneath L
@@ -489,7 +492,6 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
     }
     LMDPDE.list[[k]]=LMDPDE.par
     zq.t=unname(rbind(zq.t,do.call("c",LMDPDE.par$coefficients)/do.call("c",LMDPDE.par$std.error)))
-    #sqv=as.numeric(SQV_Cpp(zq.t,n,p))
     sqv=as.numeric(SQV(zq.t,n,p))
     sqv.test=sqv[(k-M):(k-1)]
     if(all(sqv.test<=L))
@@ -541,7 +543,6 @@ D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
     a_alpha = a0*(1+alpha)
     b_alpha = b0*(1+alpha)
     E_alpha = exp(lgamma(a_alpha)+lgamma(b_alpha)-lgamma(a_alpha+b_alpha)-(1+alpha)*(lgamma(a0)+lgamma(b0)-lgamma(a0+b0)))
-    #E_alpha = exp(lbeta(a_alpha,b_alpha)-(1+alpha)*lbeta(a0,b0))
     D_q = sum((1+alpha)/(alpha)*degb(y_star,mu_hat,phi_hat)^(alpha)-E_alpha)
   }
   return(D_q)
@@ -705,7 +706,6 @@ LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
     theta$converged=mle$converged
   }
   #Point Estimation
-  #browser()
   q=1-alpha
   check=TRUE
   theta=tryCatch(optim(par=start_theta,fn=L_alpha_R,gr=Psi_LSMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1,maxit=10000)),error=function(e){
@@ -816,23 +816,18 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
     names(Est.param)=c(colnames(x),colnames(z))
   }else{
     Est.param=Initial.points(y,x,z)
+    names(Est.param)=c(colnames(x),colnames(z))
   }
-  if(!is.null(control$start)){
-    Est.param=control$start
+
+  #Check control version of starting points
+  if(is.null(control$start)){
+    control$start=Est.param
   }
-  ponto.inicial.robst=Initial.points(y,x,z)
-  ponto.inicial.temp=Est.param
-  names(ponto.inicial.robst)=c(colnames(x),colnames(z))
-  p=length(Est.param)
+  p=length(control$start)
+
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
-    control$start=ponto.inicial.temp
     LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {LSMLE.par$converged<-FALSE; return(LSMLE.par)})
-    if(!LSMLE.par$converged)
-    {
-      control$start=Est.param
-      LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e){LSMLE.par$converged<-FALSE; return(LSMLE.par)})
-    }
     if(LSMLE.par$converged)
     {
       ponto.inicial.temp=c(LSMLE.par$coefficients$mean,LSMLE.par$coefficients$precision)
@@ -846,7 +841,6 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
     LSMLE.list[[k]]<-LSMLE.par
     zq.t=unname(rbind(zq.t,do.call("c",LSMLE.par$coefficients)/do.call("c",LSMLE.par$std.error)))
   }
-  #sqv=as.numeric(SQV_Cpp(zq.t,n,p))
   sqv=as.numeric(SQV(zq.t,n,p))
   alpha.ind=max(0,which(sqv>L))
   if(alpha.ind==0)#Step-2: All M1 sqv beneath L
@@ -865,7 +859,7 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
     LSMLE.par.star$message="Lack of stability"
     return(LSMLE.par.star)
   }
-  if(alpha.ind<8){#Which Tuning satisfy the condition os stability
+  if(alpha.ind<8){#Which Tuning satisfy the condition of stability
     LSMLE.par.star<-LSMLE.list[[alpha.ind+1]]
     LSMLE.par.star$sqv=sqv
     LSMLE.par.star$Optimal.Tuning=TRUE
@@ -1202,9 +1196,15 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
     names(Est.param)=c(colnames(x),colnames(z))
   }else{
     Est.param=Initial.points(y,x,z)
+    names(Est.param)=c(colnames(x),colnames(z))
   }
-  p=length(Est.param)
-  control$start=Est.param
+
+  #Check control version of starting points
+  if(is.null(control$start)){
+    control$start=Est.param
+  }
+  p=length(control$start)
+
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
     MDPDE.par=tryCatch(MDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {MDPDE.par$converged<-FALSE; return(MDPDE.par)})
@@ -1475,7 +1475,6 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbet
   check=TRUE
   theta=tryCatch(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
     theta$msg<-e$message;check<<-F;return(theta)})
-  # gc()
   if(check){
     if(theta$convergence==0){
       theta$converged=T
@@ -1580,14 +1579,16 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
     names(Est.param)=c(colnames(x),colnames(z))
   }else{
     Est.param=Initial.points(y,x,z)
+    names(Est.param)=c(colnames(x),colnames(z))
   }
-  if(!is.null(control$start)){
-    Est.param=control$start
+
+  #Check control version of starting points
+  if(is.null(control$start)){
+    control$start=Est.param
   }
-  ponto.inicial.robst=Initial.points(y,x,z)
-  ponto.inicial.temp=Est.param
-  names(ponto.inicial.robst)=c(colnames(x),colnames(z))
-  p=length(Est.param)
+  p=length(control$start)
+
+
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
     control$start=Est.param
