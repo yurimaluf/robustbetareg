@@ -9,12 +9,21 @@ waldtypetest(object, FUN, ...)
 \arguments{
 \item{object}{fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
 
-\item{FUN}{the function representing the null hypothesis to be tested.}
+\item{FUN}{function representing the null hypothesis to be tested.}
 
 \item{...}{Further arguments to be passed.}
 }
+\value{
+\code{waldtypetest} returns an output for the Wald-type test containing
+the value for the test statistics, degrees-of-freedom and p-value.
+}
 \description{
-Wald-type tests for both simple and composite hypothesis for independent but non-homogeneous observations, based on LSMLE, LMDPDE, SMLE and MDPDE estimators.
+\code{waldtypetest} provides Wald-type tests for both simple and composite
+hypothesis for independent but non-homogeneous observations,
+based on the robust estimators (LSMLE, LMDPDE, SMLE, and MDPDE).
+}
+\details{
+DETAILS HERE
 }
 \examples{
 \dontrun{
@@ -37,12 +46,18 @@ waldtypetest(fit.simdata, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2}
 
 }
 \references{
-\href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Basu, A., Ghosh, A., Martin, N. et al. Robust Wald-type tests for non-homogeneous observations based on the minimum density power divergence estimator. Metrika 81, 493–522 (2018)}
-
-\href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
-
-\href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+    Basu, A., Ghosh, A., Martin, N., and Pardo, L. (2018). Robust Wald-type
+    tests for  non-homogeneous observations based on the minimum density
+    power divergence estimator. \emph{Metrika}, 81:493–522. \cr \cr
+    Ribeiro, K. A. T. and Ferrari, S. L. P. (2022). Robust estimation in beta
+    regression via maximum Lq-likelihood. \emph{Statistical Papers}.
 }
 \seealso{
 \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
+}
+\author{
+Yuri S. Maluf (\email{yurimaluf@gmail.com}),
+Francisco F. Queiroz (\email{ffelipeq@outlook.com}) and Silvia L. P. Ferrari.
 }
