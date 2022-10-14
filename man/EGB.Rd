@@ -19,11 +19,11 @@ rEGB(n, mu, phi)
 \arguments{
 \item{y_star, q}{vector of quantiles.}
 
-\item{mu}{vector with the values of the mu parameter.}
+\item{mu}{mu parameter.}
 
-\item{phi}{vector with the values of the phi parameter.}
+\item{phi}{phi parameter.}
 
-\item{log}{logical; if TRUE, probabilities p are given as log(p). Default is FALSE.}
+\item{log}{logical; if \code{TRUE}, probabilities p are given as log(p). Default is FALSE.}
 
 \item{p}{vector of probabilities.}
 
@@ -40,7 +40,8 @@ Density, distribution function, quantile function and random generation
 for exponential generalized beta of the second type distribution.
 }
 \details{
-The EGB distribution has density  \deqn{f_{\theta}(y^\star;\mu,\phi)=
+The EGB distribution with parameters \code{mu = }\eqn{\mu} and
+    \code{phi = }\eqn{\phi} has density  \deqn{f(y^\star;\mu,\phi)=
     B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^\star(1-\mu)\phi\}/ (1+\exp\{-y^\star\})^{\phi},}
     with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in \mathbb{R}}. For this
     distribution, \eqn{\mathbb{E}(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
@@ -48,7 +49,7 @@ The EGB distribution has density  \deqn{f_{\theta}(y^\star;\mu,\phi)=
     is the digamma function. See Kerman and McDonald (2015) for additional
     details. If \eqn{y \sim \text{beta}(\mu, \phi)}, with \eqn{\mu} and
     \eqn{\phi} representing the mean and precision of \eqn{y}, then
-    \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with density
+    \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with the density
     given above.
 }
 \examples{
@@ -81,9 +82,9 @@ text(2, 0.83, paste("(", 0, ",", round(p, 2), ")"), font = 2,
 
 }
 \references{
-Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
-    Kerman, S and McDonald, J. B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
+    Kerman, S. and McDonald, J.B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
     and special cases. \emph{Communications in Statistics - Theory and Methods},
     44:3857-3864.
 }

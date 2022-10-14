@@ -2,7 +2,7 @@
 % Please edit documentation in R/robustbetareg.R
 \name{plotenvelope}
 \alias{plotenvelope}
-\title{Normal Probability Plots with Simulated Envelope of Residuals for robustbetareg Objects}
+\title{Normal Probability Plots of Residuals with Simulated Envelope for robustbetareg Objects}
 \usage{
 plotenvelope(
   object,
@@ -16,7 +16,7 @@ plotenvelope(
 )
 }
 \arguments{
-\item{object}{Fitted model object of class \code{robustbetareg}.}
+\item{object}{fitted model object of class \code{robustbetareg}.}
 
 \item{type}{character indicating the type of residuals to be used, see
 \code{\link{residuals.robustbetareg}}. Default is \code{type = "sweighted2"}.}
@@ -25,10 +25,10 @@ plotenvelope(
 envelopes. Default is \code{conf = 0.95}.}
 
 \item{n.sim}{a positive integer representing the number of iterations
-to calculate the simulated envelopes. Default is \code{n.sim=100}.}
+to generate the simulated envelopes. Default is \code{n.sim=100}.}
 
 \item{PrgBar}{logical. If \code{PrgBar = TRUE} the progress bar will be shown
-in the console.}
+in the console. Default is \code{PrgBar = TRUE}.}
 
 \item{control}{a list of control arguments specified via
 \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}.}
@@ -36,15 +36,14 @@ in the console.}
 \item{...}{arguments passed to \code{\link{plot}}.}
 }
 \value{
-\code{plotenvelope} returns normal probability plot with simulated
-     envelopes for the residuals.
+\code{plotenvelope} returns normal probability plot of residuals with simulated
+     envelope.
 }
 \description{
-\code{plotenvelope} is used to display normal probability plots with simulated
-envelope of residuals for the power logit models. Currently, nine types of
+\code{plotenvelope} is used to display normal probability plots of residuals
+with simulated envelope for the robust beta regression. Currently, eight types of
 residuals are supported: sweighted2, pearson, weighted, sweighted,
-sweighted.gamma, sweighted2.gamma, combined, combined.projection, and
-sweighted3 residuals.
+sweighted.gamma, sweighted2.gamma, combined, and combined.projection residuals.
 }
 \details{
 The \code{plotenvelope} creates normal probability plots with simulated
@@ -65,12 +64,16 @@ plotenvelope(rmc, conf = 0.90)}
 
 }
 \references{
-Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
-    Atkinson, A. C. (1985) Plots, transformations and regression: an
+    Atkinson, A.C. (1985) Plots, transformations and regression: an
     introduction to graphical methods of diagnostic regression analysis.
     \emph{Oxford Science Publications}, Oxford.
 }
 \seealso{
 \code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
+}
+\author{
+Yuri S. Maluf (\email{yurimaluf@gmail.com}),
+Francisco F. Queiroz (\email{ffelipeq@outlook.com}) and Silvia L. P. Ferrari.
 }

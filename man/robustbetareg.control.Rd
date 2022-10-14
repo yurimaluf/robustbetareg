@@ -17,7 +17,7 @@ robustbetareg.control(
 \arguments{
 \item{start}{an optional vector with starting values for the parameter estimates.}
 
-\item{alpha.optimal}{a logical value. If \code{TRUE} the tuning parameter will
+\item{alpha.optimal}{a logical value. If \code{TRUE} the tuning constant will
 be select via the data-driven algorithm.}
 
 \item{tolerance}{numeric tolerance for convergence.}
@@ -46,13 +46,13 @@ The \code{robustbetareg.control} controls the fitting process of
     algorithm for selecting the optimum alpha value; details can be found in
     Ribeiro and Ferrari (2022). Starting values for the parameters associated
     to the mean and precision submodels may be supplied via \code{start}. \cr
-    We do not recommend changing the arguments passed to the data-drive algorithm.
+    We do not recommend changing the arguments passed to the data-driven algorithm.
 }
 \references{
-Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
-   Ribeiro, K. A. T. and Ferrari, S. L. P.  (2022). Robust estimation in beta regression
-   via maximum Lq-likelihood. \emph{Statistical Papers}. \cr \cr
+   Ribeiro, K.A.T. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
+   via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
 }
 \seealso{
 \code{\link{robustbetareg}}

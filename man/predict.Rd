@@ -4,26 +4,39 @@
 \alias{predict}
 \title{Prediction Methods for robustbetareg Objects Class}
 \usage{
-predict(object, newdata = NULL,
-type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)
+predict(
+  object,
+  newdata = NULL,
+  type = c("response", "link", "precision", "variance", "quantile"),
+  at = 0.5,
+  ...
+)
 }
 \arguments{
-\item{object}{Fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{fitted model object of class "\code{robustbetareg}".}
 
-\item{newdata}{optionally, a data frame in which to look for variables with which to predict. If omitted, the original observations are used.}
+\item{newdata}{optional, a data frame with new predictor values. If omitted,
+the original predictors are used.}
 
-\item{type}{character indicating type of predictions: fitted means of response ("response"), corresponding linear predictor ("link"), fitted precision parameter phi ("precision"),
-fitted variances of response ("variance"), or fitted quantile(s) of the response distribution ("quantile").}
+\item{type}{character indicating type of predictions: fitted means of response
+("\code{response}"), corresponding linear predictor ("\code{link}"),
+fitted precision parameter phi ("\code{precision}"), fitted variances
+of response ("\code{variance}"), or fitted quantile(s) of the response
+distribution ("\code{quantile}").}
 
-\item{at}{numeric vector indicating the level(s) at which quantiles should be predicted (only if type = "quantile"), defaulting to the median at = 0.5.}
+\item{at}{numeric vector indicating the level(s) at which quantiles should be
+predicted (only if \code{type = "quantile"}). Default is the median
+\code{at = 0.5}.}
 
 \item{...}{currently not used.}
 }
 \value{
-Return a vector of predicted values.
+Return a vector with the predicted values.
 }
 \description{
-Extract various types of predictions from beta regression models: either on the scale of responses in (0, 1) or the scale of the linear predictor, from robustbetareg object class.
+Extract various types of predictions from beta regression models: either on
+the scale of responses in (0, 1) or the scale of the linear predictor,
+from \code{robustbetareg} objects.
 }
 \examples{
 \dontrun{

@@ -6,27 +6,39 @@
 \alias{.robustbetareg}
 \title{Residuals Method for robustbetareg Objects}
 \usage{
-residuals(object,
-type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
- "sweighted2.gamma", "combined", "combined.projection", "sweighted3"), ...)
+\method{residuals}{robustbetareg}(
+  object,
+  type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
+    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+  ...
+)
 }
 \arguments{
-\item{object}{fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).}
+\item{object}{fitted model object of class \code{robustbetareg}.}
 
-\item{type}{character indicating type of residuals.}
+\item{type}{character indicating type of residuals to be used.}
 
 \item{...}{currently not used.}
 }
 \value{
-\code{residuals} returns a vector of selected residuals type.
+\code{residuals} returns a vector with the residuals of the type
+     specified in the \code{type} argument.
 }
 \description{
-Extract several types of residuals from  robust beta regression models: Pearson residuals (raw residuals scaled by square root of variance function)
-and different kinds of weighted residuals suggested by Espinheira et al. (2008) and Espinheira et al. (2017).
+The function provides several types of residuals for the robust beta regression
+models: Pearson residuals (raw residuals scaled by square root of variance function)
+and different kinds of weighted residuals proposed by Espinheira et al. (2008)
+and Espinheira et al. (2017).
 }
 \details{
-The definitions of the first four residuals are provided in Espinheira et al. (2008):  Equation (2) for "\code{pearson}", Equation (6) for "\code{weighted}", Equation (7) for "\code{sweighted}", and Equation (8) for "\code{sweighted2}".
-For the last four residuals the definitions are described in Espinheira et al. (2017): Last equation of Equation (7) and Equation (10) for "\code{sweighted.gamma}" and "\code{sweighted2.gamma}" respectively, Equation (9) for "\code{combined}", and Equation (11) for "\code{combined.projection}".
+The definitions of the first four residuals are provided in
+     Espinheira et al. (2008):  equation (2) for "\code{pearson}",
+     equation (6) for "\code{weighted}", equation (7) for "\code{sweighted}",
+     and equation (8) for "\code{sweighted2}". For the last four residuals
+     the definitions are described in Espinheira et al. (2017): equations (7)
+     and (10) for the "\code{sweighted.gamma}" and "\code{sweighted2.gamma}",
+     respectively, equation (9) for "\code{combined}", and equation (11)
+     for "\code{combined.projection}".
 }
 \examples{
 \dontrun{
@@ -38,9 +50,12 @@ abline(h = 0)}
 
 }
 \references{
-\href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-
-\href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
+Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+    Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta
+    Regression Residuals. \emph{Journal of Applied Statistics}, 35:407–419.\cr \cr
+    Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear
+    beta regression residuals. \emph{Biometrical Journal}, 59:445-461.\cr \cr
 }
 \seealso{
 \code{\link[robustbetareg:robustbetareg]{robustbetareg}}

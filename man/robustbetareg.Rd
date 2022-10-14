@@ -65,14 +65,14 @@ SMLE.fit(
 )
 }
 \arguments{
-\item{formula}{symbolic description of the model. See details for more
+\item{formula}{symbolic description of the model. See Details for further
 information.}
 
 \item{data}{dataset to be used.}
 
-\item{alpha}{numeric indicating the value of the tuning constant alpha.
-If alpha is fixed between zero and one, we have a robust procedure.
-The value alpha equal to zero leads to the maximum likelihood estimator.
+\item{alpha}{numeric in \eqn{[0,1)} indicating the value of the tuning constant
+alpha. \code{alpha = 0} leads to the maximum likelihood estimator.
+Robust procedures require \code{alpha} greater than zero.
 If this argument is suppressed, the tuning constant will be selected
 automatically through the data-driven algorithm proposed by Ribeiro and
 Ferrari (2022).}
@@ -90,8 +90,7 @@ function is the default.}
 \item{link.phi}{an optional character that specifies the link function of the
 precision submodel (phi). The "\code{identity}", "\code{log}", "\code{sqrt}"
 functions are supported. The default is \code{log} unless formula is of type
-\code{y ~ x} where the default is "\code{identity}" character specification of the
-link function in the precision model (phi).}
+\code{y ~ x} where the default is "\code{identity}".}
 
 \item{control}{a list of control arguments specified via
 \code{\link{robustbetareg.control}}.}
@@ -101,9 +100,9 @@ link function in the precision model (phi).}
 
 \item{...}{argument to be passed to \code{\link{robustbetareg.control}}.}
 
-\item{y, x, z}{\code{y} should be a numeric response vector (with values in
-\eqn{(0,1)}), \code{x} should be a numeric regressor matrix for the mean
- submodel, and \code{z} should be a numeric regressor matrix for the precision
+\item{y, x, z}{\code{y} must be a numeric response vector (with values in
+\eqn{(0,1)}), \code{x} must be a numeric regressor matrix for the mean
+ submodel, and \code{z} must be a numeric regressor matrix for the precision
  submodel.}
 }
 \value{
@@ -122,7 +121,7 @@ link function in the precision model (phi).}
    \tab \cr
    \code{weights} \tab the weights of each observation in the estimation process. \cr
    \tab \cr
-   \code{Tuning} \tab value of the tuning constant (choosed or fixed) used
+   \code{Tuning} \tab value of the tuning constant (automatically chosen or fixed) used
       in the estimation process. \cr
    \tab \cr
    \code{residuals} \tab a vector of standardized weighted residual 2 (see Espinheira et al. (2008)). \cr
@@ -133,7 +132,7 @@ link function in the precision model (phi).}
    \tab \cr
    \code{link.phi} \tab link function used in the precision submodel. \cr
    \tab \cr
-   \code{Optimal.Tuning} \tab logical indicating whether the data-driven algorith
+   \code{Optimal.Tuning} \tab logical indicating whether the data-driven algorithm
       was used. \cr
    \tab \cr
    \code{pseudo.r.squared} \tab pseudo R-squared value. \cr
@@ -161,40 +160,38 @@ link function in the precision model (phi).}
 }
 \description{
 Fit robust beta regression models for rates and proportions via LSMLE, LMDPDE,
- SMLE and MDPDE using the mean-precision parametrization. Both mean and
- precision of the response variable are modeled through parametric functions.
+ SMLE and MDPDE. Both mean and precision of the response variable are modeled
+ through parametric functions.
 }
 \details{
 Beta regression models are employed to model continuous response
    variables in the unit interval, like rates and proportions. The maximum
-   likelihood-based inference, usually used in these models, suffers from
-   the lack of robustness in the presence of outliers. Recently, robust estimators
-   for beta regression models were presented in the literature. Based on
+   likelihood-based inference suffers from
+   the lack of robustness in the presence of outliers. Based on
    the density power divergence, Ghosh (2019) proposed the minimum density
    power divergence estimator (MDPDE). Ribeiro and Ferrari (2022) proposed an
    estimator based on the maximization of a reparameterized Lq-likelihood;
    it is called SMLE. These estimators require suitable restrictions in the
    parameter space. Maluf et al. (2022) proposed robust estimators based on
-   the MDPDE and the SMLE which have the advantage of being well-defined
-   for all beta densities. These estimators are called LMDPDE and LSMLE and
-   are constructed through the logit transformation. For more details, see the
-   cited works. All of these estimators are implemented in the \code{robustbetareg}
-   function. They depends on a tuning constant (called \eqn{\alpha}).
+   the MDPDE and the SMLE which have the advantage of overcoming this drawback.
+   These estimators are called LMDPDE and LSMLE. For details, see the
+   cited works. The four estimators are implemented in the \code{robustbetareg}
+   function. They depend on a tuning constant (called \eqn{\alpha}).
    When the tuning constant is fixed and equal to 0, all of the estimators
    coincide with the maximum likelihood estimator. Ribeiro and Ferrari (2022)
-   and Maluf et al. (2022) suggest using a data-driven algorithm to select the]
+   and Maluf et al. (2022) suggest using a data-driven algorithm to select the
    optimum value of \eqn{\alpha}. This algorithm is implemented in
-    \code{robustbetareg} by default when the argument '\code{alpha}' is
+    \code{robustbetareg} by default when the argument "\code{alpha}" is
     suppressed.\cr \cr
     The formulation of the model has the same structure as in the usual functions
     \code{\link{glm}} and \code{\link{betareg}}. The argument
-    \code{formula} could comprise of three parts (separated by the symbols
+    \code{formula} can comprise of three parts (separated by the symbols
     "\eqn{~}" and "\eqn{|}"), namely: observed response variable in the unit
     interval, predictor of the mean submodel, with link function \code{link}
     and predictor of the precision submodel, with \code{link.phi}
     link function. If the model has constant precision, the third part may be
     omitted and the link function for phi is "\code{identity}" by default.
-    The tuning constant \code{alpha} may be treated as fixed or not (choosed
+    The tuning constant \code{alpha} may be treated as fixed or not (chosen
     by the data-driven algorithm). If \code{alpha} is fixed, its value
     must be specified in the \code{alpha} argument. \cr \cr
     Some methods are available for objects of class "\code{robustbetareg}",
@@ -204,31 +201,31 @@ Beta regression models are employed to model continuous response
 }
 \examples{
 #### Risk Manager Cost data
-data("RiskManagerCost")
-
-# MLE fit (fixed alpha equal to zero)
-fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                         data = RiskManagerCost, type = "LMDPDE", alpha = 0,
-                         link.phi = "log")
-summary(fit_MLE)
-
-# MDPDE with alpha = 0.04
-fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                           data = RiskManagerCost, type = "MDPDE",
-                           alpha = 0.04, link.phi = "log")
-summary(fit_MDPDE)
-
-# Choosing alpha via data-driven algorithm
-fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                            data = RiskManagerCost, type = "MDPDE",
-                            link.phi = "log")
-summary(fit_MDPDE2)
-
-# Similar result for the LMDPDE fit:
-fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                             data = RiskManagerCost, type = "LMDPDE",
-                             link.phi = "log")
-summary(fit_LMDPDE2)
+#data("RiskManagerCost")
+#
+## MLE fit (fixed alpha equal to zero)
+#fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#                         data = RiskManagerCost, type = "LMDPDE", alpha = 0,
+#                         link.phi = "log")
+#summary(fit_MLE)
+#
+## MDPDE with alpha = 0.04
+#fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#                           data = RiskManagerCost, type = "MDPDE",
+#                           alpha = 0.04, link.phi = "log")
+#summary(fit_MDPDE)
+#
+## Choosing alpha via data-driven algorithm
+#fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#                            data = RiskManagerCost, type = "MDPDE",
+#                            link.phi = "log")
+#summary(fit_MDPDE2)
+#
+## Similar result for the LMDPDE fit:
+#fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#                             data = RiskManagerCost, type = "LMDPDE",
+#                             link.phi = "log")
+#summary(fit_LMDPDE2)
 
 \dontrun{
 # Diagnostic plots
@@ -237,50 +234,53 @@ plot(fit_LMDPDE2)
 #### HIC data
 data("HIC")
 
-# MLE fit (fixed alpha equal to zero)
+# MLE (fixed alpha equal to zero)
 fit_MLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                          GDP_percapita, data = HIC, type = "LMDPDE",
                          alpha = 0)
 summary(fit_MLE)
 
-# SMLE and MDPDE fit with alpha chosen via data-driven algorithm
+# SMLE and MDPDE with alpha selected via data-driven algorithm
 fit_SMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                           GDP_percapita, data = HIC, type = "SMLE")
+summary(fit_SMLE)
 fit_MDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                            GDP_percapita, data = HIC, type = "MDPDE")
-# Returns MLE because of the lack of stability
+summary(fit_MDPDE)
+# SMLE and MDPDE return MLE because of the lack of stability
 
-# LSMLE and LMDPDE fit with alpha chosen via data-driven algorithm
+# LSMLE and LMDPDE with alpha selected via data-driven algorithm
 fit_LSMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                            GDP_percapita, data = HIC, type = "LSMLE")
+summary(fit_LSMLE)
 fit_LMDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                             GDP_percapita, data = HIC, type = "LMDPDE")
-# Returns robust estimates with alpha = 0.06
+summary(fit_LMDPDE)
+# LSMLE and LMDPDE return robust estimates with alpha = 0.06
 
 
-# Considering the LSMLE fit. Plotting the weights against the residuals
+# Plotting the weights against the residuals - LSMLE fit.
 plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
      ylab = "Weights")
 #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
 
-# Excluding oulier observation
+# Excluding outlier observation.
 fit_LSMLEwo1 <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
                               GDP_percapita, data = HIC[-1,], type = "LSMLE")
 summary(fit_LSMLEwo1)
-# Do not change the fit substantially.
 
-# Envelope plot
+# Normal probability plot with simulated envelope
 plotenvelope(fit_LSMLE)}
 }
 \references{
-Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
+Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
-   Ribeiro, K. A. T. and Ferrari, S. L. P.  (2022). Robust estimation in beta regression
-   via maximum Lq-likelihood. \emph{Statistical Papers}. \cr \cr
+   Ribeiro, T.K.A. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
+   via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
    Ghosh, A. (2019). Robust inference under the beta regression model with
    application to health care studies. \emph{Statistical Methods in Medical
    Research}, 28:271-888.\cr \cr
-   Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. \emph{Journal of Applied Statistics}, 35:407–419.
+   Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On beta regression residuals. \emph{Journal of Applied Statistics}, 35:407–419.
 }
 \seealso{
 \code{\link{robustbetareg.control}}, \code{\link{summary.robustbetareg}}, \code{\link{residuals.robustbetareg}}
