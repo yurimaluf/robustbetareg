@@ -270,6 +270,9 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
     est.mle=suppressWarnings(betareg(oformula,data,link=link,link.phi = link.phi))
     control$start=c(est.mle$coefficients$mean,est.mle$coefficients$precision)
   }
+  if(simple_formula){#Transformation phi -> gamma
+    control$start[length(control$start)]=linkobj$linkfun.phi$linkfun(control$start[length(control$start)])
+  }
 
   if(type=="LMDPDE")
   {
@@ -1106,8 +1109,14 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   #Point Estimation
   q=1-alpha
   check=TRUE
+
+  critical.area=NULL
   theta=tryCatch(optim(par=start_theta,fn=D_q,gr=Psi_MDPDE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
-    theta$msg<-e$message;check<<-F;return(theta)})
+    theta$msg<-e$message;check<<-F;return(theta)},
+    warning=function(w){
+      critical.area<<-w$message;
+      theta<-suppressWarnings(optim(par=start_theta,fn=D_q,gr=Psi_MDPDE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)));return(theta)})
+
   if(check){
     if(theta$convergence==0){
       theta$converged=T
@@ -1140,7 +1149,7 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
 
   #Register of output values
   y_star=log(y)-log(1-y)
-  str1=str2=NULL
+  str1=str2=str3=NULL
   result$coefficients=coefficients#Coefficients Regression
   result$vcov=vcov#Expected Covariance Matrix
   pseudor2 = if (var(eta) * var(qlogis(y)) <= 0){NA}
@@ -1170,9 +1179,16 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbe
   {
     str2=theta$msg
   }
+  if(length(critical.area)!=0)
+  {
+    str3="In some optimization interactions, one or more points reached the critical area."
+  }
   if(!is.null(str1)||!is.null(str2))
   {
     result$message=c(str1,str2)
+  }
+  if(!is.null(str3)){
+    result$warning=c(str3)
   }
   if(!any(is.na(std.error.MDPDE)))
   {#Standard Error
@@ -1201,7 +1217,6 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
   n=length(y)
   unstable=F
   sqv.unstable=T
-  #browser()
 
   #Check robustbetareg.control starting points
   if(is.null(control$start)){
@@ -1213,11 +1228,11 @@ Opt.Tuning.MDPDE=function(y,x,z,link,link.phi,control)
     }
     #checking mle starting point
     if(!is.null(est.log.lik)){
-      Est.param=do.call("c",est.log.lik$coefficients)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=do.call("c",est.log.lik$coefficients)
+      names(control$start)=c(colnames(x),colnames(z))
     }else{
-      Est.param=Initial.points(y,x,z)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=Initial.points(y,x,z)
+      names(control$start)=c(colnames(x),colnames(z))
     }
   }else{
     names(control$start)=c(colnames(x),colnames(z))
@@ -1314,6 +1329,10 @@ D_q=function(theta,y,X,Z,alpha,link_mu,link_phi){
 
   mu_hat = link.model$linkfun.mu$inv.link(X%*%Beta)
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
+
+  if(any(mu_hat==0 || mu_hat==1)){
+    mu_hat=pmax(pmin(mu_hat,1-.Machine$double.eps),.Machine$double.eps)
+  }
 
   if(alpha==0){
     D_q=sum(dbeta(y,mu_hat*phi_hat,(1-mu_hat)*phi_hat,log = T))
@@ -1489,8 +1508,13 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbet
   #Point Estimation
   q=1-alpha
   check=TRUE
+  critical.area=NULL
   theta=tryCatch(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
-    theta$msg<-e$message;check<<-F;return(theta)})
+    theta$msg<-e$message;check<<-F;return(theta)},
+    warning=function(w){
+      critical.area<<-w$message;
+      theta<-suppressWarnings(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)));return(theta)})
+
   if(check){
     if(theta$convergence==0){
       theta$converged=T
@@ -1523,7 +1547,7 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbet
 
   #Register of output values
   y_star=log(y)-log(1-y)
-  str1=str2=NULL
+  str1=str2=str3=NULL
   result$coefficients=coefficients#Coefficients Regression
   result$vcov=vcov#Expected Covariance Matrix
   pseudor2 = if (var(eta) * var(qlogis(y)) <= 0){NA}
@@ -1553,9 +1577,17 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbet
   {
     str2=theta$msg
   }
+  if(length(critical.area)!=0)
+  {
+    str3="In some optimization interactions, one or more points reached the critical area."
+  }
+
   if(!is.null(str1)||!is.null(str2))
   {
     result$message=c(str1,str2)
+  }
+  if(!is.null(str3)){
+    result$warning=c(str3)
   }
   if(!any(is.na(std.error.SMLE)))
   {#Standard Error
@@ -1595,21 +1627,19 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
     }
     #checking mle starting point
     if(!is.null(est.log.lik)){
-      Est.param=do.call("c",est.log.lik$coefficients)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=do.call("c",est.log.lik$coefficients)
+      names(control$start)=c(colnames(x),colnames(z))
     }else{
-      Est.param=Initial.points(y,x,z)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=Initial.points(y,x,z)
+      names(control$start)=c(colnames(x),colnames(z))
     }
   }else{
     names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
 
-
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
-    control$start=Est.param
     SMLE.par=tryCatch(SMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {SMLE.par$converged<-FALSE; return(SMLE.par)})
     if(!SMLE.par$converged || is.null(SMLE.par) || any(is.na(do.call("c",SMLE.par$coefficients)/do.call("c",SMLE.par$std.error))) || is.null(do.call("c",SMLE.par$std.error)))
     {
@@ -1704,9 +1734,13 @@ L_q=function(theta,y,X,Z,alpha,link_mu,link_phi){
 
   phi <-(1/q)*(phi_q - 2) + 2
   mu <- ((1/q)*(mu_q*phi_q - 1) + 1)/phi
+  if(any(mu==0 || mu==1)){
+    mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+  }
   a <- mu*phi
   b <- (1 - mu)*phi
   log_likS <- sum(dbeta(y, a, b, log = F)^(alpha))#function to be maximized
+
   return(log_likS)
 }
 

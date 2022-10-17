@@ -17,6 +17,10 @@ print.robustbetareg=function(x,...)
   }
   cat("\n")
   cat(paste0("Tuning constant: alpha = ",object$Tuning))
+  if(!is.null(object$warning)){
+    cat("\n")
+    cat(paste0("Warning: ",object$warning))
+  }
 }
 
 
@@ -135,7 +139,6 @@ coef.robustbetareg=function(object,model=c("full","mean","precision"),...)
 #' @export
 #' @importFrom stats printCoefmat quantile
 print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3), ...){
-  #browser()
   cat("Call:", deparse(x$call, width.cutoff = floor(getOption("width") * 0.85)), "", sep = "\n")
   if (!x$converged) {
     cat("model did not converge\n")
@@ -171,8 +174,10 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
       if(!is.null(x$message))
       {
         if(x$message=="Lack of stability"){cat("\nLack of stability.")}
-
       }
+    }
+    if(!is.null(x$warning)){
+      cat(paste0("\nWarning: ",x$warning))
     }
     if (!is.na(x$pseudo.r.squared))
       cat("\nPseudo R-squared:", formatC(x$pseudo.r.squared, digits = digits))
