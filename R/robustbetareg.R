@@ -436,23 +436,24 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
     }
     #checking mle starting point
     if(!is.null(est.log.lik)){
-      Est.param=do.call("c",est.log.lik$coefficients)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=do.call("c",est.log.lik$coefficients)
+      names(control$start)=c(colnames(x),colnames(z))
     }else{
-      Est.param=Initial.points(y,x,z)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=Initial.points(y,x,z)
+      names(control$start)=c(colnames(x),colnames(z))
     }
   }else{
     names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
+  control.temp=control
 
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
-    LMDPDE.par=tryCatch(LMDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {LMDPDE.par$converged<-FALSE; return(LMDPDE.par)})
+    LMDPDE.par=tryCatch(LMDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control.temp),error=function(e) {LMDPDE.par$converged<-FALSE; return(LMDPDE.par)})
     if(LMDPDE.par$converged)
     {
-      ponto.inicial.temp=c(LMDPDE.par$coefficients$mean,LMDPDE.par$coefficients$precision)
+      control.temp$start=c(LMDPDE.par$coefficients$mean,LMDPDE.par$coefficients$precision)
     }
     if(!LMDPDE.par$converged || is.null(LMDPDE.par) || any(is.na(do.call("c",LMDPDE.par$coefficients)/do.call("c",LMDPDE.par$std.error))) || is.null(do.call("c",LMDPDE.par$std.error)))
     {
@@ -493,10 +494,10 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   k=M1+1
   while(sqv.unstable & !reached)#Seek within the next grid of tuning
   {
-    LMDPDE.par=tryCatch(LMDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e){LMDPDE.par$converged<-FALSE; return(LMDPDE.par)})
+    LMDPDE.par=tryCatch(LMDPDE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control.temp),error=function(e){LMDPDE.par$converged<-FALSE; return(LMDPDE.par)})
     if(LMDPDE.par$converged)
     {
-      ponto.inicial.temp=c(LMDPDE.par$coefficients$mean,LMDPDE.par$coefficients$precision)
+      control.temp$start=c(LMDPDE.par$coefficients$mean,LMDPDE.par$coefficients$precision)
     }
     if(any(is.na(do.call("c",LMDPDE.par$coefficients)/do.call("c",LMDPDE.par$std.error))) || is.null(do.call("c",LMDPDE.par$std.error)))
     {
@@ -833,23 +834,24 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
     }
     #checking mle starting point
     if(!is.null(est.log.lik)){
-      Est.param=do.call("c",est.log.lik$coefficients)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=do.call("c",est.log.lik$coefficients)
+      names(control$start)=c(colnames(x),colnames(z))
     }else{
-      Est.param=Initial.points(y,x,z)
-      names(Est.param)=c(colnames(x),colnames(z))
+      control$start=Initial.points(y,x,z)
+      names(control$start)=c(colnames(x),colnames(z))
     }
   }else{
     names(control$start)=c(colnames(x),colnames(z))
   }
   p=length(control$start)
+  control.temp=control
 
   for(k in 1:M1)#First M1 attempts of tuning parameters
   {
-    LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e) {LSMLE.par$converged<-FALSE; return(LSMLE.par)})
+    LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control.temp),error=function(e) {LSMLE.par$converged<-FALSE; return(LSMLE.par)})
     if(LSMLE.par$converged)
     {
-      ponto.inicial.temp=c(LSMLE.par$coefficients$mean,LSMLE.par$coefficients$precision)
+      control.temp$start=c(LSMLE.par$coefficients$mean,LSMLE.par$coefficients$precision)
     }
     if(!LSMLE.par$converged || is.null(LSMLE.par) || any(is.na(do.call("c",LSMLE.par$coefficients)/do.call("c",LSMLE.par$std.error))) || is.null(do.call("c",LSMLE.par$std.error)))
     {
@@ -890,10 +892,10 @@ Opt.Tuning.LSMLE=function(y,x,z,link,link.phi,control)
   k=M1+1
   while(sqv.unstable & !reached)#Seek within the next grid of tuning
   {
-    LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e){LSMLE.par$converged<-FALSE; return(LSMLE.par)})
+    LSMLE.par=tryCatch(LSMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control.temp),error=function(e){LSMLE.par$converged<-FALSE; return(LSMLE.par)})
     if(LSMLE.par$converged)
     {
-      ponto.inicial.temp=c(LSMLE.par$coefficients$mean,LSMLE.par$coefficients$precision)
+      control.temp$start=c(LSMLE.par$coefficients$mean,LSMLE.par$coefficients$precision)
     }
     if(any(is.na(do.call("c",LSMLE.par$coefficients)/do.call("c",LSMLE.par$std.error))) || is.null(do.call("c",LSMLE.par$std.error)))
     {
@@ -1681,7 +1683,6 @@ Opt.Tuning.SMLE=function(y,x,z,link,link.phi,control)
   k=M1+1
   while(sqv.unstable & !reached)#Seek within the next grid of tuning
   {
-    control$start=Est.param
     SMLE.par=tryCatch(SMLE.fit(y,x,z,alpha=alpha_tuning[k],link=link,link.phi=link.phi,control = control),error=function(e){SMLE.par$converged<-FALSE; return(SMLE.par)})
     if(!SMLE.par$converged || any(is.na(do.call("c",SMLE.par$coefficients)/do.call("c",SMLE.par$std.error))) || is.null(do.call("c",SMLE.par$std.error)) || !SMLE.par$converged )
     {
