@@ -11,7 +11,7 @@ waldtypetest(object, FUN, ...)
 
 \item{FUN}{function representing the null hypothesis to be tested.}
 
-\item{...}{Further arguments to be passed.}
+\item{...}{further arguments to be passed to the \code{FUN} function.}
 }
 \value{
 \code{waldtypetest} returns an output for the Wald-type test containing
@@ -23,7 +23,21 @@ hypothesis for independent but non-homogeneous observations,
 based on the robust estimators (LSMLE, LMDPDE, SMLE, and MDPDE).
 }
 \details{
-DETAILS HERE
+The function provides a procedure to test a general hypothesis
+    \eqn{m(\theta) = \eta_0}, for a fixed \eqn{\eta_0 \in R^d}, against
+    a two side alternative, through a robust Wald-type test; see Maluf
+    et al. (2022) for further details. The argument \code{FUN} specifies the
+    function \eqn{m(\theta) - \eta_0} which defines the null hypothesis to be
+    considered in the test. For instance, consider a model with
+    \eqn{\theta = (\beta_1, \beta_2, \beta_3, \gamma_1)^\top} and suppose that we
+    want to test the null hypothesis \eqn{\beta_2 + \beta_3 = 4}
+    against a two side alternative. The \code{FUN} argument can be
+    \code{FUN = function(theta) \{theta[2] + theta[3] - 4\} }. It is also possible
+    define the function as \code{FUN = function(theta, B) \{theta[2] + theta[3] - B\}},
+    and pass the \code{B} argument to the \code{waldtypetest} function.
+    If no function is specified, that is, \code{FUN=NULL}, the \code{waldtypetest}
+    returns a test in which the null hypothesis is that all the coefficients are
+    jointly equal to zero.
 }
 \examples{
 \dontrun{

@@ -7,7 +7,13 @@ Authors@R: c(
   person("Silvia", "Ferrari", email = "silviaferrari@usp.br", role = "ctb"))
 Author: Felipe Queiroz [aut, cre], Yuri Maluf [aut], Silvia Ferrari [ctb] 
 Maintainer: Felipe Queiroz <ffelipeq@outlook.com>
-Description: Robust estimators for beta regression model, including robust test and graphical diagnostic tools.
+Description: Robust estimators for the beta regression, useful for modeling 
+  bounded continuous data. Currently, four types of estimators are supported, 
+  namely the LSMLE, the LMDPDE, the SMLE, and the MDPDE. All of these estimators
+  depend on a tuning constant which may be fixed or selected by a data-driven
+  algorithm also implemented in the package. Diagnostic tools associated with the
+  fitted model, such as the residuals and goodness-of-fit statistics, are implemented.
+  Finally, robust Wald-type tests are available. 
 Depends: R (>= 3.0.0), betareg
 Imports: Rmpfr, rstudioapi, crayon, pracma, numDeriv, Formula, robustbase, zoo, methods, graphics, BBmisc, MASS, miscTools, Matrix
 License: GPL-3

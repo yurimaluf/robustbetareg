@@ -2229,9 +2229,23 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 #' @name waldtypetest
 #' @param object fitted model object of class \code{robustbetareg} (see \code{\link[robustbetareg:robustbetareg]{robustbetareg}}).
 #' @param FUN function representing the null hypothesis to be tested.
-#' @param ... Further arguments to be passed.
+#' @param ... further arguments to be passed to the \code{FUN} function.
 #'
-#' @details DETAILS HERE
+#' @details The function provides a procedure to test a general hypothesis
+#'     \eqn{m(\theta) = \eta_0}, for a fixed \eqn{\eta_0 \in R^d}, against
+#'     a two side alternative, through a robust Wald-type test; see Maluf
+#'     et al. (2022) for further details. The argument \code{FUN} specifies the
+#'     function \eqn{m(\theta) - \eta_0} which defines the null hypothesis to be
+#'     considered in the test. For instance, consider a model with
+#'     \eqn{\theta = (\beta_1, \beta_2, \beta_3, \gamma_1)^\top} and suppose that we
+#'     want to test the null hypothesis \eqn{\beta_2 + \beta_3 = 4}
+#'     against a two side alternative. The \code{FUN} argument can be
+#'     \code{FUN = function(theta) \{theta[2] + theta[3] - 4\} }. It is also possible
+#'     define the function as \code{FUN = function(theta, B) \{theta[2] + theta[3] - B\}},
+#'     and pass the \code{B} argument to the \code{waldtypetest} function.
+#'     If no function is specified, that is, \code{FUN=NULL}, the \code{waldtypetest}
+#'     returns a test in which the null hypothesis is that all the coefficients are
+#'     jointly equal to zero.
 #'
 #' @return \code{waldtypetest} returns an output for the Wald-type test containing
 #' the value for the test statistics, degrees-of-freedom and p-value.
@@ -2303,7 +2317,7 @@ waldtypetest.robustbetareg=function(object,FUN,...)
       r=length(m)
       if(Matrix::rankMatrix(M)[1]!=r)
       {
-        stop("The Rank Matrix is not supported")
+        stop("The rank matrix is not supported")
       }
       W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
       #Beta Register
@@ -2313,15 +2327,13 @@ waldtypetest.robustbetareg=function(object,FUN,...)
     }
     if(ncol(object$model$precision)>1)
     {
-      #Gamma
       result.gamma=list()
       f.g=function(x){x[(k1+2):k3]}
       M=numDeriv::jacobian(f.g,p,...)
       m=f.g(p,...)
       r=length(m)
-      if(Matrix::rankMatrix(M)[1]!=r){stop("The Rank Matrix is not supported")}
+      if(Matrix::rankMatrix(M)[1]!=r){stop("The rank matrix is not supported")}
       W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
-      #Gamma Register
       result.gamma$W.alpha=as.numeric(W_alpha)
       result.gamma$df=r
       result.gamma$pValue=as.numeric(1-pchisq(W_alpha,df=r))
@@ -2329,13 +2341,12 @@ waldtypetest.robustbetareg=function(object,FUN,...)
     result=list(beta.wald=result.beta,gamma.wald=result.gamma,general=general,msg=paste("Results based on",object$method))
   }else{
     result=list()
-    #Hipothesis
     f=FUN
     M=numDeriv::jacobian(f,p,...)
     m=f(p,...)
     r=length(m)
     n=length(object$fitted.values$mu.predict)
-    if(Matrix::rankMatrix(M)[1]!=r){stop("The Rank Matrix is not supported")}
+    if(Matrix::rankMatrix(M)[1]!=r){stop("The rank matrix is not supported")}
     W_alpha=t(m)%*%solve(M%*%V%*%t(M))%*%(m)
     #Register
     result$W.alpha=as.numeric(W_alpha)
@@ -2540,7 +2551,7 @@ predict.robustbetareg = function(object, newdata = NULL, type = c("response", "l
 
 
 
-# Cooks Distance
+#' @keywords internal
 cooks.distance.robustbetareg=function(object,...)
 {
   p=length(do.call("c",object$coefficients))
@@ -2556,7 +2567,7 @@ cooks.distance.robustbetareg=function(object,...)
   return(D)
 }
 
-# Hat matrix
+#' @keywords internal
 hatvalues.robustbetareg=function(object)
 {
   mu_hat=object$fitted.values$mu.predict
