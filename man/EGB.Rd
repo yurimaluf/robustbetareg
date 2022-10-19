@@ -43,13 +43,13 @@ for exponential generalized beta of the second type distribution.
 The EGB distribution with parameters \code{mu = }\eqn{\mu} and
     \code{phi = }\eqn{\phi} has density  \deqn{f(y^\star;\mu,\phi)=
     B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^\star(1-\mu)\phi\}/ (1+\exp\{-y^\star\})^{\phi},}
-    with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in \mathbb{R}}. For this
-    distribution, \eqn{\mathbb{E}(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
-    \eqn{\text{Var}(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
+    with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in (-\infty, \infty)}. For this
+    distribution, \eqn{E(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
+    \eqn{Var(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
     is the digamma function. See Kerman and McDonald (2015) for additional
-    details. If \eqn{y \sim \text{beta}(\mu, \phi)}, with \eqn{\mu} and
+    details. If \eqn{y \sim beta(\mu, \phi)}, with \eqn{\mu} and
     \eqn{\phi} representing the mean and precision of \eqn{y}, then
-    \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with the density
+    \eqn{y^\star = \log(y/(1-y)) \sim EGB(\mu, \phi)} with the density
     given above.
 }
 \examples{

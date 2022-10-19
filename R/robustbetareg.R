@@ -1912,7 +1912,37 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #'
 #' @return A list with components named as the arguments.
 #' @seealso \code{\link{robustbetareg}}
+#' @examples
+#' \dontrun{
+#' data("RiskManagerCost")
 #'
+#' # Using a robust start value for the parameters associated with the
+#' # mean submodel
+#' # using the robustbase package
+#' # robust regression to obtain a starting value for beta
+#' fit_lm_Rob <- robustbase::lmrob(FIRMCOST ~ SIZELOG + INDCOST,
+#'                                 data = RiskManagerCost)
+#' initials_beta_rob <-  as.numeric(coef(fit_lm_Rob))
+#' etarob <- model.matrix(fit_lm_Rob)%*%initials_beta_rob
+#' muhat_Rob <- set.link(link.mu = "logit",
+#'                       link.phi = "log")$linkfun.mu$inv.link(etarob)
+#' T_1_Rob <- 1/set.link(link.mu = "logit",
+#'                       link.phi = "log")$linkfun.mu$d.linkfun(muhat_Rob)
+#' #estimate of variance of y based on robustbase package
+#' sigma2hat_Rob <- ((fit_lm_Rob$scale^2)*(T_1_Rob^2))
+#' #phi estimate from robust method
+#' phihat_Rob <- mean((muhat_Rob*(1-muhat_Rob))/sigma2hat_Rob)
+#' gama1hat_rob <- log(phihat_Rob)
+#' #gamma estimates from robustbase package
+#' initials_gama_rob <-  as.numeric(gama1hat_rob)
+#' #robust starting values for beta and gamma
+#' thetaStart <- c(initials_beta_rob, initials_gama_rob)
+#'
+#' fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                            data = RiskManagerCost,
+#'                            type = "LSMLE", link.phi = "log",
+#'                            control = robustbetareg.control(start = thetaStart))
+#' }
 #' @export
 robustbetareg.control=function(start = NULL, alpha.optimal = TRUE, tolerance = 1e-3,
                                maxit = 5000, L = 0.02, M = 3, ...)
@@ -1946,13 +1976,13 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,tolerance=1
 #' @details The EGB distribution with parameters \code{mu = }\eqn{\mu} and
 #'     \code{phi = }\eqn{\phi} has density  \deqn{f(y^\star;\mu,\phi)=
 #'     B^{-1}(\mu\phi,(1-\mu)\phi) \exp\{-y^\star(1-\mu)\phi\}/ (1+\exp\{-y^\star\})^{\phi},}
-#'     with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in \mathbb{R}}. For this
-#'     distribution, \eqn{\mathbb{E}(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
-#'     \eqn{\text{Var}(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
+#'     with \eqn{\mu\in(0,1),\phi>0} and \eqn{y^\star \in (-\infty, \infty)}. For this
+#'     distribution, \eqn{E(y^\star)=\psi(\mu\phi)-\psi((1-\mu)\phi)} and
+#'     \eqn{Var(y^\star)=\psi'(\mu\phi)+\psi'((1-\mu)\phi)}, where \eqn{\psi}
 #'     is the digamma function. See Kerman and McDonald (2015) for additional
-#'     details. If \eqn{y \sim \text{beta}(\mu, \phi)}, with \eqn{\mu} and
+#'     details. If \eqn{y \sim beta(\mu, \phi)}, with \eqn{\mu} and
 #'     \eqn{\phi} representing the mean and precision of \eqn{y}, then
-#'     \eqn{y^\star = \log(y/(1-y)) \sim \text{EGB}(\mu, \phi)} with the density
+#'     \eqn{y^\star = \log(y/(1-y)) \sim EGB(\mu, \phi)} with the density
 #'     given above.
 #' @author Yuri S. Maluf (\email{yurimaluf@@gmail.com}),
 #' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.

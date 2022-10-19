@@ -48,6 +48,38 @@ The \code{robustbetareg.control} controls the fitting process of
     to the mean and precision submodels may be supplied via \code{start}. \cr
     We do not recommend changing the arguments passed to the data-driven algorithm.
 }
+\examples{
+\dontrun{
+data("RiskManagerCost")
+
+# Using a robust start value for the parameters associated with the
+# mean submodel
+# using the robustbase package
+# robust regression to obtain a starting value for beta
+fit_lm_Rob <- robustbase::lmrob(FIRMCOST ~ SIZELOG + INDCOST,
+                                data = RiskManagerCost)
+initials_beta_rob <-  as.numeric(coef(fit_lm_Rob))
+etarob <- model.matrix(fit_lm_Rob)\%*\%initials_beta_rob
+muhat_Rob <- set.link(link.mu = "logit",
+                      link.phi = "log")$linkfun.mu$inv.link(etarob)
+T_1_Rob <- 1/set.link(link.mu = "logit",
+                      link.phi = "log")$linkfun.mu$d.linkfun(muhat_Rob)
+#estimate of variance of y based on robustbase package
+sigma2hat_Rob <- ((fit_lm_Rob$scale^2)*(T_1_Rob^2))
+#phi estimate from robust method
+phihat_Rob <- mean((muhat_Rob*(1-muhat_Rob))/sigma2hat_Rob)
+gama1hat_rob <- log(phihat_Rob)
+#gamma estimates from robustbase package
+initials_gama_rob <-  as.numeric(gama1hat_rob)
+#robust starting values for beta and gamma
+thetaStart <- c(initials_beta_rob, initials_gama_rob)
+
+fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+                           data = RiskManagerCost,
+                           type = "LSMLE", link.phi = "log",
+                           control = robustbetareg.control(start = thetaStart))
+}
+}
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr

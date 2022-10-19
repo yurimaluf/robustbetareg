@@ -7,26 +7,38 @@
 \format{
 A data frame with 73 rows and 7 variables:
 \describe{
-  \item{FIRMCOST}{The measure of the firm’s risk management cost effectiveness, defined as total property and casualty premiums and uninsured losses as a percentage of total assets}
-  \item{ASSUME}{Per occurrence retention amount as a percentage of total assets}
-  \item{CAP}{Indicates that the firm owns a captive insurance company}
-  \item{SIZELOG}{Logarithm of total assets}
-  \item{INDCOST}{A measure of the firm’s industry risk}
-  \item{CENTRAL}{A measure of the importance of the local managers in choosing the amount of risk to be retained}
-  \item{SOPH}{A measure of the degree of importance in using analytical tools}
-  ...
+  \item{FIRMCOST}{total property and casualty premiums and uninsured losses
+     as a percentage of total assets.}
+  \item{ASSUME}{per occurrence retention amount as a percentage of total
+     assets.}
+  \item{CAP}{indicates that the firm owns a captive insurance company; 1 if
+     the firm uses a captive, 0 otherwise.}
+  \item{SIZELOG}{logarithm of total assets.}
+  \item{INDCOST}{a measure of the firm's industry risk.}
+  \item{CENTRAL}{a measure of the importance of the local managers in
+     choosing the amount of risk to be retained.}
+  \item{SOPH}{a measure of the degree of importance in using analytical tools.}
 }
 }
 \source{
-\href{<https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression\%20Modeling/BookWebDec2010/CSVData/RiskSurvey.csv>}{Schmit and Roth (1990)}
+\url{https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression\%20Modeling/BookWebDec2010/CSVData/RiskSurvey.csv}
 }
 \usage{
 data("RiskManagerCost", package = "robustbetareg")
 }
 \description{
-The dataset are from a questionnaire that was sent to risk managers of large U.S.-based organizations.
+The dataset are from a questionnaire that was sent to risk managers of large
+ U.S.-based organizations.
+}
+\details{
+The dataset was introduced and analyzed by Schmit and Roth (1990) and
+    is available in the personal web page of Professor E. Frees (Wisconsin School
+     of Business Research). The response variable is \code{FIRMCOST}, smaller
+     values of firm cost are attributed to firms that have a good risk management
+     performance.
 }
 \references{
-\href{https://doi.org/10.2307/252842}{Schmit, Joan T., and Kendall Roth. “Cost Effectiveness of Risk Management Practices.” The Journal of Risk and Insurance, vol. 57, no. 3, 1990, pp. 455–70. JSTOR}
+Schmit, J.T. and Roth, K. (1990). Cost effectiveness of risk management
+    practices. \emph{Journal of Risk and Insurance}. 57:455-470.
 }
 \keyword{datasets}

@@ -78,12 +78,17 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #' @details A set of standard extractor functions for fitted model objects is available for objects of class "\code{robustbetareg}",
 #' including methods to the generic functions print and summary which print the estimated coefficients along with some further information.
 #'
-#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-#' @references \href{https://www.tandfonline.com/doi/abs/10.1080/02664760701834931}{Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta Regression Residuals. Journal of Applied Statistics, 35(4), 407–419.}
-#' @references \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.201600136}{Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear beta regression residuals. Biometrical Journal, 59(3), 445-461.}
-#' @references \href{https://doi.org/10.1177/0962280217738142}{Ghosh, A. Robust inference under the beta regression model with application to health care studies. Statistical Methods in Medical Research, 28:271-888 (2019).}
-#' @references \href{https://doi.org/10.48550/arXiv.2209.11315}{Maluf, Y. S., Ferrari, S. L., & Queiroz, F. F. (2022). Robust beta regression through the logit transformation. arXiv}
-#' @references \href{https://doi.org/10.1007/s00362-022-01320-0}{Ribeiro, K. A. T. Ferrari, S. L. P. Robust estimation in beta regression via maximum Lq-likelihood. Statistical Papers (2022).}
+#' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
+#'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    Ribeiro, T.K.A. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
+#'    via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
+#'    Ghosh, A. (2019). Robust inference under the beta regression model with
+#'    application to health care studies. \emph{Statistical Methods in Medical
+#'    Research}, 28:271-888.\cr \cr
+#'    Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On beta
+#'    regression residuals. \emph{Journal of Applied Statistics}, 35:407–419. \cr \cr
+#'    Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear
+#'    beta regression residuals. \emph{Biometrical Journal}, 59:445-461. \cr \cr
 #'
 #' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
