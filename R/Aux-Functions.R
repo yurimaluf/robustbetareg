@@ -1,9 +1,10 @@
 #' Create a Link for robust beta regression model
 #'
-#' This function provides several link functions for robust beta regression models
+#' This function provides several link functions for robust beta regression
+#' models
 #'
 #' @param link.mu character; one of "logit"(default), "probit", "cauchit", "cloglog" and "loglog"
-#' @param link.phi character; one of "log"(default) "indentity" and "sqrt"
+#' @param link.phi character; one of "log"(default) "identity" and "sqrt"
 #'
 #' @return A structure with link function, inverse link function, derivative \eqn{d\eta_{\mu}/d\mu} and \eqn{d^2\eta_{\mu}/d\mu^2} (\eqn{d\eta_{\phi}/d\phi} and \eqn{d^2\eta_{\phi}/d\phi^2}), for both models: mean and precision,
 #' where \eqn{\eta_{\mu}=\textbf{X}^{\top}\beta} and \eqn{\eta_{\phi}=\textbf{Z}^{\top}\gamma}.
