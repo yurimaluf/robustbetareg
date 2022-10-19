@@ -255,16 +255,16 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
   if(!(min(y) > 0 & max(y) < 1)){stop("invalid dependent variable, all observations must be in (0, 1)")}
   if(!is.null(control$start) & (ncol(x)+ncol(z))!=length(control$start) ){stop("Invalid initial starting point")}
   if(!is.null(alpha)){if(alpha < 0 || alpha > 1){stop("invalid tuning constant, the value must be in [0, 1)")}}
-  if(!is.null(link.phi)){if(link.phi=="identity" & !simple_formula){link.phi="log";warning("Non suitable precision link function, log link used instead")}}
-
-
-  link = match.arg(link)
-  linkobj = set.link(link.mu = link, link.phi = link.phi)
-  if(is.null(link.phi))
+  if(!is.null(link.phi))
   {
+    if(link.phi=="identity" & !simple_formula){link.phi="log";warning("Non suitable precision link function, log link used instead")}
+  }else{
     link.phi = if(simple_formula){"identity"}
     else "log"
   }
+  link = match.arg(link)
+  linkobj = set.link(link.mu = link, link.phi = link.phi)
+
   if(is.null(control$start))
   {
     est.mle=suppressWarnings(betareg(oformula,data,link=link,link.phi = link.phi))
