@@ -2,25 +2,31 @@
 % Please edit documentation in R/Show-Result.R
 \name{plot.robustbetareg}
 \alias{plot.robustbetareg}
-\title{Interactive plots for diagnostic of robust betareg models}
+\title{Diagnostic Plots for robustbetareg Objects}
 \usage{
 \method{plot}{robustbetareg}(x, ask = TRUE, ...)
 }
 \arguments{
-\item{x}{fitted model object of class \code{robustbetareg}.}
+\item{x}{fitted model object of class "\code{robustbetareg}".}
 
-\item{ask}{logical. If TRUE the user is asked before each plot.}
+\item{ask}{logical. If "\code{TRUE}" the user is asked before each plot.}
 
-\item{...}{other parameters to be passed through to plotting functions.}
+\item{...}{graphical parameters passed to the \code{\link{plot}} function (see
+\code{\link{par}}).}
 }
 \description{
-Several types of standard diagnostic plots can be produced interactively, involving various kinds of residuals, influence measures, weights etc.
+Several types of standard diagnostic plots can be produced interactively,
+involving different types of residuals.
 }
 \examples{
 \dontrun{
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
-data = HIC, alpha = 0.06)
+                     data = HIC, alpha = 0.06)
 plot(hic)}
 
+}
+\seealso{
+\code{\link{robustbetareg}}, \code{\link{residuals.robustbetareg}},
+     \code{\link{plotenvelope}}
 }

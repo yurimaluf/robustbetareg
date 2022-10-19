@@ -2,26 +2,30 @@
 % Please edit documentation in R/Aux-Functions.R
 \name{set.link}
 \alias{set.link}
-\title{Create a Link for robust beta regression model}
+\title{Link functions for robust beta regression models}
 \usage{
 set.link(link.mu = "logit", link.phi = "log")
 }
 \arguments{
-\item{link.mu}{character; one of "logit"(default), "probit", "cauchit", "cloglog" and "loglog"}
+\item{link.mu}{character specifying the mean link function. Currently, the functions
+"\code{logit}", "\code{probit}", "\code{cauchit}", "\code{cloglog}",
+ and "\code{loglog}" are supported. Default is "\code{logit}".}
 
-\item{link.phi}{character; one of "log"(default) "identity" and "sqrt"}
+\item{link.phi}{character specifying the precision link function. Currently,
+the functions "\code{log}", "\code{identity}" and "\code{sqrt}" are supported.
+Default is "\code{log}".}
 }
 \value{
-A structure with link function, inverse link function, derivative \eqn{d\eta_{\mu}/d\mu} and \eqn{d^2\eta_{\mu}/d\mu^2} (\eqn{d\eta_{\phi}/d\phi} and \eqn{d^2\eta_{\phi}/d\phi^2}), for both models: mean and precision,
-where \eqn{\eta_{\mu}=\textbf{X}^{\top}\beta} and \eqn{\eta_{\phi}=\textbf{Z}^{\top}\gamma}.
+A structure with the link function, inverse link function, first and
+  second derivatives for both mean and precision submodels.
 }
 \description{
 This function provides several link functions for robust beta regression
-models
+models.
 }
 \examples{
 \dontrun{
-links=set.link(link.mu="cauchit",link.phi="sqrt")
+links = set.link(link.mu = "cauchit", link.phi = "sqrt")
 attributes(links)}
 
 }

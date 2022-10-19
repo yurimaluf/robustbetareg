@@ -1,17 +1,22 @@
-#' Create a Link for robust beta regression model
+#' Link functions for robust beta regression models
 #'
 #' This function provides several link functions for robust beta regression
-#' models
+#' models.
 #'
-#' @param link.mu character; one of "logit"(default), "probit", "cauchit", "cloglog" and "loglog"
-#' @param link.phi character; one of "log"(default) "identity" and "sqrt"
+#' @name set.link
+#' @param link.mu character specifying the mean link function. Currently, the functions
+#'    "\code{logit}", "\code{probit}", "\code{cauchit}", "\code{cloglog}",
+#'     and "\code{loglog}" are supported. Default is "\code{logit}".
+#' @param link.phi character specifying the precision link function. Currently,
+#'     the functions "\code{log}", "\code{identity}" and "\code{sqrt}" are supported.
+#'     Default is "\code{log}".
 #'
-#' @return A structure with link function, inverse link function, derivative \eqn{d\eta_{\mu}/d\mu} and \eqn{d^2\eta_{\mu}/d\mu^2} (\eqn{d\eta_{\phi}/d\phi} and \eqn{d^2\eta_{\phi}/d\phi^2}), for both models: mean and precision,
-#' where \eqn{\eta_{\mu}=\textbf{X}^{\top}\beta} and \eqn{\eta_{\phi}=\textbf{Z}^{\top}\gamma}.
+#' @return A structure with the link function, inverse link function, first and
+#'   second derivatives for both mean and precision submodels.
 #'
 #' @examples
 #' \dontrun{
-#' links=set.link(link.mu="cauchit",link.phi="sqrt")
+#' links = set.link(link.mu = "cauchit", link.phi = "sqrt")
 #' attributes(links)}
 #'
 #' @importFrom stats dnorm
@@ -19,188 +24,191 @@
 #' @importFrom stats pnorm
 #' @importFrom miscTools ddnorm
 #'
-set.link=function(link.mu="logit",link.phi="log")
+set.link <- function(link.mu = "logit", link.phi = "log")
 {
-  #Mean Links
   switch(link.mu,
          logit={
-           linkfun=function(mu)
+           linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(log(mu)-log(1-mu))
            }
-           d.linkfun=function(mu)
+           d.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return((mu-mu^2)^(-1))
            }
-           d2.linkfun=function(mu)
+           d2.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return((2*mu-1)/(mu*(1-mu))^2)
            }
-           inv.link=function(eta)
+           inv.link <- function(eta)
            {
-             return(as.numeric(pmax(pmin(exp(eta-Rmpfr::log1pexp(eta)),1-.Machine$double.eps),.Machine$double.eps)))
+             return(as.numeric(pmax(pmin(exp(eta-Rmpfr::log1pexp(eta)),1-.Machine$double.eps),
+                                    .Machine$double.eps)))
            }
          },
-         probit={
-           linkfun=function(mu)
+         probit = {
+           linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(qnorm(mu))
            }
-           d.linkfun=function(mu)
+           d.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return((dnorm(qnorm(mu)))^(-1))
            }
-           d2.linkfun=function(mu)
+           d2.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(-ddnorm(qnorm(mu))/(dnorm(qnorm(mu)))^3)
            }
-           inv.link=function(eta)
+           inv.link <- function(eta)
            {
-             return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),.Machine$double.eps)))
+             return(as.numeric(pmax(pmin(pnorm(eta),1-.Machine$double.eps),
+                                    .Machine$double.eps)))
            }
          },
-         cloglog={
-           linkfun=function(mu)
+         cloglog = {
+           linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(log(-log(1-mu)))
            }
-           d.linkfun=function(mu)
+           d.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return((-(1-mu)*log(1-mu))^(-1))
            }
-           d2.linkfun=function(mu)
+           d2.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(-(log(1-mu)+1)/((1-mu)*log(1-mu))^2)
            }
-           inv.link=function(eta)
+           inv.link <- function(eta)
            {
              return(as.numeric(pmax(pmin(1-exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
            }
          },
          cauchit = {
-           linkfun=function(mu)
+           linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(tan(pi*(mu-0.5)))
            }
-           d.linkfun=function(mu)
+           d.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(pi*pracma::sec(pi*(mu-0.5))^2)
            }
-           d2.linkfun=function(mu)
+           d2.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(2*pi*tan(pi*(mu-0.5))*pracma::sec(pi*(mu-0.5))^2)
            }
-           inv.link=function(eta)
+           inv.link <- function(eta)
            {
              return(as.numeric(pmax(pmin(0.5+atan(eta)/pi,1-.Machine$double.eps),.Machine$double.eps)))
            }
          },
          loglog = {
-           linkfun=function(mu)
+           linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(-log(-log(mu)))
            }
-           d.linkfun=function(mu)
+           d.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return(-(mu*log(mu))^(-1))
            }
-           d2.linkfun=function(mu)
+           d2.linkfun <- function(mu)
            {
-             mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
+             mu <- pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
              return((log(mu)+1)/(mu*log(mu))^2)
            }
-           inv.link=function(eta)
+           inv.link <- function(eta)
            {
-             return(as.numeric(pmax(pmin(exp(-exp(-eta)),1-.Machine$double.eps),.Machine$double.eps)))
+             return(as.numeric(pmax(pmin(exp(-exp(-eta)),1-.Machine$double.eps),
+                                    .Machine$double.eps)))
            }
          }, stop(gettextf("%s link.mu not recognised", sQuote(link.mu)), domain = NA))
 
-  Linkfun.Mu=list(linkfun=linkfun,d.linkfun=d.linkfun,d2.linkfun=d2.linkfun,inv.link=inv.link)
-  ### Precision Links
+  Linkfun.Mu = list(linkfun=linkfun,d.linkfun=d.linkfun,
+                    d2.linkfun=d2.linkfun,inv.link=inv.link)
   switch(link.phi,
          log = {
-           linkfun.phi=function(phi)
+           linkfun.phi <- function(phi)
            {
-             phi=pmax(phi,.Machine$double.eps)
+             phi <- pmax(phi,.Machine$double.eps)
              return(log(phi))
            }
-           d.linkfun.phi=function(phi)
+           d.linkfun.phi <- function(phi)
            {
-             phi=pmax(phi,.Machine$double.eps)
+             phi <- pmax(phi,.Machine$double.eps)
              return((phi)^(-1))
            }
-           d2.linkfun.phi=function(phi)
+           d2.linkfun.phi <- function(phi)
            {
-             phi=pmax(phi,.Machine$double.eps)
+             phi <- pmax(phi,.Machine$double.eps)
              return(-(phi^(-2)))
            }
-           inv.link.phi=function(eta)
+           inv.link.phi <- function(eta)
            {
              return(pmax(as.numeric(exp(eta)),.Machine$double.eps))
            }
          },
          identity = {
-           linkfun.phi=function(phi)
+           linkfun.phi <- function(phi)
            {
-             phi=pmax(phi,.Machine$double.eps)
+             phi <- pmax(phi,.Machine$double.eps)
              return(phi)
            }
-           d.linkfun.phi=function(phi)
+           d.linkfun.phi <- function(phi)
            {
              return(rep(1,length(phi)))
            }
-           d2.linkfun.phi=function(phi)
+           d2.linkfun.phi <- function(phi)
            {
              return(rep(0,length(phi)))
            }
-           inv.link.phi=function(eta)
+           inv.link.phi <- function(eta)
            {
              return(as.numeric(eta))
            }
          },
          sqrt = {
-           linkfun.phi=function(phi)
+           linkfun.phi <- function(phi)
            {
-             phi=pmax(phi,.Machine$double.eps)
+             phi <- pmax(phi,.Machine$double.eps)
              return(sqrt(phi))
            }
-           d.linkfun.phi=function(phi)
+           d.linkfun.phi <- function(phi)
            {
              return((2*sqrt(phi))^(-1))
            }
-           d2.linkfun.phi=function(phi)
+           d2.linkfun.phi <- function(phi)
            {
              return(-0.25*(phi^(-3/2)))
            }
-           inv.link.phi=function(eta)
+           inv.link.phi <- function(eta)
            {
              return(pmax(as.numeric(eta^2),.Machine$double.eps))
            }
          }, stop(gettextf("%s link.phi not recognised", sQuote(link.phi)), domain = NA))
 
-  Linkfun.Phi=list(linkfun=linkfun.phi,d.linkfun=d.linkfun.phi,d2.linkfun=d2.linkfun.phi,inv.link=inv.link.phi)
+  Linkfun.Phi = list(linkfun=linkfun.phi,d.linkfun=d.linkfun.phi,
+                     d2.linkfun=d2.linkfun.phi,inv.link=inv.link.phi)
   ###
-  linkobj=structure(list(linkfun.mu=Linkfun.Mu,linkfun.phi=Linkfun.Phi),name.link.mu=link.mu,name.link.phi=link.phi,class="link-rbr")
+  linkobj=structure(list(linkfun.mu=Linkfun.Mu,linkfun.phi=Linkfun.Phi),
+                    name.link.mu=link.mu,name.link.phi=link.phi,class="link-rbr")
   return(linkobj)
 }
 
-#################################################################################################################################
 
-#'
+#' @keywords internal
 pearson_res=function(mu_hat,phi_hat,y)
 {
   var.y=mu_hat*(1-mu_hat)/(1+phi_hat)
@@ -208,7 +216,7 @@ pearson_res=function(mu_hat,phi_hat,y)
   return(ri)
 }
 
-#'
+#' @keywords internal
 sweighted_res=function(mu_hat,phi_hat,y)
 {
   y_star=log(y/(1-y))
@@ -219,7 +227,7 @@ sweighted_res=function(mu_hat,phi_hat,y)
   return(ri)
 }
 
-#'
+#' @keywords internal
 sweighted2_res=function(mu_hat,phi_hat,y,X,linkobj)
 {
   n=length(mu_hat)
@@ -241,34 +249,8 @@ sweighted2_res=function(mu_hat,phi_hat,y,X,linkobj)
   return(ri)
 }
 
-#'
-sweighted3_res=function(mu_hat,phi_hat,alpha,y,X,linkobj)
-{
-  n=length(mu_hat)
-  m=length(phi_hat)
-  q=1-alpha
-  if(m==1){phi_hat=rep(phi_hat,n)}
-  a_0=mu_hat*phi_hat
-  b_0=(1-mu_hat)*phi_hat
-  a_alpha=a_0*(1+alpha)
-  b_alpha=b_0*(1+alpha)
 
-  d.link.mu=linkobj$linkfun.mu$d.linkfun(mu_hat)
-  y_star=log(y)-log(1-y)
-  mu_star=digamma(a_alpha)-digamma(b_alpha)
-  v_alpha=trigamma(a_alpha)+trigamma(b_alpha)
-  c_alpha=(beta(a_alpha,b_alpha)^q)/beta(a_0,b_0)
-  w_alpha=(dEGB(y_star,mu_hat,phi_hat/q))^(alpha)
-  K_alpha=diag(v_alpha*c_alpha*(phi_hat/q)/d.link.mu^2)
-  H_alpha=sqrt(K_alpha)%*%X%*%solve(t(X)%*%K_alpha%*%X)%*%t(X)%*%sqrt(K_alpha)
-
-  nu=c_alpha*v_alpha*(1-diag(H_alpha))/q
-  ri=(y_star-mu_star)*w_alpha/sqrt(nu)#standardized weighted residuals
-
-  return(ri)
-}
-
-#'
+#' @keywords internal
 weighted_res=function(mu_hat,phi_hat,y)
 {
   y_star=log(y/(1-y))
@@ -281,7 +263,7 @@ weighted_res=function(mu_hat,phi_hat,y)
   return(ri)
 }
 
-#'
+#' @keywords internal
 sweighted.gamma_res=function(mu_hat,phi_hat,y)
 {
   y_star=log(y/(1-y))
@@ -292,7 +274,7 @@ sweighted.gamma_res=function(mu_hat,phi_hat,y)
   return(ri)
 }
 
-#'
+#' @keywords internal
 sweighted2.gamma_res=function(mu_hat,phi_hat,y,Z,linkobj)
 {
   y_star=log(y/(1-y))
@@ -313,7 +295,7 @@ sweighted2.gamma_res=function(mu_hat,phi_hat,y,Z,linkobj)
   return(ri)
 }
 
-#'
+#' @keywords internal
 combined_res=function(mu_hat,phi_hat,y)
 {
   y_star=log(y/(1-y))
@@ -324,7 +306,7 @@ combined_res=function(mu_hat,phi_hat,y)
   return(ri)
 }
 
-#'
+#' @keywords internal
 combined.projection_res=function(mu_hat,phi_hat,y,X,Z,linkobj)
 {
   n=length(mu_hat)
@@ -361,7 +343,7 @@ combined.projection_res=function(mu_hat,phi_hat,y,X,Z,linkobj)
   return(ri)
 }
 
-#'
+#' @keywords internal
 Initial.points=function(y,X,Z)
 {
   X=as.matrix(X)
@@ -385,7 +367,7 @@ Initial.points=function(y,X,Z)
   return(Est.param.Rbst)
 }
 
-#'
+#' @keywords internal
 star.obs=function(p.valor)
 {
   obs=NULL
@@ -405,7 +387,7 @@ star.obs=function(p.valor)
   return(obs)
 }
 
-#'
+#' @keywords internal
 SQV=function(zq,n,p){
   if(!is.null(zq) && dim(zq)[1]!=1 ){
     return(sqrt(apply((diff(zq,1,1))^2,1,sum))/(sqrt(n)*p))
@@ -414,7 +396,7 @@ SQV=function(zq,n,p){
   }
 }
 
-#'
+#' @keywords internal
 hatvalues=function(object)
 {
   UseMethod("hatvalues")

@@ -9,7 +9,7 @@
 \method{residuals}{robustbetareg}(
   object,
   type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
-    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+    "sweighted2.gamma", "combined", "combined.projection"),
   ...
 )
 }
@@ -43,7 +43,8 @@ The definitions of the first four residuals are provided in
 \examples{
 \dontrun{
 get(data("HIC", package = "robustbetareg"))
-fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1,
+                         data = HIC, alpha = 0.04)
 res <- residuals(fit.hic, type = "sweighted2")
 plot(res)
 abline(h = 0)}

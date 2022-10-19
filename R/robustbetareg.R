@@ -213,7 +213,8 @@
 #'        delete.response optim qlogis cor var dbeta
 #' @rdname robustbetareg
 #' @export
-robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE","MDPDE"),link = c("logit", "probit", "cloglog", "cauchit", "loglog"),
+robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE","MDPDE"),
+                         link = c("logit", "probit", "cloglog", "cauchit", "loglog"),
                          link.phi = NULL,control = robustbetareg.control(...), model = TRUE,...)
 {
   cl = match.call()
@@ -307,7 +308,8 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
 
 
 #' @rdname robustbetareg
-LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...), ...)
+LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
+                    control = robustbetareg.control(...), ...)
 {
   result=theta=list()
   #Arguments Checking
@@ -535,7 +537,6 @@ Opt.Tuning.LMDPDE=function(y,x,z,link,link.phi,control)
   }
   return(LMDPDE.par.star)
 }
-
 
 #' @keywords internal
 D_alpha_R=function(theta,y,X,Z,alpha,link_mu,link_phi){
@@ -1085,7 +1086,8 @@ LSMLE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
 }
 
 #' @rdname robustbetareg
-MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
+MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
+                   control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
   result=theta=list()
@@ -1484,7 +1486,8 @@ MDPDE_Cov_Matrix = function(mu,phi,X,Z,alpha,linkobj){
 }
 
 #' @rdname robustbetareg
-SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
+SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
+                  control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
   result=theta=list()
@@ -1951,7 +1954,8 @@ robustbetareg.control=function(start = NULL, alpha.optimal = TRUE, tolerance = 1
 }
 
 #' @export
-robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,tolerance=1e-3,maxit=5000,L=0.02,M=3,...)
+robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,
+                                       tolerance=1e-3,maxit=5000,L=0.02,M=3,...)
 {
   result <- list(start=start,alpha.optimal=alpha.optimal,tolerance = tolerance, maxit = maxit, L=L, M=M)
   result <- c(result, list(...))
@@ -2104,7 +2108,7 @@ rEGB=function(n, mu, phi)
 #' @param conf numeric specifying the confidence level of the simulated
 #'      envelopes. Default is \code{conf = 0.95}.
 #' @param n.sim a positive integer representing the number of iterations
-#'      to generate the simulated envelopes. Default is \code{n.sim=100}.
+#'      to generate the simulated envelopes. Default is \code{n.sim = 100}.
 #' @param PrgBar logical. If \code{PrgBar = TRUE} the progress bar will be shown
 #'      in the console. Default is \code{PrgBar = TRUE}.
 #' @param control a list of control arguments specified via
@@ -2127,27 +2131,36 @@ rEGB=function(n, mu, phi)
 #'     introduction to graphical methods of diagnostic regression analysis.
 #'     \emph{Oxford Science Publications}, Oxford.
 #'
-#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
+#' @seealso \code{\link{robustbetareg}}, \code{\link{robustbetareg.control}},
+#'          \code{\link{residuals.robustbetareg}}
 #'
 #' @examples
 #' \dontrun{
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
 #' data = HIC, alpha = 0.06)
-#' plotenvelope(hic, n.sim = 500)
+#' plotenvelope(hic, n.sim = 50)
 #'
 #' get(data("RiskManagerCost", package = "robustbetareg"))
 #' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
 #' plotenvelope(rmc, conf = 0.90)}
 #'
 #' @export
-plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
+plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted",
+                                    "sweighted.gamma","sweighted2.gamma","combined",
+                                    "combined.projection"),conf = 0.95,n.sim = 100,
+                      PrgBar = T, control=robustbetareg.control(...), ...)
 {
   UseMethod("plotenvelope")
 }
 
 #' @export
-plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),conf=0.95,n.sim=100,PrgBar=T,control=robustbetareg.control(...), ...)
+plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
+                                                  "weighted","sweighted",
+                                                  "sweighted.gamma","sweighted2.gamma",
+                                                  "combined","combined.projection"),
+                                    conf=0.95, n.sim = 100, PrgBar=T,
+                                    control=robustbetareg.control(...), ...)
 {
   if(missing(control)){control=robustbetareg.control(object)}
   type = match.arg(type)
@@ -2172,13 +2185,21 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
     est.mle=betareg.fit(x,y,z,link=link,link.phi = link.phi)
     start=c(est.mle$coefficients$mean,est.mle$coefficients$precision)
     if(object$method=="LSMLE"){
-      robustbetareg.sim=tryCatch(LSMLE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
+      robustbetareg.sim=tryCatch(LSMLE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,
+                                           link=link,link.phi=link.phi,start=start),
+                                 error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
     }else if(object$method=="LMDPDE"){
-      robustbetareg.sim=tryCatch(LMDPDE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
+      robustbetareg.sim=tryCatch(LMDPDE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,
+                                            link=link,link.phi=link.phi,start=start),
+                                 error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
     }else if(object$method=="SMLE"){
-      robustbetareg.sim=tryCatch(SMLE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
+      robustbetareg.sim=tryCatch(SMLE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,
+                                          link=link,link.phi=link.phi,start=start),
+                                 error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
     }else{
-      robustbetareg.sim=tryCatch(MDPDE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,link=link,link.phi=link.phi,start=start),error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
+      robustbetareg.sim=tryCatch(MDPDE.fit(y=y.sim,x=x,z=z,alpha=object$Tuning,
+                                           link=link,link.phi=link.phi,start=start),
+                                 error=function(e){robustbetareg.sim$converged<-FALSE; return(robustbetareg.sim)})
     }
     if(robustbetareg.sim$converged)
     {
@@ -2205,7 +2226,6 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
     arg$ylim=ylim
   }
   graphics::par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
-  #ARG=append(list(y=residual,main="Envelope Plot", xlab="Normal quantiles",ylab="Residuals"),arg)
   ARG=append(list(y=residual,main="", xlab="Normal quantiles",ylab="Residuals"),arg)
   do.call(stats::qqnorm,ARG)
   graphics::par(new=T)
@@ -2260,27 +2280,38 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson","weight
 #' @author Yuri S. Maluf (\email{yurimaluf@@gmail.com}),
 #' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
-#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
+#' @seealso \code{\link{robustbetareg}}
 #'
 #' @examples
 #' \dontrun{
+#' # generating a dataset
 #' set.seed(2022)
-#' N <- 40 #Sample Size
-#' beta.coef <- c(-1,-2) #Arbitrary Beta Coefficients
-#' gamma.coef <- c(5) #Arbitrary Gamma Coefficient
-#' X <- cbind(rep(1,N), x <- runif(N))
-#' mu <- exp(X%*%beta.coef)/(1+exp(X%*%beta.coef)) #Inverse Logit Link Function
+#' n <- 40
+#' beta.coef <- c(-1, -2)
+#' gamma.coef <- c(5)
+#' X <- cbind(rep(1, n), x <- runif(n))
+#' mu <- exp(X%*%beta.coef)/(1 + exp(X%*%beta.coef))
 #' phi <- exp(gamma.coef) #Inverse Log Link Function
-#' y <- rbeta(N, mu*phi, (1-mu)*phi)
-#' y[26] <- rbeta(1,((1 + mu[26])/2)*phi,(1-((1 + mu[26])/2))*phi) #Contaminated data point
-#' SimData <- as.data.frame(cbind(y,x))
-#' colnames(SimData) <- c("y","x")
-#' fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0) #Non-Robust Estimator
-#' fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData) #Robust Estimator
-#' h0 <- function(theta,B){theta[1:2] - B} #Hiphothesis to be tested
-#' waldtypetest(fit.mle, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2
-#' waldtypetest(fit.simdata, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2}
+#' y <- rbeta(N, mu*phi, (1 - mu)*phi)
+#' y[26] <- rbeta(1, ((1 + mu[26])/2)*phi, (1 - ((1 + mu[26])/2))*phi)
+#' SimData <- as.data.frame(cbind(y, x))
+#' colnames(SimData) <- c("y", "x")
 #'
+#' # Fitting the MLE and the LSMLE
+#' fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0)
+#' fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData)
+#'
+#' # Hypothesis to be tested: (beta_1, beta_2) = c(-1, -2) against a two
+#' # sided alternative
+#' # First way:
+#' h0 <- function(theta){theta[1:2] - c(-1, -2)}
+#' waldtypetest(fit.mle, h0)
+#' waldtypetest(fit.lsmle, h0)
+#' # Second way:
+#' h0 <- function(theta, B){theta[1:2] - B}
+#' waldtypetest(fit.mle, h0, B = c(-1, -2))
+#' waldtypetest(fit.lsmle, h0, B = c(-1, -2))
+#' }
 #' @importFrom stats pchisq
 #'
 #' @export
@@ -2363,7 +2394,9 @@ waldtypetest.robustbetareg=function(object,FUN,...)
 
 
 #' @export
-residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),...)
+residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted",
+                                 "sweighted.gamma","sweighted2.gamma","combined",
+                                 "combined.projection"),...)
 {
   UseMethod("residuals")
 }
@@ -2405,7 +2438,8 @@ residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted","
 #' @examples
 #' \dontrun{
 #' get(data("HIC", package = "robustbetareg"))
-#' fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+#' fit.hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1,
+#'                          data = HIC, alpha = 0.04)
 #' res <- residuals(fit.hic, type = "sweighted2")
 #' plot(res)
 #' abline(h = 0)}
@@ -2415,7 +2449,11 @@ residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted","
 #' @method residuals robustbetareg
 #'
 #' @export
-residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"),...)
+residuals.robustbetareg=function(object,
+                                 type = c("sweighted2","pearson","weighted",
+                                          "sweighted","sweighted.gamma",
+                                          "sweighted2.gamma","combined",
+                                          "combined.projection"),...)
 {
   type = match.arg(type)
   y=object$y
@@ -2448,10 +2486,6 @@ residuals.robustbetareg=function(object,type=c("sweighted2","pearson","weighted"
   combined.projection={
     res=combined.projection_res(mu_hat=mu.predict,phi_hat=phi.predict,y=y,X=x,Z=z,linkobj=linkobj)
   },
-  sweighted3={
-    res=sweighted3_res(mu_hat=mu.predict,phi_hat=phi.predict,alpha=object$Tuning,y=y,X=x,linkobj=linkobj)
-  },
-
   stop(gettextf("%s residual not recognised", sQuote(type)),domain = NA))
 
   return(res)

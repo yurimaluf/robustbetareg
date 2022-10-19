@@ -41,23 +41,34 @@ The function provides a procedure to test a general hypothesis
 }
 \examples{
 \dontrun{
+# generating a dataset
 set.seed(2022)
-N <- 40 #Sample Size
-beta.coef <- c(-1,-2) #Arbitrary Beta Coefficients
-gamma.coef <- c(5) #Arbitrary Gamma Coefficient
-X <- cbind(rep(1,N), x <- runif(N))
-mu <- exp(X\%*\%beta.coef)/(1+exp(X\%*\%beta.coef)) #Inverse Logit Link Function
+n <- 40
+beta.coef <- c(-1, -2)
+gamma.coef <- c(5)
+X <- cbind(rep(1, n), x <- runif(n))
+mu <- exp(X\%*\%beta.coef)/(1 + exp(X\%*\%beta.coef))
 phi <- exp(gamma.coef) #Inverse Log Link Function
-y <- rbeta(N, mu*phi, (1-mu)*phi)
-y[26] <- rbeta(1,((1 + mu[26])/2)*phi,(1-((1 + mu[26])/2))*phi) #Contaminated data point
-SimData <- as.data.frame(cbind(y,x))
-colnames(SimData) <- c("y","x")
-fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0) #Non-Robust Estimator
-fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData) #Robust Estimator
-h0 <- function(theta,B){theta[1:2] - B} #Hiphothesis to be tested
-waldtypetest(fit.mle, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2
-waldtypetest(fit.simdata, h0, B = beta.coef) #Testing beta.1=-1 and beta.2=-2}
+y <- rbeta(N, mu*phi, (1 - mu)*phi)
+y[26] <- rbeta(1, ((1 + mu[26])/2)*phi, (1 - ((1 + mu[26])/2))*phi)
+SimData <- as.data.frame(cbind(y, x))
+colnames(SimData) <- c("y", "x")
 
+# Fitting the MLE and the LSMLE
+fit.mle <- robustbetareg(y ~ x | 1, data = SimData, alpha = 0)
+fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData)
+
+# Hypothesis to be tested: (beta_1, beta_2) = c(-1, -2) against a two
+# sided alternative
+# First way:
+h0 <- function(theta){theta[1:2] - c(-1, -2)}
+waldtypetest(fit.mle, h0)
+waldtypetest(fit.lsmle, h0)
+# Second way:
+h0 <- function(theta, B){theta[1:2] - B}
+waldtypetest(fit.mle, h0, B = c(-1, -2))
+waldtypetest(fit.lsmle, h0, B = c(-1, -2))
+}
 }
 \references{
 Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
@@ -69,7 +80,7 @@ Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
     regression via maximum Lq-likelihood. \emph{Statistical Papers}.
 }
 \seealso{
-\code{\link[robustbetareg:robustbetareg]{robustbetareg}}
+\code{\link{robustbetareg}}
 }
 \author{
 Yuri S. Maluf (\email{yurimaluf@gmail.com}),

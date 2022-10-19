@@ -7,7 +7,7 @@
 plotenvelope(
   object,
   type = c("sweighted2", "pearson", "weighted", "sweighted", "sweighted.gamma",
-    "sweighted2.gamma", "combined", "combined.projection", "sweighted3"),
+    "sweighted2.gamma", "combined", "combined.projection"),
   conf = 0.95,
   n.sim = 100,
   PrgBar = T,
@@ -25,7 +25,7 @@ plotenvelope(
 envelopes. Default is \code{conf = 0.95}.}
 
 \item{n.sim}{a positive integer representing the number of iterations
-to generate the simulated envelopes. Default is \code{n.sim=100}.}
+to generate the simulated envelopes. Default is \code{n.sim = 100}.}
 
 \item{PrgBar}{logical. If \code{PrgBar = TRUE} the progress bar will be shown
 in the console. Default is \code{PrgBar = TRUE}.}
@@ -56,7 +56,7 @@ The \code{plotenvelope} creates normal probability plots with simulated
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
 data = HIC, alpha = 0.06)
-plotenvelope(hic, n.sim = 500)
+plotenvelope(hic, n.sim = 50)
 
 get(data("RiskManagerCost", package = "robustbetareg"))
 rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
@@ -71,7 +71,8 @@ Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
     \emph{Oxford Science Publications}, Oxford.
 }
 \seealso{
-\code{\link[robustbetareg:robustbetareg]{robustbetareg}}, \code{\link[robustbetareg:robustbetareg.control]{robustbetareg.control}}, \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}
+\code{\link{robustbetareg}}, \code{\link{robustbetareg.control}},
+         \code{\link{residuals.robustbetareg}}
 }
 \author{
 Yuri S. Maluf (\email{yurimaluf@gmail.com}),

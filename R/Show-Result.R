@@ -69,28 +69,24 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 
 #' Methods for robustbetareg Objects
 #'
-#' Methods for extracting information from fitted robust beta regression model objects of class "\code{robustbetareg}"
+#' Some S3 methods for objects of class "\code{robustbetareg}".
 #'
-#' @param object fitted model of class \code{robustbetareg}.
-#' @param type character specifying type of residuals to be included in the summary output, see \code{\link[robustbetareg:residuals]{residuals.robustbetareg}}.
+#' @name methodsrobustbetareg
+#'
+#' @param object,x fitted model of class \code{robustbetareg}.
+#' @param type character specifying type of residuals to be included in the summary output,
+#'      see \code{\link{residuals.robustbetareg}}.
 #' @param ... currently not used.
+#' @param model character specifying for which component of the model the
+#'      coefficients should be extracted.
+#' @param digits the number of significant digits to use when printing.
+#' @details A set of methods for fitted model objects of class "\code{robustbetareg}",
+#'      including methods to the generic functions \code{\link{print}} and
+#'      \code{\link{summary}}, which print the estimated coefficients along with
+#'      some further information.
 #'
-#' @details A set of standard extractor functions for fitted model objects is available for objects of class "\code{robustbetareg}",
-#' including methods to the generic functions print and summary which print the estimated coefficients along with some further information.
-#'
-#' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-#'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
-#'    Ribeiro, T.K.A. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
-#'    via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
-#'    Ghosh, A. (2019). Robust inference under the beta regression model with
-#'    application to health care studies. \emph{Statistical Methods in Medical
-#'    Research}, 28:271-888.\cr \cr
-#'    Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On beta
-#'    regression residuals. \emph{Journal of Applied Statistics}, 35:407–419. \cr \cr
-#'    Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear
-#'    beta regression residuals. \emph{Biometrical Journal}, 59:445-461. \cr \cr
-#'
-#' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
+#' @seealso \code{\link{robustbetareg}}
+#' @importFrom stats printCoefmat quantile
 #'
 #' @examples
 #' \dontrun{data("HIC", package="robustbetareg")
@@ -102,7 +98,9 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #'@export
 summary.robustbetareg=function(object, type = "sweighted2", ...)
 {
-  type <- match.arg(type, c("sweighted2","pearson","weighted","sweighted","sweighted.gamma","sweighted2.gamma","combined","combined.projection","sweighted3"))
+  type <- match.arg(type, c("sweighted2","pearson","weighted","sweighted",
+                            "sweighted.gamma","sweighted2.gamma",
+                            "combined","combined.projection"))
   object$residuals = residuals(object,type=type)
   object$residuals.type <- type
   k <- length(object$coefficients$mean)
@@ -111,7 +109,8 @@ summary.robustbetareg=function(object, type = "sweighted2", ...)
   se <- sqrt(diag(object$vcov))
   cf <- cbind(cf, se, cf/se, 2 * pnorm(-abs(cf/se)))
   colnames(cf) <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
-  cf <- list(mean = cf[seq.int(length.out = k), , drop = FALSE], precision = cf[seq.int(length.out = m) + k, , drop = FALSE])
+  cf <- list(mean = cf[seq.int(length.out = k), , drop = FALSE],
+             precision = cf[seq.int(length.out = m) + k, , drop = FALSE])
   rownames(cf$mean) <- names(object$coefficients$mean)
   rownames(cf$precision) <- names(object$coefficients$precision)
   object$coefficients <- cf
@@ -119,12 +118,9 @@ summary.robustbetareg=function(object, type = "sweighted2", ...)
   object
 }
 
-#' @rdname summary.robustbetareg
-#'
-#' @param model character specifying for which component of the model coefficients/covariance should be extracted.
-#'
+#' @rdname methodsrobustbetareg
 #' @export
-coef.robustbetareg=function(object,model=c("full","mean","precision"),...)
+coef.robustbetareg=function(object,model=c("full", "mean", "precision"),...)
 {
   cf <- object$coefficients
   model=match.arg(model)
@@ -141,22 +137,22 @@ coef.robustbetareg=function(object,model=c("full","mean","precision"),...)
   })
 }
 
+#' @rdname methodsrobustbetareg
 #' @export
-#' @importFrom stats printCoefmat quantile
 print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3), ...){
   cat("Call:", deparse(x$call, width.cutoff = floor(getOption("width") * 0.85)), "", sep = "\n")
   if (!x$converged) {
     cat("model did not converge\n")
   }else {
     types <- c("sweighted2","pearson","weighted","sweighted","sweighted.gamma",
-               "sweighted2.gamma","combined","combined.projection","sweighted3")
+               "sweighted2.gamma","combined","combined.projection")
     Types <- c("Standardized weighted residual 2", "Pearson residual", "Weighted
                residual", "Standardized weighted residual", "Standardized
                weighted residual (gamma)", "Standardized weighted residual 2
-               (gamma)", "Combined residual", "Combined projection residual",
-               "Standardized weighted residual 3")
+               (gamma)", "Combined residual", "Combined projection residual")
     cat(sprintf("%s:\n", Types[types == match.arg(x$residuals.type, types)]))
-    print(structure(round(as.vector(stats::quantile(x$residuals)), digits = digits), .Names = c("Min", "1Q", "Median","3Q", "Max")))
+    print(structure(round(as.vector(stats::quantile(x$residuals)), digits = digits),
+                    .Names = c("Min", "1Q", "Median","3Q", "Max")))
     if (NROW(x$coefficients$mean)) {
       cat(paste("\nCoefficients (mean model with ", x$link, " link):\n", sep = ""))
       stats::printCoefmat(x$coefficients$mean, digits = digits, signif.legend = FALSE)
@@ -171,7 +167,8 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
     if(x$Tuning==0){
       cat("\nType of estimator:", "MLE")
     }else{
-      cat("\nType of estimator:", switch(x$method, LSMLE = "LSMLE",  LMDPDE = "LMDPDE", SMLE = "SMLE",  MDPDE = "MDPDE"))
+      cat("\nType of estimator:", switch(x$method, LSMLE = "LSMLE",  LMDPDE = "LMDPDE",
+                                         SMLE = "SMLE",  MDPDE = "MDPDE"))
     }
     cat(paste0("\nTuning constant: alpha = ", x$Tuning))
     if(x$Optimal.Tuning){
@@ -190,26 +187,27 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
   invisible(x)
 }
 
-#' Interactive plots for diagnostic of robust betareg models
+#' Diagnostic Plots for robustbetareg Objects
 #'
-#' Several types of standard diagnostic plots can be produced interactively, involving various kinds of residuals, influence measures, weights etc.
+#' Several types of standard diagnostic plots can be produced interactively,
+#' involving different types of residuals.
 #'
-#' @param x fitted model object of class \code{robustbetareg}.
-#' @param ask logical. If TRUE the user is asked before each plot.
-#' @param ... other parameters to be passed through to plotting functions.
+#' @param x fitted model object of class "\code{robustbetareg}".
+#' @param ask logical. If "\code{TRUE}" the user is asked before each plot.
+#' @param ... graphical parameters passed to the \code{\link{plot}} function (see
+#'     \code{\link{par}}).
 #'
 #' @examples
 #' \dontrun{
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
-#' data = HIC, alpha = 0.06)
+#'                      data = HIC, alpha = 0.06)
 #' plot(hic)}
 #'
 #' @importFrom stats residuals
-#' @importFrom graphics plot
-#' @importFrom graphics abline
-#' @importFrom graphics identify
-#'
+#' @importFrom graphics plot abline identify
+#' @seealso \code{\link{robustbetareg}}, \code{\link{residuals.robustbetareg}},
+#'      \code{\link{plotenvelope}}
 #' @export
 plot.robustbetareg=function(x,ask=TRUE,...)
 {
