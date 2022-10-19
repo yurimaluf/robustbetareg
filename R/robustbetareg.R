@@ -138,31 +138,28 @@
 #'
 #' @examples
 #' #### Risk Manager Cost data
-#' #data("RiskManagerCost")
-#' #
-#' ## MLE fit (fixed alpha equal to zero)
-#' #fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#' #                         data = RiskManagerCost, type = "LMDPDE", alpha = 0,
-#' #                         link.phi = "log")
-#' #summary(fit_MLE)
-#' #
-#' ## MDPDE with alpha = 0.04
-#' #fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#' #                           data = RiskManagerCost, type = "MDPDE",
-#' #                           alpha = 0.04, link.phi = "log")
-#' #summary(fit_MDPDE)
-#' #
-#' ## Choosing alpha via data-driven algorithm
-#' #fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#' #                            data = RiskManagerCost, type = "MDPDE",
-#' #                            link.phi = "log")
-#' #summary(fit_MDPDE2)
-#' #
-#' ## Similar result for the LMDPDE fit:
-#' #fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#' #                             data = RiskManagerCost, type = "LMDPDE",
-#' #                             link.phi = "log")
-#' #summary(fit_LMDPDE2)
+#' data("RiskManagerCost")
+#'
+#' # MLE fit (fixed alpha equal to zero)
+#' fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                          data = RiskManagerCost, type = "LMDPDE", alpha = 0)
+#' summary(fit_MLE)
+#'
+#' # MDPDE with alpha = 0.04
+#' fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                            data = RiskManagerCost, type = "MDPDE",
+#'                            alpha = 0.04)
+#' summary(fit_MDPDE)
+#'
+#' # Choosing alpha via data-driven algorithm
+#' fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                             data = RiskManagerCost, type = "MDPDE")
+#' summary(fit_MDPDE2)
+#'
+#' # Similar result for the LMDPDE fit:
+#' fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
+#'                              data = RiskManagerCost, type = "LMDPDE")
+#' summary(fit_LMDPDE2)
 #'
 #' \dontrun{
 #' # Diagnostic plots
@@ -1334,7 +1331,7 @@ D_q=function(theta,y,X,Z,alpha,link_mu,link_phi){
   mu_hat = link.model$linkfun.mu$inv.link(X%*%Beta)
   phi_hat = link.model$linkfun.phi$inv.link(Z%*%Gamma)
 
-  if(any(mu_hat==0 || mu_hat==1)){
+  if( (any(mu_hat==0) || any(mu_hat==1)) ){
     mu_hat=pmax(pmin(mu_hat,1-.Machine$double.eps),.Machine$double.eps)
   }
 
@@ -1738,7 +1735,7 @@ L_q=function(theta,y,X,Z,alpha,link_mu,link_phi){
 
   phi <-(1/q)*(phi_q - 2) + 2
   mu <- ((1/q)*(mu_q*phi_q - 1) + 1)/phi
-  if(any(mu==0 || mu==1)){
+  if((any(mu==0) || any(mu==1)) ){
     mu=pmax(pmin(mu,1-.Machine$double.eps),.Machine$double.eps)
   }
   a <- mu*phi
@@ -1998,7 +1995,7 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,
 #'     44:3857-3864.
 #'
 #' @examples
-#' dEGB(0.2, mu = 0.3, phi = 1, )
+#' dEGB(0.2, mu = 0.3, phi = 1)
 #' mu = 0.2; phi = 2;
 #' set.seed(1)
 #' EGBsample = rEGB(1000, mu, phi)

@@ -1,6 +1,6 @@
 Version: 0.1.0
 Package: robustbetareg
-Title: Robust of Beta Regression Model
+Title: Robust Beta Regression Models
 Authors@R: c(
   person("Felipe", "Queiroz", email = "ffelipeq@outlook.com", role = c("aut", "cre")),
   person("Yuri", "Maluf", email = "yurimaluf@gmail.com", role = c("aut")),
@@ -20,3 +20,6 @@ NeedsCompilation: no
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

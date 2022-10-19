@@ -53,7 +53,7 @@ The EGB distribution with parameters \code{mu = }\eqn{\mu} and
     given above.
 }
 \examples{
-dEGB(0.2, mu = 0.3, phi = 1, )
+dEGB(0.2, mu = 0.3, phi = 1)
 mu = 0.2; phi = 2;
 set.seed(1)
 EGBsample = rEGB(1000, mu, phi)
