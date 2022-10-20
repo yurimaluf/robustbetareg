@@ -1107,15 +1107,13 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
     theta$x=start_theta
     theta$converged=mle$converged
   }
+
   #Point Estimation
   q=1-alpha
   check=TRUE
-
-  critical.area=NULL
   theta=tryCatch(optim(par=start_theta,fn=D_q,gr=Psi_MDPDE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
     theta$msg<-e$message;check<<-F;return(theta)},
     warning=function(w){
-      critical.area<<-w$message;
       theta<-suppressWarnings(optim(par=start_theta,fn=D_q,gr=Psi_MDPDE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)));return(theta)})
 
   if(check){
@@ -1150,7 +1148,7 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
 
   #Register of output values
   y_star=log(y)-log(1-y)
-  str1=str2=str3=NULL
+  str1=str2=NULL
   result$coefficients=coefficients#Coefficients Regression
   result$vcov=vcov#Expected Covariance Matrix
   pseudor2 = if (var(eta) * var(qlogis(y)) <= 0){NA}
@@ -1180,16 +1178,9 @@ MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
   {
     str2=theta$msg
   }
-  if(length(critical.area)!=0)
-  {
-    str3="In some optimization interactions, one or more points reached the critical area."
-  }
   if(!is.null(str1)||!is.null(str2))
   {
     result$message=c(str1,str2)
-  }
-  if(!is.null(str3)){
-    result$warning=c(str3)
   }
   if(!any(is.na(std.error.MDPDE)))
   {#Standard Error
@@ -1510,11 +1501,9 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
   #Point Estimation
   q=1-alpha
   check=TRUE
-  critical.area=NULL
   theta=tryCatch(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)),error=function(e){
     theta$msg<-e$message;check<<-F;return(theta)},
     warning=function(w){
-      critical.area<<-w$message;
       theta<-suppressWarnings(optim(par=start_theta,fn=L_q,gr=Psi_SMLE,y=y,X=x,Z=z,alpha=alpha,link_mu=link,link_phi=link.phi,control = list(fnscale=-1)));return(theta)})
 
   if(check){
@@ -1549,7 +1538,7 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
 
   #Register of output values
   y_star=log(y)-log(1-y)
-  str1=str2=str3=NULL
+  str1=str2=NULL
   result$coefficients=coefficients#Coefficients Regression
   result$vcov=vcov#Expected Covariance Matrix
   pseudor2 = if (var(eta) * var(qlogis(y)) <= 0){NA}
@@ -1579,18 +1568,11 @@ SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
   {
     str2=theta$msg
   }
-  if(length(critical.area)!=0)
-  {
-    str3="In some optimization interactions, one or more points reached the critical area."
-  }
-
   if(!is.null(str1)||!is.null(str2))
   {
     result$message=c(str1,str2)
   }
-  if(!is.null(str3)){
-    result$warning=c(str3)
-  }
+
   if(!any(is.na(std.error.SMLE)))
   {#Standard Error
     names(std.error.SMLE)<-c(colnames(x),colnames(z))

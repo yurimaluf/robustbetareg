@@ -17,10 +17,6 @@ print.robustbetareg=function(x,...)
   }
   cat("\n")
   cat(paste0("Tuning constant: alpha = ",object$Tuning))
-  if(!is.null(object$warning)){
-    cat("\n")
-    cat(paste0("Warning: ",object$warning))
-  }
 }
 
 
@@ -177,9 +173,6 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
       {
         if(x$message=="Lack of stability"){cat("\nLack of stability.")}
       }
-    }
-    if(!is.null(x$warning)){
-      cat(paste0("\nWarning: ",x$warning))
     }
     if (!is.na(x$pseudo.r.squared))
       cat("\nPseudo R-squared:", formatC(x$pseudo.r.squared, digits = digits))
