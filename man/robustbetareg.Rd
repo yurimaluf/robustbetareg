@@ -201,27 +201,27 @@ Beta regression models are employed to model continuous response
 }
 \examples{
 #### Risk Manager Cost data
-data("RiskManagerCost")
+data("Firm")
 
 # MLE fit (fixed alpha equal to zero)
 fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                         data = RiskManagerCost, type = "LMDPDE", alpha = 0)
+                         data = Firm, type = "LMDPDE", alpha = 0)
 summary(fit_MLE)
 \dontrun{
 # MDPDE with alpha = 0.04
 fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                           data = RiskManagerCost, type = "MDPDE",
+                           data = Firm, type = "MDPDE",
                            alpha = 0.04)
 summary(fit_MDPDE)
 
 # Choosing alpha via data-driven algorithm
 fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                            data = RiskManagerCost, type = "MDPDE")
+                            data = Firm, type = "MDPDE")
 summary(fit_MDPDE2)
 
 # Similar result for the LMDPDE fit:
 fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                             data = RiskManagerCost, type = "LMDPDE")
+                             data = Firm, type = "LMDPDE")
 summary(fit_LMDPDE2)
 
 # Diagnostic plots

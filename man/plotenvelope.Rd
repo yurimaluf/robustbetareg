@@ -58,8 +58,8 @@ hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 data = HIC, alpha = 0.06)
 plotenvelope(hic, n.sim = 50)
 
-get(data("RiskManagerCost", package = "robustbetareg"))
-rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
+get(data("Firm", package = "robustbetareg"))
+rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = Firm)
 plotenvelope(rmc, conf = 0.90)}
 
 }

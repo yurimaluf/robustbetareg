@@ -138,27 +138,27 @@
 #'
 #' @examples
 #' #### Risk Manager Cost data
-#' data("RiskManagerCost")
+#' data("Firm")
 #'
 #' # MLE fit (fixed alpha equal to zero)
 #' fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#'                          data = RiskManagerCost, type = "LMDPDE", alpha = 0)
+#'                          data = Firm, type = "LMDPDE", alpha = 0)
 #' summary(fit_MLE)
 #' \dontrun{
 #' # MDPDE with alpha = 0.04
 #' fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#'                            data = RiskManagerCost, type = "MDPDE",
+#'                            data = Firm, type = "MDPDE",
 #'                            alpha = 0.04)
 #' summary(fit_MDPDE)
 #'
 #' # Choosing alpha via data-driven algorithm
 #' fit_MDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#'                             data = RiskManagerCost, type = "MDPDE")
+#'                             data = Firm, type = "MDPDE")
 #' summary(fit_MDPDE2)
 #'
 #' # Similar result for the LMDPDE fit:
 #' fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#'                              data = RiskManagerCost, type = "LMDPDE")
+#'                              data = Firm, type = "LMDPDE")
 #' summary(fit_LMDPDE2)
 #'
 #' # Diagnostic plots
@@ -1895,14 +1895,14 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #' @seealso \code{\link{robustbetareg}}
 #' @examples
 #' \dontrun{
-#' data("RiskManagerCost")
+#' data("Firm")
 #'
 #' # Using a robust start value for the parameters associated with the
 #' # mean submodel
 #' # using the robustbase package
 #' # robust regression to obtain a starting value for beta
 #' fit_lm_Rob <- robustbase::lmrob(FIRMCOST ~ SIZELOG + INDCOST,
-#'                                 data = RiskManagerCost)
+#'                                 data = Firm)
 #' initials_beta_rob <-  as.numeric(coef(fit_lm_Rob))
 #' etarob <- model.matrix(fit_lm_Rob)%*%initials_beta_rob
 #' muhat_Rob <- set.link(link.mu = "logit",
@@ -1920,7 +1920,7 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #' thetaStart <- c(initials_beta_rob, initials_gama_rob)
 #'
 #' fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-#'                            data = RiskManagerCost,
+#'                            data = Firm,
 #'                            type = "LSMLE", link.phi = "log",
 #'                            control = robustbetareg.control(start = thetaStart))
 #' }
@@ -2119,8 +2119,8 @@ rEGB=function(n, mu, phi)
 #' data = HIC, alpha = 0.06)
 #' plotenvelope(hic, n.sim = 50)
 #'
-#' get(data("RiskManagerCost", package = "robustbetareg"))
-#' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = RiskManagerCost)
+#' get(data("Firm", package = "robustbetareg"))
+#' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = Firm)
 #' plotenvelope(rmc, conf = 0.90)}
 #'
 #' @export

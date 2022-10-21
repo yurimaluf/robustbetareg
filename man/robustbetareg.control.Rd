@@ -50,14 +50,14 @@ The \code{robustbetareg.control} controls the fitting process of
 }
 \examples{
 \dontrun{
-data("RiskManagerCost")
+data("Firm")
 
 # Using a robust start value for the parameters associated with the
 # mean submodel
 # using the robustbase package
 # robust regression to obtain a starting value for beta
 fit_lm_Rob <- robustbase::lmrob(FIRMCOST ~ SIZELOG + INDCOST,
-                                data = RiskManagerCost)
+                                data = Firm)
 initials_beta_rob <-  as.numeric(coef(fit_lm_Rob))
 etarob <- model.matrix(fit_lm_Rob)\%*\%initials_beta_rob
 muhat_Rob <- set.link(link.mu = "logit",
@@ -75,7 +75,7 @@ initials_gama_rob <-  as.numeric(gama1hat_rob)
 thetaStart <- c(initials_beta_rob, initials_gama_rob)
 
 fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                           data = RiskManagerCost,
+                           data = Firm,
                            type = "LSMLE", link.phi = "log",
                            control = robustbetareg.control(start = thetaStart))
 }

@@ -12,7 +12,7 @@ status](https://www.r-pkg.org/badges/version/robustbetareg)](https://CRAN.R-proj
 The **robustbetareg** package allows fitting robust beta regression.
 Currently, four types of robust estimators are supported. They depend on
 a tuning constant which may be fixed or selected by a data-driven
-algorithm also implemented in the package.Diagnostic tools associated
+algorithm also implemented in the package. Diagnostic tools associated
 with the fitted model, such as the residuals and goodness-of-fit
 statistics, are implemented. Robust Wald-type tests are available.
 
@@ -29,8 +29,8 @@ devtools::install_github("yurimaluf/robustbetareg")
 ## Main function
 
 The main function of the $\textbf{robustbetareg}$ package is
-<tt>robustbetareg()</tt>, which allows to fitting robust beta regression
-to proportional data; this explains the name. The arguments of
+<tt>robustbetareg()</tt>, which allows fitting robust beta regression to
+proportional data on the unit interval $(0,1)$. The arguments of
 <tt>robustbetareg()</tt> are:
 
 ``` r
@@ -41,9 +41,9 @@ robustbetareg(formula, data, alpha, type = c("LSMLE", "LMDPDE", "SMLE", "MDPDE")
 
 The <tt>robustbetareg()</tt> function returns an object of class
 “<tt>robustbetareg</tt>”, similar to “<tt>betareg</tt>” and
-“<tt>glm</tt>” objects, for which some methods available. The
+“<tt>glm</tt>” objects, for which some methods are available. The
 <tt>summary()</tt> method returns a standard output, with coefficient
-estimates, standard errors, partial Wald tests and p values for the
+estimates, standard errors, partial Wald-type tests and p values for the
 regression coefficients, the pseudo $R^2$, etc.. The <tt>type</tt>
 argument in <tt>robustbetareg()</tt> specifies the type of estimators to
 be used. The <tt>plot()</tt> method draws graphs for diagnostic
@@ -57,28 +57,28 @@ library(robustbetareg)
 ```
 
 In the following, an example is presented to illustrate the capacities
-of $\textbf{robustbetareg}$ package. We use the <tt>RiskManagerCost</tt>
-dataset, available in the package.
+of $\textbf{robustbetareg}$ package. We use the <tt>Firm</tt> dataset,
+available in the package.
 
-    data("RiskManagerCost", package = "robustbetareg)
+    data("Firm", package = "robustbetareg)
 
-The response variable is <tt>FIRMCOST</tt> and the covariates are
+The response variable is <tt>FIRMCOST</tt> and the covariates are the
 logarithm of total assets (<tt>SIZELOG</tt>) and a measure of the firm’s
 industry risk (<tt>INDCOST</tt>). In the following, we fit the beta
 regression model using the maximum likelihood estimator and the LSMLE, a
-robust estimator with tuning constant selected by the data-driven
+robust estimator, with tuning constant selected by the data-driven
 algorithm.
 
 ``` r
 # MLE fit (fixed alpha equal to zero)
 fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                         data = RiskManagerCost, type = "LSMLE", alpha = 0,
+                         data = Firm, type = "LSMLE", alpha = 0,
                          link.phi = "log")
 summary(fit_MLE)
 
-# Choosing alpha via data-driven algorithm
+# LSMLE fit (choosing alpha via the data-driven algorithm)
 fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
-                            data = RiskManagerCost, type = "LSMLE",
+                            data = Firm, type = "LSMLE",
                             link.phi = "log")
 ```
 

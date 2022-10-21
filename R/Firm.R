@@ -1,7 +1,6 @@
-#'  Risk Managers Cost Effectiveness
+#'  Firm Cost
 #'
-#'  The dataset are from a questionnaire that was sent to risk managers of large
-#'  U.S.-based organizations.
+#'  A dataset on risk management practices of 73 firms.
 #'
 #' @format A data frame with 73 rows and 7 variables:
 #' \describe{
@@ -26,5 +25,5 @@
 #' @source \url{https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression\%20Modeling/BookWebDec2010/CSVData/RiskSurvey.csv}
 #' @references Schmit, J.T. and Roth, K. (1990). Cost effectiveness of risk management
 #'     practices. \emph{Journal of Risk and Insurance}. 57:455-470.
-#' @usage data("RiskManagerCost", package = "robustbetareg")
-"RiskManagerCost"
+#' @usage data("Firm", package = "robustbetareg")
+"Firm"
