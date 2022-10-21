@@ -36,7 +36,7 @@ A set of methods for fitted model objects of class "\code{robustbetareg}",
      some further information.
 }
 \examples{
-\dontrun{
+\donttest{
 data("HIC", package="robustbetareg")
 fit=robustbetareg(HIC~URB+GDP|1,data=HIC,alpha=0.06)
 summary(fit)

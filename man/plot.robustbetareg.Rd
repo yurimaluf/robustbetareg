@@ -19,11 +19,12 @@ Several types of standard diagnostic plots can be produced interactively,
 involving different types of residuals.
 }
 \examples{
-\dontrun{
+\donttest{
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(HIC ~ URB + GDP | GDP,
                      data = HIC, alpha = 0.06)
-plot(hic)}
+#plot(hic)
+}
 
 }
 \seealso{

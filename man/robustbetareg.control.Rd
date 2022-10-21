@@ -49,7 +49,7 @@ The \code{robustbetareg.control} controls the fitting process of
     We do not recommend changing the arguments passed to the data-driven algorithm.
 }
 \examples{
-\dontrun{
+\donttest{
 data("Firm")
 
 # Using a robust start value for the parameters associated with the

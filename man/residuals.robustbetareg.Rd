@@ -41,13 +41,14 @@ The definitions of the first four residuals are provided in
      for "\code{combined.projection}".
 }
 \examples{
-\dontrun{
+\donttest{
 get(data("HIC", package = "robustbetareg"))
 fit.hic <- robustbetareg(HIC ~ URB + GDP | 1,
                          data = HIC, alpha = 0.04)
 res <- residuals(fit.hic, type = "sweighted2")
-plot(res)
-abline(h = 0)}
+#plot(res)
+#abline(h = 0)
+}
 
 }
 \references{

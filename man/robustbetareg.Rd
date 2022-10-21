@@ -20,49 +20,17 @@ robustbetareg(
   ...
 )
 
-LMDPDE.fit(
-  y,
-  x,
-  z,
-  alpha = NULL,
-  link = "logit",
-  link.phi = "log",
-  control = robustbetareg.control(...),
-  ...
-)
+LMDPDE.fit(y, x, z, alpha = NULL, link = "logit",
+link.phi = "log", control = robustbetareg.control(...), ...)
 
-LSMLE.fit(
-  y,
-  x,
-  z,
-  alpha = NULL,
-  link = "logit",
-  link.phi = "log",
-  control = robustbetareg.control(...),
-  ...
-)
+LSMLE.fit(y, x, z, alpha = NULL, link = "logit",
+link.phi = "log", control = robustbetareg.control(...), ...)
 
-MDPDE.fit(
-  y,
-  x,
-  z,
-  alpha = NULL,
-  link = "logit",
-  link.phi = "log",
-  control = robustbetareg.control(...),
-  ...
-)
+MDPDE.fit(y, x, z, alpha = NULL, link = "logit",
+link.phi = "log", control = robustbetareg.control(...), ...)
 
-SMLE.fit(
-  y,
-  x,
-  z,
-  alpha = NULL,
-  link = "logit",
-  link.phi = "log",
-  control = robustbetareg.control(...),
-  ...
-)
+SMLE.fit(y, x, z, alpha = NULL, link = "logit",
+link.phi = "log", control = robustbetareg.control(...), ...)
 }
 \arguments{
 \item{formula}{symbolic description of the model. See Details for further
@@ -207,7 +175,7 @@ data("Firm")
 fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                          data = Firm, type = "LMDPDE", alpha = 0)
 summary(fit_MLE)
-\dontrun{
+\donttest{
 # MDPDE with alpha = 0.04
 fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                            data = Firm, type = "MDPDE",
@@ -225,7 +193,7 @@ fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
 summary(fit_LMDPDE2)
 
 # Diagnostic plots
-plot(fit_LMDPDE2)
+# plot(fit_LMDPDE2)
 
 #### HIC data
 data("HIC")
@@ -256,8 +224,8 @@ summary(fit_LMDPDE)
 
 
 # Plotting the weights against the residuals - LSMLE fit.
-plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
-     ylab = "Weights")
+#plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+#    ylab = "Weights")
 #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
 
 # Excluding outlier observation.
@@ -266,7 +234,7 @@ fit_LSMLEwo1 <- robustbetareg(HIC ~ URB + GDP |
 summary(fit_LSMLEwo1)
 
 # Normal probability plot with simulated envelope
-plotenvelope(fit_LSMLE)}
+# plotenvelope(fit_LSMLE)}
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust

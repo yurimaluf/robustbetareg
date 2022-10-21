@@ -39,9 +39,10 @@ the scale of responses in (0, 1) or the scale of the linear predictor,
 from \code{robustbetareg} objects.
 }
 \examples{
-\dontrun{
+\donttest{
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(HIC ~ URB + GDP | 1, data = HIC, alpha = 0.04)
-cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))}
+cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))
+}
 
 }

@@ -85,7 +85,7 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #' @importFrom stats printCoefmat quantile
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("HIC", package="robustbetareg")
 #' fit=robustbetareg(HIC~URB+GDP|1,data=HIC,alpha=0.06)
 #' summary(fit)
@@ -192,11 +192,12 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
 #'     \code{\link{par}}).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 #'                      data = HIC, alpha = 0.06)
-#' plot(hic)}
+#' #plot(hic)
+#' }
 #'
 #' @importFrom stats residuals
 #' @importFrom graphics plot abline identify

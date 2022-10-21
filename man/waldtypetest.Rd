@@ -38,7 +38,7 @@ The function provides a robust Wald-type test for a general hypothesis
      zero.
 }
 \examples{
-\dontrun{
+\donttest{
 # generating a dataset
 set.seed(2022)
 n <- 40

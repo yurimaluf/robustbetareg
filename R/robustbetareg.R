@@ -144,7 +144,7 @@
 #' fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
 #'                          data = Firm, type = "LMDPDE", alpha = 0)
 #' summary(fit_MLE)
-#' \dontrun{
+#' \donttest{
 #' # MDPDE with alpha = 0.04
 #' fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
 #'                            data = Firm, type = "MDPDE",
@@ -162,7 +162,7 @@
 #' summary(fit_LMDPDE2)
 #'
 #' # Diagnostic plots
-#' plot(fit_LMDPDE2)
+#' # plot(fit_LMDPDE2)
 #'
 #' #### HIC data
 #' data("HIC")
@@ -193,8 +193,8 @@
 #'
 #'
 #' # Plotting the weights against the residuals - LSMLE fit.
-#' plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
-#'      ylab = "Weights")
+#' #plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+#' #    ylab = "Weights")
 #' #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
 #'
 #' # Excluding outlier observation.
@@ -203,7 +203,7 @@
 #' summary(fit_LSMLEwo1)
 #'
 #' # Normal probability plot with simulated envelope
-#' plotenvelope(fit_LSMLE)}
+#' # plotenvelope(fit_LSMLE)}
 #' @import betareg
 #' @importFrom stats as.formula model.frame model.response model.matrix terms
 #'        delete.response optim qlogis cor var dbeta
@@ -1910,7 +1910,7 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #' @return A list with components named as the arguments.
 #' @seealso \code{\link{robustbetareg}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("Firm")
 #'
 #' # Using a robust start value for the parameters associated with the
@@ -2129,15 +2129,15 @@ rEGB=function(n, mu, phi)
 #'          \code{\link{residuals.robustbetareg}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 #' data = HIC, alpha = 0.06)
-#' plotenvelope(hic, n.sim = 50)
+#' #plotenvelope(hic, n.sim = 50)
 #'
 #' get(data("Firm", package = "robustbetareg"))
 #' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = Firm)
-#' plotenvelope(rmc, conf = 0.90)}
+#' #plotenvelope(rmc, conf = 0.90)}
 #'
 #' @export
 plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted",
@@ -2275,7 +2275,7 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
 #' @seealso \code{\link{robustbetareg}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # generating a dataset
 #' set.seed(2022)
 #' n <- 40
@@ -2427,13 +2427,14 @@ residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted",
 #' @seealso \code{\link[robustbetareg:robustbetareg]{robustbetareg}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get(data("HIC", package = "robustbetareg"))
 #' fit.hic <- robustbetareg(HIC ~ URB + GDP | 1,
 #'                          data = HIC, alpha = 0.04)
 #' res <- residuals(fit.hic, type = "sweighted2")
-#' plot(res)
-#' abline(h = 0)}
+#' #plot(res)
+#' #abline(h = 0)
+#' }
 #'
 #' @aliases residuals residuals .robustbetareg
 #'
@@ -2507,10 +2508,11 @@ residuals.robustbetareg=function(object,
 #' @return Return a vector with the predicted values.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(HIC ~ URB + GDP | 1, data = HIC, alpha = 0.04)
-#' cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))}
+#' cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))
+#' }
 #'
 #' @export
 predict = function(object, newdata = NULL, type = c("response", "link", "precision", "variance", "quantile"), at = 0.5, ...)

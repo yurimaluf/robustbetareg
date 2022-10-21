@@ -23,7 +23,7 @@ Default is "\code{log}".}
 This function provides several link functions for robust beta regression.
 }
 \examples{
-\dontrun{
+\donttest{
 links = set.link(link.mu = "cauchit", link.phi = "sqrt")
 attributes(links)}
 

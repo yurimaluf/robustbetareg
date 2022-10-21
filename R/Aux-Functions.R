@@ -14,7 +14,7 @@
 #'   second derivatives for both mean and precision submodels.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' links = set.link(link.mu = "cauchit", link.phi = "sqrt")
 #' attributes(links)}
 #'
@@ -22,7 +22,7 @@
 #' @importFrom stats qnorm
 #' @importFrom stats pnorm
 #' @importFrom miscTools ddnorm
-#'
+#' @export
 set.link <- function(link.mu = "logit", link.phi = "log")
 {
   switch(link.mu,
