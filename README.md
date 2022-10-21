@@ -4,6 +4,9 @@
 # robustbetareg
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/robustbetareg)](https://CRAN.R-project.org/package=robustbetareg)
 <!-- badges: end -->
 
 The **robustbetareg** package allows fitting robust beta regression.
@@ -24,8 +27,6 @@ devtools::install_github("yurimaluf/robustbetareg")
 ```
 
 ## Main function
-
-#### <tt>PLreg</tt>
 
 The main function of the $\textbf{robustbetareg}$ package is
 <tt>robustbetareg()</tt>, which allows to fitting robust beta regression

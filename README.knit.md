@@ -4,14 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+
 
 # robustbetareg
 
@@ -36,7 +29,8 @@ devtools::install_github("yurimaluf/robustbetareg")
 
 The main function of the $\textbf{robustbetareg}$ package is <tt>robustbetareg()</tt>, which allows to fitting robust beta regression to proportional data; this explains the name. The arguments of <tt>robustbetareg()</tt> are:
 
-```{r PLregfunction, eval = FALSE}
+
+```r
 robustbetareg(formula, data, alpha, type = c("LSMLE", "LMDPDE", "SMLE", "MDPDE"),
   link = c("logit", "probit", "cloglog", "cauchit", "loglog"), link.phi = NULL,
   control = robustbetareg.control(...), model = TRUE, ... )
@@ -46,7 +40,8 @@ The <tt>robustbetareg()</tt> function returns an object of class "<tt>robustbeta
 
 ## Example
 
-```{r example, eval = FALSE}
+
+```r
 library(robustbetareg)
 ## basic example code
 ```
@@ -59,7 +54,8 @@ data("RiskManagerCost", package = "robustbetareg)
 The response variable is <tt>FIRMCOST</tt> and the covariates are logarithm of total assets (<tt>SIZELOG</tt>) and a measure of the firm's industry risk (<tt>INDCOST</tt>). In the following, 
 we fit the beta regression model using the maximum likelihood estimator and the LSMLE, a robust estimator with tuning constant selected by the data-driven algorithm.
 
-```{r FIRMCOST, eval  = FALSE}
+
+```r
 # MLE fit (fixed alpha equal to zero)
 fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                          data = RiskManagerCost, type = "LSMLE", alpha = 0,
@@ -74,7 +70,8 @@ fit_LSMLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
 
 The goodness of fit is assessed using diagnostic graphs through the plot method.
 
-```{r bodyfat_diagnostics, eval = FALSE}
+
+```r
 plot(fit_LSMLE)
 ```
 
