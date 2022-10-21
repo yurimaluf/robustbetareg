@@ -1983,7 +1983,7 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,
 #' hist(EGBsample, prob = TRUE, breaks = 15, main = "", las = 1, ylim = c(0, 0.2),
 #'      xlim = c(-20, 10))
 #' curve(dEGB(x, mu, phi), from = -20, to = 8, add = TRUE, col = "red")
-#' rug(EGBsample)
+#' #rug(EGBsample)
 #'
 #'
 #' # Showing the P(Y* < -5) = 0.17, where Y* ~ EGB(0.2, 2).
