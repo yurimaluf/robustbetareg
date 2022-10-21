@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^.*\.pdf
+^README\.Rmd$
+^cran-comments\.md$

@@ -41,7 +41,7 @@ from \code{robustbetareg} objects.
 \examples{
 \dontrun{
 get(data("HIC", package = "robustbetareg"))
-hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | 1, data = HIC, alpha = 0.04)
+hic <- robustbetareg(HIC ~ URB + GDP | 1, data = HIC, alpha = 0.04)
 cbind(predict(hic, type = "response"), predict(hic, type = "quantile", at = c(0.25, 0.5, 0.75)))}
 
 }

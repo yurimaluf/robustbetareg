@@ -1,17 +1,16 @@
-#' Link functions for robust beta regression models
+#' Link functions for robust beta regression
 #'
-#' This function provides several link functions for robust beta regression
-#' models.
+#' This function provides several link functions for robust beta regression.
 #'
 #' @name set.link
 #' @param link.mu character specifying the mean link function. Currently, the functions
 #'    "\code{logit}", "\code{probit}", "\code{cauchit}", "\code{cloglog}",
 #'     and "\code{loglog}" are supported. Default is "\code{logit}".
 #' @param link.phi character specifying the precision link function. Currently,
-#'     the functions "\code{log}", "\code{identity}" and "\code{sqrt}" are supported.
+#'     the functions "\code{log}", "\code{identity}", and "\code{sqrt}" are supported.
 #'     Default is "\code{log}".
 #'
-#' @return A structure with the link function, inverse link function, first and
+#' @return \code{set.link} provides the link function, inverse link function, first and
 #'   second derivatives for both mean and precision submodels.
 #'
 #' @examples

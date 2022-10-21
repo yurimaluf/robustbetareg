@@ -16,8 +16,8 @@
 \arguments{
 \item{object, x}{fitted model of class \code{robustbetareg}.}
 
-\item{type}{character specifying type of residuals to be included in the summary output,
-see \code{\link{residuals.robustbetareg}}.}
+\item{type}{character specifying the type of residuals to be included in the
+summary output, see \code{\link{residuals.robustbetareg}}.}
 
 \item{...}{currently not used.}
 
@@ -36,8 +36,9 @@ A set of methods for fitted model objects of class "\code{robustbetareg}",
      some further information.
 }
 \examples{
-\dontrun{data("HIC", package="robustbetareg")
-fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
+\dontrun{
+data("HIC", package="robustbetareg")
+fit=robustbetareg(HIC~URB+GDP|1,data=HIC,alpha=0.06)
 summary(fit)
 coef(fit)
 }

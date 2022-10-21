@@ -3,21 +3,31 @@
 \docType{data}
 \name{HIC}
 \alias{HIC}
-\title{Health Insurance Coverage (HIC)}
+\title{Health Insurance Coverage}
 \format{
 A data frame with 80 rows and 4 variables:
 \describe{
-  \item{County}{the corresponding county of the state of São Paulo, Brazil}
-  \item{Urbanization}{percentage of the total population who lives in the city’s urban zone}
-  \item{GDP_percapita}{per capita gross domestic product}
-  \item{Percent_HIC}{the health insurance coverage index}
-  ...
+  \item{CITY}{the corresponding city.}
+  \item{URB}{proportion of the total population living in the
+      city’s urban zone.}
+  \item{GDP}{per capita gross domestic product.}
+  \item{HIC}{the health insurance coverage index.}
 }
+}
+\source{
+\url{http://www.ipeadata.gov.br/Default.aspx}
 }
 \usage{
 data("HIC", package = "robustbetareg")
 }
 \description{
-A dataset containing the proportion of the population from several counties of the state of São Paulo in Brazil who have health insurance.
+A dataset containing the proportion of the population from several cities
+of the state of São Paulo, Brazil, in 2010.
+}
+\details{
+This dataset was collected by the Institute of Applied Economic
+    Research (Instituto de Pesquisa Econômica Aplicada, IPEA, Brazil). It
+    includes information on 80 cities in the state of São Paulo, Brazil,
+    in 2010.
 }
 \keyword{datasets}

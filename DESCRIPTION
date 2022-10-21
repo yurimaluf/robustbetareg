@@ -1,6 +1,6 @@
 Version: 0.1.0
 Package: robustbetareg
-Title: Robust Beta Regression Models
+Title: Robust Beta Regression
 Authors@R: c(
   person("Felipe", "Queiroz", email = "ffelipeq@outlook.com", role = c("aut", "cre")),
   person("Yuri", "Maluf", email = "yurimaluf@gmail.com", role = c("aut")),
@@ -9,10 +9,10 @@ Author: Felipe Queiroz [aut, cre], Yuri Maluf [aut], Silvia Ferrari [ctb]
 Maintainer: Felipe Queiroz <ffelipeq@outlook.com>
 Description: Robust estimators for the beta regression, useful for modeling 
   bounded continuous data. Currently, four types of robust estimators are supported. 
-  All of them depend on a tuning constant which may be fixed or selected by a 
+  They depend on a tuning constant which may be fixed or selected by a 
   data-driven algorithm also implemented in the package. Diagnostic tools 
   associated with the fitted model, such as the residuals and goodness-of-fit 
-  statistics, are implemented. Finally, robust Wald-type tests are available. 
+  statistics, are implemented. Robust Wald-type tests are available. 
 Depends: R (>= 3.0.0), betareg
 Imports: Rmpfr, rstudioapi, crayon, pracma, numDeriv, Formula, robustbase, zoo, methods, graphics, BBmisc, MASS, miscTools, Matrix
 License: GPL-3

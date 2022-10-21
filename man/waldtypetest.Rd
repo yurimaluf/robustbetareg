@@ -15,29 +15,27 @@ waldtypetest(object, FUN, ...)
 }
 \value{
 \code{waldtypetest} returns an output for the Wald-type test containing
-the value for the test statistics, degrees-of-freedom and p-value.
+the value of the test statistic, degrees-of-freedom and p-value.
 }
 \description{
 \code{waldtypetest} provides Wald-type tests for both simple and composite
-hypothesis for independent but non-homogeneous observations,
-based on the robust estimators (LSMLE, LMDPDE, SMLE, and MDPDE).
+hypotheses for beta regression based on the robust estimators
+(LSMLE, LMDPDE, SMLE, and MDPDE).
 }
 \details{
-The function provides a procedure to test a general hypothesis
+The function provides a robust Wald-type test for a general hypothesis
     \eqn{m(\theta) = \eta_0}, for a fixed \eqn{\eta_0 \in R^d}, against
-    a two side alternative, through a robust Wald-type test; see Maluf
-    et al. (2022) for further details. The argument \code{FUN} specifies the
-    function \eqn{m(\theta) - \eta_0} which defines the null hypothesis to be
-    considered in the test. For instance, consider a model with
-    \eqn{\theta = (\beta_1, \beta_2, \beta_3, \gamma_1)^\top} and suppose that we
-    want to test the null hypothesis \eqn{\beta_2 + \beta_3 = 4}
-    against a two side alternative. The \code{FUN} argument can be
-    \code{FUN = function(theta) \{theta[2] + theta[3] - 4\} }. It is also possible
+    a two sided alternative; see Maluf et al. (2022) for details.
+    The argument \code{FUN} specifies the function \eqn{m(\theta) - \eta_0},
+    which defines the null hypothesis. For instance, consider a model with
+    \eqn{\theta = (\beta_1, \beta_2, \beta_3, \gamma_1)^\top} and let the
+     null hypothesis be \eqn{\beta_2 + \beta_3 = 4}. The \code{FUN} argument can be
+    \code{FUN = function(theta) \{theta[2] + theta[3] - 4\}}. It is also possible to
     define the function as \code{FUN = function(theta, B) \{theta[2] + theta[3] - B\}},
-    and pass the \code{B} argument to the \code{waldtypetest} function.
+    and pass the \code{B} argument through the \code{waldtypetest} function.
     If no function is specified, that is, \code{FUN=NULL}, the \code{waldtypetest}
     returns a test in which the null hypothesis is that all the coefficients are
-    jointly equal to zero.
+     zero.
 }
 \examples{
 \dontrun{
@@ -49,7 +47,7 @@ gamma.coef <- c(5)
 X <- cbind(rep(1, n), x <- runif(n))
 mu <- exp(X\%*\%beta.coef)/(1 + exp(X\%*\%beta.coef))
 phi <- exp(gamma.coef) #Inverse Log Link Function
-y <- rbeta(N, mu*phi, (1 - mu)*phi)
+y <- rbeta(n, mu*phi, (1 - mu)*phi)
 y[26] <- rbeta(1, ((1 + mu[26])/2)*phi, (1 - ((1 + mu[26])/2))*phi)
 SimData <- as.data.frame(cbind(y, x))
 colnames(SimData) <- c("y", "x")
@@ -60,11 +58,10 @@ fit.lsmle <- robustbetareg(y ~ x | 1, data = SimData)
 
 # Hypothesis to be tested: (beta_1, beta_2) = c(-1, -2) against a two
 # sided alternative
-# First way:
 h0 <- function(theta){theta[1:2] - c(-1, -2)}
 waldtypetest(fit.mle, h0)
 waldtypetest(fit.lsmle, h0)
-# Second way:
+# Alternative way:
 h0 <- function(theta, B){theta[1:2] - B}
 waldtypetest(fit.mle, h0, B = c(-1, -2))
 waldtypetest(fit.lsmle, h0, B = c(-1, -2))

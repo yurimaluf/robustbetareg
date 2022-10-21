@@ -207,7 +207,7 @@ data("RiskManagerCost")
 fit_MLE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                          data = RiskManagerCost, type = "LMDPDE", alpha = 0)
 summary(fit_MLE)
-
+\dontrun{
 # MDPDE with alpha = 0.04
 fit_MDPDE <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                            data = RiskManagerCost, type = "MDPDE",
@@ -224,7 +224,6 @@ fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
                              data = RiskManagerCost, type = "LMDPDE")
 summary(fit_LMDPDE2)
 
-\dontrun{
 # Diagnostic plots
 plot(fit_LMDPDE2)
 
@@ -232,26 +231,26 @@ plot(fit_LMDPDE2)
 data("HIC")
 
 # MLE (fixed alpha equal to zero)
-fit_MLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                         GDP_percapita, data = HIC, type = "LMDPDE",
+fit_MLE <- robustbetareg(HIC ~ URB + GDP |
+                         GDP, data = HIC, type = "LMDPDE",
                          alpha = 0)
 summary(fit_MLE)
 
 # SMLE and MDPDE with alpha selected via data-driven algorithm
-fit_SMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                          GDP_percapita, data = HIC, type = "SMLE")
+fit_SMLE <- robustbetareg(HIC ~ URB + GDP |
+                          GDP, data = HIC, type = "SMLE")
 summary(fit_SMLE)
-fit_MDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                           GDP_percapita, data = HIC, type = "MDPDE")
+fit_MDPDE <- robustbetareg(HIC ~ URB + GDP |
+                           GDP, data = HIC, type = "MDPDE")
 summary(fit_MDPDE)
 # SMLE and MDPDE return MLE because of the lack of stability
 
 # LSMLE and LMDPDE with alpha selected via data-driven algorithm
-fit_LSMLE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                           GDP_percapita, data = HIC, type = "LSMLE")
+fit_LSMLE <- robustbetareg(HIC ~ URB + GDP |
+                           GDP, data = HIC, type = "LSMLE")
 summary(fit_LSMLE)
-fit_LMDPDE <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                            GDP_percapita, data = HIC, type = "LMDPDE")
+fit_LMDPDE <- robustbetareg(HIC ~ URB + GDP |
+                            GDP, data = HIC, type = "LMDPDE")
 summary(fit_LMDPDE)
 # LSMLE and LMDPDE return robust estimates with alpha = 0.06
 
@@ -262,8 +261,8 @@ plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
 #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
 
 # Excluding outlier observation.
-fit_LSMLEwo1 <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita |
-                              GDP_percapita, data = HIC[-1,], type = "LSMLE")
+fit_LSMLEwo1 <- robustbetareg(HIC ~ URB + GDP |
+                              GDP, data = HIC[-1,], type = "LSMLE")
 summary(fit_LSMLEwo1)
 
 # Normal probability plot with simulated envelope

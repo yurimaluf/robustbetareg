@@ -21,7 +21,7 @@ involving different types of residuals.
 \examples{
 \dontrun{
 get(data("HIC", package = "robustbetareg"))
-hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+hic <- robustbetareg(HIC ~ URB + GDP | GDP,
                      data = HIC, alpha = 0.06)
 plot(hic)}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Aux-Functions.R
 \name{set.link}
 \alias{set.link}
-\title{Link functions for robust beta regression models}
+\title{Link functions for robust beta regression}
 \usage{
 set.link(link.mu = "logit", link.phi = "log")
 }
@@ -12,16 +12,15 @@ set.link(link.mu = "logit", link.phi = "log")
  and "\code{loglog}" are supported. Default is "\code{logit}".}
 
 \item{link.phi}{character specifying the precision link function. Currently,
-the functions "\code{log}", "\code{identity}" and "\code{sqrt}" are supported.
+the functions "\code{log}", "\code{identity}", and "\code{sqrt}" are supported.
 Default is "\code{log}".}
 }
 \value{
-A structure with the link function, inverse link function, first and
+\code{set.link} provides the link function, inverse link function, first and
   second derivatives for both mean and precision submodels.
 }
 \description{
-This function provides several link functions for robust beta regression
-models.
+This function provides several link functions for robust beta regression.
 }
 \examples{
 \dontrun{

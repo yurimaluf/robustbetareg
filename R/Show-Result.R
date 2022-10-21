@@ -70,8 +70,8 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #' @name methodsrobustbetareg
 #'
 #' @param object,x fitted model of class \code{robustbetareg}.
-#' @param type character specifying type of residuals to be included in the summary output,
-#'      see \code{\link{residuals.robustbetareg}}.
+#' @param type character specifying the type of residuals to be included in the
+#'      summary output, see \code{\link{residuals.robustbetareg}}.
 #' @param ... currently not used.
 #' @param model character specifying for which component of the model the
 #'      coefficients should be extracted.
@@ -85,8 +85,9 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #' @importFrom stats printCoefmat quantile
 #'
 #' @examples
-#' \dontrun{data("HIC", package="robustbetareg")
-#' fit=robustbetareg(Percent_HIC~Urbanization+GDP_percapita|1,data=HIC,alpha=0.06)
+#' \dontrun{
+#' data("HIC", package="robustbetareg")
+#' fit=robustbetareg(HIC~URB+GDP|1,data=HIC,alpha=0.06)
 #' summary(fit)
 #' coef(fit)
 #' }
@@ -193,7 +194,7 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
 #' @examples
 #' \dontrun{
 #' get(data("HIC", package = "robustbetareg"))
-#' hic <- robustbetareg(Percent_HIC ~ Urbanization + GDP_percapita | GDP_percapita,
+#' hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 #'                      data = HIC, alpha = 0.06)
 #' plot(hic)}
 #'
