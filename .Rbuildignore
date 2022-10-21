@@ -3,3 +3,4 @@
 ^.*\.pdf
 ^README\.Rmd$
 ^cran-comments\.md$
+^codecov\.yml$
