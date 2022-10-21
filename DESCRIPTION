@@ -14,7 +14,7 @@ Description: Robust estimators for the beta regression, useful for modeling
   associated with the fitted model, such as the residuals and goodness-of-fit 
   statistics, are implemented. Robust Wald-type tests are available. More details
   about robust beta regression are described in Maluf et al. (2022) <arXiv:2209.11315>.
-Depends: R (>= 3.0.0), betareg
+Depends: R (>= 3.5.0), betareg
 Imports: Rmpfr, rstudioapi, crayon, pracma, numDeriv, Formula, robustbase, zoo, methods, graphics, BBmisc, MASS, miscTools, Matrix
 License: GPL-3
 NeedsCompilation: no
