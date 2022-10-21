@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/robustbetareg)](https://CRAN.R-project.org/package=robustbetareg)
-[![Codecov test
-coverage](https://codecov.io/gh/yurimaluf/robustbetareg/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yurimaluf/robustbetareg?branch=main)
 <!-- badges: end -->
 
 The **robustbetareg** package allows fitting robust beta regression.
