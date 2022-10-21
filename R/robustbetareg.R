@@ -304,6 +304,10 @@ robustbetareg = function(formula, data, alpha, type = c("LSMLE","LMDPDE","SMLE",
 
 
 #' @rdname robustbetareg
+#'
+#' @usage LMDPDE.fit(y, x, z, alpha = NULL, link = "logit",
+#' link.phi = "log", control = robustbetareg.control(...), ...)
+#'
 LMDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
                     control = robustbetareg.control(...), ...)
 {
@@ -697,6 +701,10 @@ LMDPDE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
 }
 
 #' @rdname robustbetareg
+#'
+#' @usage LSMLE.fit(y, x, z, alpha = NULL, link = "logit",
+#' link.phi = "log", control = robustbetareg.control(...), ...)
+#'
 LSMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",control=robustbetareg.control(...),...)
 {
   #options(warn = 2) #Convert warnings in errors
@@ -1082,6 +1090,10 @@ LSMLE_Cov_Matrix=function(mu,phi,X,Z,alpha,linkobj)
 }
 
 #' @rdname robustbetareg
+#'
+#' @usage MDPDE.fit(y, x, z, alpha = NULL, link = "logit",
+#' link.phi = "log", control = robustbetareg.control(...), ...)
+#'
 MDPDE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
                    control=robustbetareg.control(...),...)
 {
@@ -1473,6 +1485,10 @@ MDPDE_Cov_Matrix = function(mu,phi,X,Z,alpha,linkobj){
 }
 
 #' @rdname robustbetareg
+#'
+#' @usage SMLE.fit(y, x, z, alpha = NULL, link = "logit",
+#' link.phi = "log", control = robustbetareg.control(...), ...)
+#'
 SMLE.fit=function(y,x,z,alpha=NULL,link="logit",link.phi="log",
                   control=robustbetareg.control(...),...)
 {
