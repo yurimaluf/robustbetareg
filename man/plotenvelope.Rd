@@ -10,7 +10,7 @@ plotenvelope(
     "sweighted2.gamma", "combined", "combined.projection"),
   conf = 0.95,
   n.sim = 100,
-  PrgBar = T,
+  PrgBar = TRUE,
   control = robustbetareg.control(...),
   ...
 )
@@ -56,12 +56,11 @@ The \code{plotenvelope} creates normal probability plots with simulated
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 data = HIC, alpha = 0.06)
-#plotenvelope(hic, n.sim = 50)
+plotenvelope(hic, n.sim = 50)
 
 get(data("Firm", package = "robustbetareg"))
 rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = Firm)
-#plotenvelope(rmc, conf = 0.90)}
-
+plotenvelope(rmc, conf = 0.90)}
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust

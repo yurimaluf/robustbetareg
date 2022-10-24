@@ -76,12 +76,14 @@ print.WaldTest_robustbetareg=function(x, digits = max(3, getOption("digits") - 3
 #' @param model character specifying for which component of the model the
 #'      coefficients should be extracted.
 #' @param digits the number of significant digits to use when printing.
-#' @details A set of methods for fitted model objects of class "\code{robustbetareg}",
+#' @details A set of methods for fitted model objects of class \code{robustbetareg},
 #'      including methods to the generic functions \code{\link{print}} and
 #'      \code{\link{summary}}, which print the estimated coefficients along with
 #'      some further information.
 #'
 #' @seealso \code{\link{robustbetareg}}
+#' @return \code{methodsrobustbetareg} returns different outputs for objects of
+#'     class \code{robustbetareg}, depending on the used method.
 #' @importFrom stats printCoefmat quantile
 #'
 #' @examples
@@ -198,7 +200,8 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
 #'                      data = HIC, alpha = 0.06)
 #' #plot(hic)
 #' }
-#'
+#' @return \code{plot} method for \code{\link{robustbetareg}} objects returns
+#'      several diagnostic plots.
 #' @importFrom stats residuals
 #' @importFrom graphics plot abline identify
 #' @seealso \code{\link{robustbetareg}}, \code{\link{residuals.robustbetareg}},

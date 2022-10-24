@@ -14,6 +14,10 @@
 \item{...}{graphical parameters passed to the \code{\link{plot}} function (see
 \code{\link{par}}).}
 }
+\value{
+\code{plot} method for \code{\link{robustbetareg}} objects returns
+     several diagnostic plots.
+}
 \description{
 Several types of standard diagnostic plots can be produced interactively,
 involving different types of residuals.
@@ -25,7 +29,6 @@ hic <- robustbetareg(HIC ~ URB + GDP | GDP,
                      data = HIC, alpha = 0.06)
 #plot(hic)
 }
-
 }
 \seealso{
 \code{\link{robustbetareg}}, \code{\link{residuals.robustbetareg}},

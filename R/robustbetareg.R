@@ -193,9 +193,8 @@
 #'
 #'
 #' # Plotting the weights against the residuals - LSMLE fit.
-#' #plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
-#' #    ylab = "Weights")
-#' #identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
+#' plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+#'     ylab = "Weights")
 #'
 #' # Excluding outlier observation.
 #' fit_LSMLEwo1 <- robustbetareg(HIC ~ URB + GDP |
@@ -203,7 +202,8 @@
 #' summary(fit_LSMLEwo1)
 #'
 #' # Normal probability plot with simulated envelope
-#' # plotenvelope(fit_LSMLE)}
+#'  plotenvelope(fit_LSMLE)
+#' }
 #' @import betareg
 #' @importFrom stats as.formula model.frame model.response model.matrix terms
 #'        delete.response optim qlogis cor var dbeta
@@ -1999,7 +1999,6 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,
 #' hist(EGBsample, prob = TRUE, breaks = 15, main = "", las = 1, ylim = c(0, 0.2),
 #'      xlim = c(-20, 10))
 #' curve(dEGB(x, mu, phi), from = -20, to = 8, add = TRUE, col = "red")
-#' #rug(EGBsample)
 #'
 #'
 #' # Showing the P(Y* < -5) = 0.17, where Y* ~ EGB(0.2, 2).
@@ -2133,17 +2132,17 @@ rEGB=function(n, mu, phi)
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 #' data = HIC, alpha = 0.06)
-#' #plotenvelope(hic, n.sim = 50)
+#' plotenvelope(hic, n.sim = 50)
 #'
 #' get(data("Firm", package = "robustbetareg"))
 #' rmc <- robustbetareg(FIRMCOST ~ INDCOST + SIZELOG | INDCOST + SIZELOG, data = Firm)
-#' #plotenvelope(rmc, conf = 0.90)}
-#'
+#' plotenvelope(rmc, conf = 0.90)}
+#' @importFrom graphics par
 #' @export
 plotenvelope=function(object,type=c("sweighted2","pearson","weighted","sweighted",
                                     "sweighted.gamma","sweighted2.gamma","combined",
                                     "combined.projection"),conf = 0.95,n.sim = 100,
-                      PrgBar = T, control=robustbetareg.control(...), ...)
+                      PrgBar = TRUE, control=robustbetareg.control(...), ...)
 {
   UseMethod("plotenvelope")
 }
@@ -2153,7 +2152,7 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
                                                   "weighted","sweighted",
                                                   "sweighted.gamma","sweighted2.gamma",
                                                   "combined","combined.projection"),
-                                    conf=0.95, n.sim = 100, PrgBar=T,
+                                    conf=0.95, n.sim = 100, PrgBar=TRUE,
                                     control=robustbetareg.control(...), ...)
 {
   if(missing(control)){control=robustbetareg.control(object)}
@@ -2199,19 +2198,19 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
     {
       if(type=="sweighted2")
       {
-        ResEnvelop=rbind(ResEnvelop,sort(robustbetareg.sim$residuals,decreasing = F))
+        ResEnvelop=rbind(ResEnvelop,sort(robustbetareg.sim$residuals,decreasing = FALSE))
       }else{
 
         robustbetareg.sim$y=y.sim
         robustbetareg.sim$model$mean=object$model$mean
         robustbetareg.sim$model$precision=object$model$precision
-        ResEnvelop=rbind(ResEnvelop,sort(residuals(robustbetareg.sim,type=type),decreasing = F))
+        ResEnvelop=rbind(ResEnvelop,sort(residuals(robustbetareg.sim,type=type),decreasing = FALSE))
       }
       k=k+1
       # update progress bar
       if(PrgBar){utils::setTxtProgressBar(pb, k)}
     }
-    if(k==(2*n.sim)){limit=T}
+    if(k==(2*n.sim)){limit = TRUE}
   }
   Envelope=apply(ResEnvelop,2,stats::quantile,c((1-conf)/2,0.5,1-(1-conf)/2))
   if(!ylim.boolean)
@@ -2219,16 +2218,20 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
     ylim <- range(Envelope[1,],Envelope[2,],Envelope[3,],residual)
     arg$ylim=ylim
   }
-  graphics::par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
+  op <- graphics::par(mar=c(5.0,5.0,4.0,2.0),pch=16, cex=1.0, cex.lab=1.0, cex.axis=1.0, cex.main=1.5)
+  on.exit(par(op))
   ARG=append(list(y=residual,main="", xlab="Normal quantiles",ylab="Residuals"),arg)
   do.call(stats::qqnorm,ARG)
-  graphics::par(new=T)
-  ARG=utils::modifyList(ARG,list(y=Envelope[1,],axes=F,main = "",xlab="",ylab="",type="l",lty=1,lwd=1.0))
+  op1 <- graphics::par(new=TRUE)
+  on.exit(par(op1))
+  ARG=utils::modifyList(ARG,list(y=Envelope[1,],axes=FALSE,main = "",xlab="",ylab="",type="l",lty=1,lwd=1.0))
   do.call(stats::qqnorm,ARG)
-  graphics::par(new=T)
+  op2 <- graphics::par(new=TRUE)
+  on.exit(par(op2))
   ARG=utils::modifyList(ARG,list(y=Envelope[2,],lty=2))
   do.call(stats::qqnorm,ARG)
-  graphics::par(new=T)
+  op3 <- graphics::par(new=TRUE)
+  on.exit(par(op3))
   ARG=utils::modifyList(ARG,list(y=Envelope[3,],lty=1))
   do.call(stats::qqnorm,ARG)
 }

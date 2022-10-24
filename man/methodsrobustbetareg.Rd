@@ -26,11 +26,15 @@ coefficients should be extracted.}
 
 \item{digits}{the number of significant digits to use when printing.}
 }
+\value{
+\code{methodsrobustbetareg} returns different outputs for objects of
+    class \code{robustbetareg}, depending on the used method.
+}
 \description{
 Some S3 methods for objects of class "\code{robustbetareg}".
 }
 \details{
-A set of methods for fitted model objects of class "\code{robustbetareg}",
+A set of methods for fitted model objects of class \code{robustbetareg},
      including methods to the generic functions \code{\link{print}} and
      \code{\link{summary}}, which print the estimated coefficients along with
      some further information.

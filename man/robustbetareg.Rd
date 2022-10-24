@@ -224,9 +224,8 @@ summary(fit_LMDPDE)
 
 
 # Plotting the weights against the residuals - LSMLE fit.
-#plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
-#    ylab = "Weights")
-#identify(fit_LSMLE$residuals, fit_LSMLE$weights) # see observation #1
+plot(fit_LSMLE$residuals, fit_LSMLE$weights, pch = "+", xlab = "Residuals",
+    ylab = "Weights")
 
 # Excluding outlier observation.
 fit_LSMLEwo1 <- robustbetareg(HIC ~ URB + GDP |
@@ -234,7 +233,8 @@ fit_LSMLEwo1 <- robustbetareg(HIC ~ URB + GDP |
 summary(fit_LSMLEwo1)
 
 # Normal probability plot with simulated envelope
-# plotenvelope(fit_LSMLE)}
+ plotenvelope(fit_LSMLE)
+}
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
