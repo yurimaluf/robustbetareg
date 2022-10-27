@@ -193,7 +193,7 @@ fit_LMDPDE2 <- robustbetareg(FIRMCOST ~ SIZELOG + INDCOST,
 summary(fit_LMDPDE2)
 
 # Diagnostic plots
-# plot(fit_LMDPDE2)
+
 
 #### HIC data
 data("HIC")

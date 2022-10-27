@@ -198,7 +198,6 @@ print.summary.robustbetareg=function(x, digits = max(3, getOption("digits") - 3)
 #' get(data("HIC", package = "robustbetareg"))
 #' hic <- robustbetareg(HIC ~ URB + GDP | GDP,
 #'                      data = HIC, alpha = 0.06)
-#' #plot(hic)
 #' }
 #' @return \code{plot} method for \code{\link{robustbetareg}} objects returns
 #'      several diagnostic plots.

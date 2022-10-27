@@ -27,7 +27,6 @@ involving different types of residuals.
 get(data("HIC", package = "robustbetareg"))
 hic <- robustbetareg(HIC ~ URB + GDP | GDP,
                      data = HIC, alpha = 0.06)
-#plot(hic)
 }
 }
 \seealso{
