@@ -238,7 +238,7 @@ summary(fit_LSMLEwo1)
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-   beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+   beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
    Ribeiro, T.K.A. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
    via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
    Ghosh, A. (2019). Robust inference under the beta regression model with

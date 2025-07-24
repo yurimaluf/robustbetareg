@@ -68,8 +68,8 @@ waldtypetest(fit.lsmle, h0, B = c(-1, -2))
 }
 }
 \references{
-Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
-    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
+   beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
     Basu, A., Ghosh, A., Martin, N., and Pardo, L. (2018). Robust Wald-type
     tests for  non-homogeneous observations based on the minimum density
     power divergence estimator. \emph{Metrika}, 81:493–522. \cr \cr

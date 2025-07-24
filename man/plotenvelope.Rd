@@ -64,7 +64,7 @@ plotenvelope(rmc, conf = 0.90)}
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+   beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
     Atkinson, A.C. (1985) Plots, transformations and regression: an
     introduction to graphical methods of diagnostic regression analysis.
     \emph{Oxford Science Publications}, Oxford.

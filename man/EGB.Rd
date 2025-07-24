@@ -82,7 +82,7 @@ text(2, 0.83, paste("(", 0, ",", round(p, 2), ")"), font = 2,
 }
 \references{
 Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+   beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
     Kerman, S. and McDonald, J.B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
     and special cases. \emph{Communications in Statistics - Theory and Methods},
     44:3857-3864.

@@ -75,7 +75,7 @@
 #'
 #' @author Yuri S. Maluf (\email{yurimaluf@@gmail.com}), Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-#'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'    Ribeiro, T.K.A. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
 #'    via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
 #'    Ghosh, A. (2019). Robust inference under the beta regression model with
@@ -1903,7 +1903,7 @@ SMLE_Cov_Matrix = function(muhat_q,phihat_q,X,Z,alpha,linkobj) {
 #' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
 #' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-#'    beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'    Ribeiro, K.A.T. and Ferrari, S.L.P.  (2022). Robust estimation in beta regression
 #'    via maximum Lq-likelihood. \emph{Statistical Papers}. DOI: 10.1007/s00362-022-01320-0. \cr \cr
 #'
@@ -1986,7 +1986,7 @@ robustbetareg.control.default=function(start=NULL,alpha.optimal=TRUE,
 #' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
 #' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'     Kerman, S. and McDonald, J.B. (2015). Skewness-kurtosis bounds for EGB1, EGB2,
 #'     and special cases. \emph{Communications in Statistics - Theory and Methods},
 #'     44:3857-3864.
@@ -2119,7 +2119,7 @@ rEGB=function(n, mu, phi)
 #' Francisco F. Queiroz (\email{ffelipeq@@outlook.com}) and Silvia L. P. Ferrari.
 #'
 #' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
-#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'     Atkinson, A.C. (1985) Plots, transformations and regression: an
 #'     introduction to graphical methods of diagnostic regression analysis.
 #'     \emph{Oxford Science Publications}, Oxford.
@@ -2265,8 +2265,8 @@ plotenvelope.robustbetareg=function(object,type=c("sweighted2","pearson",
 #' @return \code{waldtypetest} returns an output for the Wald-type test containing
 #' the value of the test statistic, degrees-of-freedom and p-value.
 #'
-#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
-#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'     Basu, A., Ghosh, A., Martin, N., and Pardo, L. (2018). Robust Wald-type
 #'     tests for  non-homogeneous observations based on the minimum density
 #'     power divergence estimator. \emph{Metrika}, 81:493–522. \cr \cr
@@ -2420,8 +2420,8 @@ residuals=function(object,type=c("sweighted2","pearson","weighted","sweighted",
 #'      respectively, equation (9) for "\code{combined}", and equation (11)
 #'      for "\code{combined.projection}".
 #'
-#' @references Maluf, Y. S., Ferrari, S. L. P., and Queiroz, F. F. (2022). Robust
-#'     beta regression through the logit transformation. \emph{arXiv}:2209.11315.\cr \cr
+#' @references Maluf, Y.S., Ferrari, S.L.P., and Queiroz, F.F. (2022). Robust
+#'    beta regression through the logit transformation. \emph{Metrika}:61–81.\cr \cr
 #'     Espinheira, P.L., Ferrari, S.L.P., and Cribari-Neto, F. (2008). On Beta
 #'     Regression Residuals. \emph{Journal of Applied Statistics}, 35:407–419.\cr \cr
 #'     Espinheira, P.L., Santos, E.G.and Cribari-Neto, F. (2017). On nonlinear
