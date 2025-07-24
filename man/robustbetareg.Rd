@@ -152,7 +152,7 @@ Beta regression models are employed to model continuous response
     \code{robustbetareg} by default when the argument "\code{alpha}" is
     suppressed.\cr \cr
     The formulation of the model has the same structure as in the usual functions
-    \code{\link{glm}} and \code{\link{betareg}}. The argument
+    \code{\link[stats]{glm}} and \code{\link[betareg]{betareg}}. The argument
     \code{formula} can comprise of three parts (separated by the symbols
     "\eqn{~}" and "\eqn{|}"), namely: observed response variable in the unit
     interval, predictor of the mean submodel, with link function \code{link}
